@@ -1,0 +1,634 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\FullStack\\Tafe\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\controllers\\unitscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\controllers\\unitscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\repositories\\genericrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\repositories\\genericrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\FullStack\\Tafe\\Tafe\\Controllers\\CategoriesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Tafe\\Controllers\\CategoriesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\db\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\db\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\controllers\\employeeprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\controllers\\employeeprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\dtos\\employeeprofiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\dtos\\employeeprofiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\entitytemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\entitytemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\dtos\\appuserregisterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\dtos\\appuserregisterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\deliveryprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\deliveryprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\customerprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\customerprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\unit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\unit.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\inventorycount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\inventorycount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\shift.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\shift.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\enums\\tafeenums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\enums\\tafeenums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\dtos\\appuserlogindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\dtos\\appuserlogindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\reservation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\reservation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\cafetable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\cafetable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\attendance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\attendance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\salarypayment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\salarypayment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\ingredient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\ingredient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\stocktransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\stocktransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\supplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\supplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\purchaseinvoiceitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\purchaseinvoiceitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\purchaseinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\purchaseinvoice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\customerpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\customerpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\productingredient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\productingredient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|d:\\fullstack\\tafe\\tafe\\migrations\\20260804020311_initdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{964D0D13-3126-4294-D106-17C06E268B1C}|Tafe\\Tafe.csproj|solutionrelative:tafe\\migrations\\20260804020311_initdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Program.cs",
+              "RelativeDocumentMoniker": "Tafe\\Program.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Program.cs",
+              "RelativeToolTip": "Tafe\\Program.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAwwG4AAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:10:07.594Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CategoriesController.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\CategoriesController.cs",
+              "RelativeDocumentMoniker": "Tafe\\Controllers\\CategoriesController.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\CategoriesController.cs",
+              "RelativeToolTip": "Tafe\\Controllers\\CategoriesController.cs",
+              "ViewState": "AgIAAD4AAACAYk/Yyxs1wEwAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-05T04:02:49.632Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "EmployeeProfileController.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\EmployeeProfileController.cs",
+              "RelativeDocumentMoniker": "Tafe\\Controllers\\EmployeeProfileController.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\EmployeeProfileController.cs",
+              "RelativeToolTip": "Tafe\\Controllers\\EmployeeProfileController.cs",
+              "ViewState": "AgIAAEAAAAAAAAAAAAAuwEYAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T16:19:25.525Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GenericRepo.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Repositories\\GenericRepo.cs",
+              "RelativeDocumentMoniker": "Tafe\\Repositories\\GenericRepo.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Repositories\\GenericRepo.cs",
+              "RelativeToolTip": "Tafe\\Repositories\\GenericRepo.cs",
+              "ViewState": "AgIAACMAAADArqhn0qUpwCsAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:32:36.173Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UnitsController.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\UnitsController.cs",
+              "RelativeDocumentMoniker": "Tafe\\Controllers\\UnitsController.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\UnitsController.cs",
+              "RelativeToolTip": "Tafe\\Controllers\\UnitsController.cs",
+              "ViewState": "AgIAADsAAAAAZE+4/Jbmv0UAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T04:22:25.147Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\DB\\DBContext.cs",
+              "RelativeDocumentMoniker": "Tafe\\DB\\DBContext.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\DB\\DBContext.cs",
+              "RelativeToolTip": "Tafe\\DB\\DBContext.cs",
+              "ViewState": "AgIAAFQAAAAAkLh60pMwwFsAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:18:56.317Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\ApplicationUser.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\ApplicationUser.cs",
+              "RelativeToolTip": "Tafe\\Models\\ApplicationUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:21:03.978Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "EmployeeProfileDTO.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\DTOs\\EmployeeProfileDTO.cs",
+              "RelativeDocumentMoniker": "Tafe\\DTOs\\EmployeeProfileDTO.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\DTOs\\EmployeeProfileDTO.cs",
+              "RelativeToolTip": "Tafe\\DTOs\\EmployeeProfileDTO.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAwAsAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-05T01:38:48.116Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "EntityTemplate.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\EntityTemplate.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\EntityTemplate.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\EntityTemplate.cs",
+              "RelativeToolTip": "Tafe\\Models\\EntityTemplate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T04:39:26.511Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AppUserRegisterDTO.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\DTOs\\AppUserRegisterDTO.cs",
+              "RelativeDocumentMoniker": "Tafe\\DTOs\\AppUserRegisterDTO.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\DTOs\\AppUserRegisterDTO.cs",
+              "RelativeToolTip": "Tafe\\DTOs\\AppUserRegisterDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T01:09:04.309Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "DeliveryProfile.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\DeliveryProfile.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\DeliveryProfile.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\DeliveryProfile.cs",
+              "RelativeToolTip": "Tafe\\Models\\DeliveryProfile.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA0AAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:46:38.482Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "CustomerProfile.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\CustomerProfile.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\CustomerProfile.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\CustomerProfile.cs",
+              "RelativeToolTip": "Tafe\\Models\\CustomerProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAowAoAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:45:58.604Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "RoleController.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\RoleController.cs",
+              "RelativeDocumentMoniker": "Tafe\\Controllers\\RoleController.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\RoleController.cs",
+              "RelativeToolTip": "Tafe\\Controllers\\RoleController.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAkwCQAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:30:47.309Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Tafe\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Tafe\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwC8AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:20:06.828Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Unit.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Unit.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Unit.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Unit.cs",
+              "RelativeToolTip": "Tafe\\Models\\Unit.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T04:38:45.424Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "20260804020311_initDB.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Migrations\\20260804020311_initDB.cs",
+              "RelativeDocumentMoniker": "Tafe\\Migrations\\20260804020311_initDB.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Migrations\\20260804020311_initDB.cs",
+              "RelativeToolTip": "Tafe\\Migrations\\20260804020311_initDB.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T02:03:11.834Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Order.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Order.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Order.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Order.cs",
+              "RelativeToolTip": "Tafe\\Models\\Order.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAA4wC8AAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:50:14.158Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "TafeEnums.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Enums\\TafeEnums.cs",
+              "RelativeDocumentMoniker": "Tafe\\Enums\\TafeEnums.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Enums\\TafeEnums.cs",
+              "RelativeToolTip": "Tafe\\Enums\\TafeEnums.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAA2wDAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:52:21.386Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Shift.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Shift.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Shift.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Shift.cs",
+              "RelativeToolTip": "Tafe\\Models\\Shift.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAA7wBwAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T01:13:11.824Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Payment.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Payment.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Payment.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Payment.cs",
+              "RelativeToolTip": "Tafe\\Models\\Payment.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAwA4AAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T01:13:52.357Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "InventoryCount.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\InventoryCount.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\InventoryCount.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\InventoryCount.cs",
+              "RelativeToolTip": "Tafe\\Models\\InventoryCount.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAgwBQAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T01:16:05.277Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "AppUserLoginDTO.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\DTOs\\AppUserLoginDTO.cs",
+              "RelativeDocumentMoniker": "Tafe\\DTOs\\AppUserLoginDTO.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\DTOs\\AppUserLoginDTO.cs",
+              "RelativeToolTip": "Tafe\\DTOs\\AppUserLoginDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T01:07:34.548Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Reservation.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Reservation.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Reservation.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Reservation.cs",
+              "RelativeToolTip": "Tafe\\Models\\Reservation.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAwBMAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:54:02.566Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "CafeTable.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\CafeTable.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\CafeTable.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\CafeTable.cs",
+              "RelativeToolTip": "Tafe\\Models\\CafeTable.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAgAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:53:48.585Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Attendance.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Attendance.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Attendance.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Attendance.cs",
+              "RelativeToolTip": "Tafe\\Models\\Attendance.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:54:23.049Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "SalaryPayment.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\SalaryPayment.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\SalaryPayment.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\SalaryPayment.cs",
+              "RelativeToolTip": "Tafe\\Models\\SalaryPayment.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAA1wBUAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:54:35.046Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Expense.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Expense.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Expense.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Expense.cs",
+              "RelativeToolTip": "Tafe\\Models\\Expense.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAABEAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:54:58.734Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Ingredient.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Ingredient.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Ingredient.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Ingredient.cs",
+              "RelativeToolTip": "Tafe\\Models\\Ingredient.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:26:18.079Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "StockTransaction.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\StockTransaction.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\StockTransaction.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\StockTransaction.cs",
+              "RelativeToolTip": "Tafe\\Models\\StockTransaction.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwBUAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:50:46.07Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Supplier.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Supplier.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Supplier.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Supplier.cs",
+              "RelativeToolTip": "Tafe\\Models\\Supplier.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:51:08.136Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "PurchaseInvoiceItem.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\PurchaseInvoiceItem.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\PurchaseInvoiceItem.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\PurchaseInvoiceItem.cs",
+              "RelativeToolTip": "Tafe\\Models\\PurchaseInvoiceItem.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:51:35.102Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "PurchaseInvoice.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\PurchaseInvoice.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\PurchaseInvoice.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\PurchaseInvoice.cs",
+              "RelativeToolTip": "Tafe\\Models\\PurchaseInvoice.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwAAAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:51:22.229Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "OrderItem.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\OrderItem.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\OrderItem.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\OrderItem.cs",
+              "RelativeToolTip": "Tafe\\Models\\OrderItem.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAQwBkAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:50:32.477Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "CustomerPoint.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\CustomerPoint.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\CustomerPoint.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\CustomerPoint.cs",
+              "RelativeToolTip": "Tafe\\Models\\CustomerPoint.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:54:47.104Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "ProductIngredient.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\ProductIngredient.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\ProductIngredient.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\ProductIngredient.cs",
+              "RelativeToolTip": "Tafe\\Models\\ProductIngredient.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:25:53.242Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "Product.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Product.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Product.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Product.cs",
+              "RelativeToolTip": "Tafe\\Models\\Product.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:25:28.907Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "Category.cs",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\Models\\Category.cs",
+              "RelativeDocumentMoniker": "Tafe\\Models\\Category.cs",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\Models\\Category.cs",
+              "RelativeToolTip": "Tafe\\Models\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-04T00:23:27.144Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\FullStack\\Tafe\\Tafe\\appsettings.json",
+              "RelativeDocumentMoniker": "Tafe\\appsettings.json",
+              "ToolTip": "D:\\FullStack\\Tafe\\Tafe\\appsettings.json",
+              "RelativeToolTip": "Tafe\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-04T00:12:09.087Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
