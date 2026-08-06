@@ -1,0 +1,28 @@
+# ===================================================================
+# Repo root — cross-cutting ignores that apply to the whole project.
+# Framework-specific ignores live in Backend/.gitignore and
+# Frontend/.gitignore.
+# ===================================================================
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Editors / IDE (global prefs belong in your global gitignore) ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Secrets (never commit real credentials) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key

@@ -1,0 +1,48 @@
+# ===================================================================
+# Backend — .NET 8 (ASP.NET Core)
+# ===================================================================
+
+# --- Build output ---
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# --- Visual Studio / Rider artifacts ---
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.nupkg.metadata
+*.cache
+build/
+
+# --- NuGet ---
+*.nupkg
+*.snupkg
+project.lock.json
+packages/
+
+# --- Test results ---
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+
+# --- EF Core migrations temp / local DBs ---
+*.db
+*.mdf
+*.ldf
+
+# --- App settings with local/secrets content ---
+# Keep appsettings.json as a committed template, but never commit
+# environment-specific values or secrets. Use user-secrets
+# (dotnet user-secrets) or environment variables for the real values.
+appsettings.*.json
+!appsettings.json
+
+# --- Misc ---
+#.editorconfig
+#.gitattributes
