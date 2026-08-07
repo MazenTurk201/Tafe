@@ -449,3 +449,4 @@ D:/FullStack/Tafe/Tafe/obj/Debug/net8.0/ref/Tafe.dll
 /home/t/Projects/Fullstack/Tafe/Backend/Tafe/obj/Debug/net8.0/Tafe.pdb
 /home/t/Projects/Fullstack/Tafe/Backend/Tafe/obj/Debug/net8.0/Tafe.genruntimeconfig.cache
 /home/t/Projects/Fullstack/Tafe/Backend/Tafe/obj/Debug/net8.0/ref/Tafe.dll
+/home/t/Projects/Fullstack/Tafe/Backend/Tafe/obj/Debug/net8.0/Tafe.sourcelink.json
