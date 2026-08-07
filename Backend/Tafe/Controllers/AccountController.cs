@@ -70,7 +70,7 @@ namespace Tafe.Controllers
 
                         SigningCredentials signingCred = new(securityKey, SecurityAlgorithms.HmacSha256);
 
-                        DateTime expiresAt = DateTime.UtcNow.AddHours(1);
+                        DateTime expiresAt = user.RememmberMe ? DateTime.UtcNow.AddDays(7) : DateTime.UtcNow.AddHours(1);
 
                         JwtSecurityToken token = new JwtSecurityToken(
                             audience: configuration["JWT:AudienceIP"],
