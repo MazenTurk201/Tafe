@@ -2,11 +2,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+// Admin
+// Manager
+// Cashier
+// Waiter
+// Kitchen
+// Delivery
+// Clinet
+
 namespace Tafe.Controllers
 {
-    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin, MANAGER")]
     public class RoleController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> role;
@@ -37,7 +45,15 @@ namespace Tafe.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
-            return Ok(role.Roles.ToList());
+            return Ok(role.Roles.ToList().Select(e => new { Id=e.Id, Name=e.Name}));
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            IdentityRole targetRole = new();
+            targetRole.Id = id;
+            await role.DeleteAsync(targetRole);
+            return Ok();
         }
 
     }

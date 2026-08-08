@@ -1,5 +1,5 @@
-﻿using Azure.Core.Pipeline;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.Repository;
 
@@ -21,24 +21,27 @@ namespace Tafe.Controllers
             return Ok(repo.GetAll<Unit>().Where(u => !u.IsDeleted)
                 .Select(u => new { u.Id, u.Name }));
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpPost]
         public IActionResult CreateUnit(string Name)
         {
             if (ModelState.IsValid)
             {
-                repo.Add<Unit>(new Unit { Name = Name });
+                repo.Add(new Unit { Name = Name });
                 repo.Save();
                 return Ok();
             }
             return BadRequest(ModelState);
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpDelete]
-        public IActionResult DeleteUnit(int id)
+        public async Task<IActionResult> DeleteUnit(int id)
         {
-            repo.SoftDelete<Unit>(id).Wait();
+            await repo.SoftDelete<Unit>(id);
             repo.Save();
             return Ok();
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpPatch]
         public IActionResult PatchUnit(int id, string Name)
         {
@@ -54,16 +57,18 @@ namespace Tafe.Controllers
 
             return Ok(unit);
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpPatch("Restore")]
-        public IActionResult RestoreUnit(int id)
+        public async Task<IActionResult> RestoreUnit(int id)
         {
             var unit = repo.Get<Unit>(id);
 
-            repo.Restore<Unit>(id).Wait();
+            await repo.Restore<Unit>(id);
             repo.Save();
 
             return Ok(unit);
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpGet("Deleted")]
         public IActionResult GetDeletedUnits()
         {

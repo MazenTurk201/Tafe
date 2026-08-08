@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.DTOs;
 using Tafe.Models;
@@ -6,22 +7,68 @@ using Tafe.Repository;
 
 namespace Tafe.Controllers
 {
+    [Authorize(Roles = "Admin, Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeProfileController : ControllerBase
     {
         private readonly GenericRepo repo;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly RoleManager<ApplicationUser> roleManager;
 
-        public EmployeeProfileController(GenericRepo repo, UserManager<ApplicationUser> userManager)
+        public EmployeeProfileController(GenericRepo repo, UserManager<ApplicationUser> userManager, RoleManager<ApplicationUser> roleManager)
         {
             this.repo = repo;
             this.userManager = userManager;
+            this.roleManager = roleManager;
         }
         [HttpGet]
         public IActionResult GetEmployeeProfiles()
         {
             var employeeProfiles = repo.GetAll<EmployeeProfile>().Where(e => !e.User.IsDeleted);
+
+            return Ok(employeeProfiles.Select(e => new EmployeeProfileDTO
+            {
+                UserId = e.UserId,
+                UserName = e.User.UserName,
+                FullName = e.User.FullName,
+                Email = e.User.Email,
+                Salary = e.Salary,
+                HireDate = e.HireDate,
+                IsActive = e.IsActive
+            }));
+        }
+        [HttpGet("{userId}")]
+        public IActionResult GetEmployeeProfileById(string userId)
+        {
+            var employeeProfile = repo.GetP<EmployeeProfile>(userId);
+
+            if (employeeProfile == null || employeeProfile.User.IsDeleted)
+            {
+                return NotFound();
+            }
+
+            var employeeProfileDTO = new EmployeeProfileDTO
+            {
+                UserId = employeeProfile.UserId,
+                UserName = employeeProfile.User.UserName,
+                FullName = employeeProfile.User.FullName,
+                Email = employeeProfile.User.Email,
+                Salary = employeeProfile.Salary,
+                HireDate = employeeProfile.HireDate,
+                IsActive = employeeProfile.IsActive
+            };
+
+            return Ok(employeeProfileDTO);
+        }
+        [HttpGet("Search/{searchTerm}")]
+        public IActionResult SearchEmployeeProfiles(string searchTerm)
+        {
+            var employeeProfiles = repo.GetAll<EmployeeProfile>()
+                .Where(e => !e.User.IsDeleted &&
+                            (e.User.UserName!.Contains(searchTerm) ||
+                             e.User.FirstName.Contains(searchTerm) ||
+                             e.User.LastName.Contains(searchTerm)));
 
             return Ok(employeeProfiles.Select(e => new EmployeeProfileDTO
             {
@@ -50,8 +97,9 @@ namespace Tafe.Controllers
                 var result = await userManager.CreateAsync(appUser, employeeCreateDTO.User.Password);
 
                 if (!result.Succeeded) { return BadRequest(result.Errors); }
-                repo.Add<EmployeeProfile>(new EmployeeProfile { UserId = appUser.Id, Salary = employeeCreateDTO.Salary, HireDate = employeeCreateDTO.HireDate, IsActive = true, User = appUser });
-                await userManager.AddToRoleAsync(appUser, "WAITER");
+                repo.Add(new EmployeeProfile { UserId = appUser.Id, Salary = employeeCreateDTO.Salary, HireDate = employeeCreateDTO.HireDate, IsActive = true, User = appUser });
+                if (roleManager.FindByNameAsync(employeeCreateDTO.RoleName) == null) return BadRequest();
+                await userManager.AddToRoleAsync(appUser, employeeCreateDTO.RoleName);
                 repo.Save();
                 return CreatedAtAction(nameof(GetEmployeeProfiles), new { id = appUser.Id }, null);
             }
@@ -66,7 +114,7 @@ namespace Tafe.Controllers
                 profile.Salary = employeeProfileUpdateDTO.Salary;
                 profile.HireDate = employeeProfileUpdateDTO.HireDate;
                 profile.IsActive = employeeProfileUpdateDTO.IsActive;
-                repo.Update<EmployeeProfile>(profile);
+                repo.Update(profile);
                 repo.Save();
                 return Ok();
             }

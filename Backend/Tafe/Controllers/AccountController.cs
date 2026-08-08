@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,12 +12,12 @@ namespace Tafe.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IConfiguration configuration;
 
-        public AccountsController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.configuration = configuration;
@@ -26,11 +27,13 @@ namespace Tafe.Controllers
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser userApp = new();
-                userApp.FirstName = user.FirstName;
-                userApp.LastName = user.LastName;
-                userApp.UserName = user.UserName;
-                userApp.Email = user.Email;
+                ApplicationUser userApp = new()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    Email = user.Email
+                };
                 IdentityResult result = await userManager.CreateAsync(userApp, user.Password);
                 if (result.Succeeded)
                 {
@@ -54,11 +57,13 @@ namespace Tafe.Controllers
                     bool isSuccess = await userManager.CheckPasswordAsync(userFromDB, user.Password);
                     if (isSuccess)
                     {
-                        List<Claim> userClaims = new();
-                        userClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                        userClaims.Add(new Claim(ClaimTypes.NameIdentifier, userFromDB.Id));
-                        userClaims.Add(new Claim(ClaimTypes.Name, userFromDB.UserName!));
-                        userClaims.Add(new Claim(ClaimTypes.GivenName, userFromDB.FullName));
+                        List<Claim> userClaims =
+                        [
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, userFromDB.Id),
+                            new Claim(ClaimTypes.Name, userFromDB.UserName!),
+                            new Claim(ClaimTypes.GivenName, userFromDB.FullName),
+                        ];
                         var userRole = await userManager.GetRolesAsync(userFromDB);
                         foreach (var role in userRole)
                         {
@@ -72,7 +77,7 @@ namespace Tafe.Controllers
 
                         DateTime expiresAt = user.RememmberMe ? DateTime.UtcNow.AddDays(7) : DateTime.UtcNow.AddHours(1);
 
-                        JwtSecurityToken token = new JwtSecurityToken(
+                        JwtSecurityToken token = new (
                             audience: configuration["JWT:AudienceIP"],
                             issuer: configuration["JWT:IssuerIP"],
                             expires: expiresAt,
@@ -93,7 +98,7 @@ namespace Tafe.Controllers
             }
             return BadRequest(ModelState);
         }
-        [HttpGet]
+        [HttpGet("Details")]
         public async Task<IActionResult> GetUserInfo()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -118,6 +123,7 @@ namespace Tafe.Controllers
             return Ok(userInfo);
         }
         [HttpPatch]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> AddRoleToUser(string username, string roleName)
         {
             var user = await userManager.FindByNameAsync(username);

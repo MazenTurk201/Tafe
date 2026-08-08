@@ -54,9 +54,25 @@ namespace Tafe.Repository
             {
                 return (IQueryable<T>)db.EmployeeProfiles.AsNoTracking().Include(e => e.User);
             }
+            else if (typeof(T) == typeof(DeliveryProfile))
+            {
+                return (IQueryable<T>)db.DeliveryProfiles.AsNoTracking().Include(e => e.User);
+            }
+            else if (typeof(T) == typeof(CustomerProfile))
+            {
+                return (IQueryable<T>)db.CustomerProfiles.AsNoTracking().Include(e => e.User);
+            }
             else if (typeof(T) == typeof(Category))
             {
                 return (IQueryable<T>)db.Categories.AsNoTracking().Include(p=>p.Products);
+            }
+            else if (typeof(T) == typeof(Ingredient))
+            {
+                return (IQueryable<T>)db.Ingredients.AsNoTracking().Include(u=>u.Unit);
+            }
+            else if (typeof(T) == typeof(Product))
+            {
+                return (IQueryable<T>)db.Products.AsNoTracking().Include(c=>c.Category).Include(i=>i.Ingredients);
             }
             else
             {

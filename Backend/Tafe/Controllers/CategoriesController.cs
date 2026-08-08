@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.Models;
 using Tafe.Repository;
@@ -21,15 +21,17 @@ namespace Tafe.Controllers
             return Ok(repo.GetAll<Category>().Where(c => !c.IsDeleted)
                 .Select(c => new { c.Id, c.Name }));
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpPost]
-        public IActionResult PostCategories(string Name) 
+        public IActionResult AddCategories(string Name) 
         {
-            repo.Add<Category>(new Category { Name = Name });
+            repo.Add(new Category { Name = Name });
             repo.Save();
             return CreatedAtAction(nameof(GetCategories),
                 new { id = repo.Get<Category>(Name)!.Id },
                 repo.Get<Category>(Name));
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpPatch]
         public IActionResult PatchCategories(int id, string Name)
         {
@@ -45,8 +47,9 @@ namespace Tafe.Controllers
 
             return Ok(category);
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpDelete]
-        public IActionResult DeleteCategories(int id)
+        public async Task<IActionResult> DeleteCategories(int id)
         {
             var category = repo.Get<Category>(id);
             if (category == null)
@@ -54,19 +57,21 @@ namespace Tafe.Controllers
                 return NotFound();
             }
 
-            repo.SoftDelete<Category>(id).Wait();
+            await repo.SoftDelete<Category>(id);
             repo.Save();
 
             return Ok(category);
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpGet("Deleted")]
         public IActionResult GetDeletedCategories()
         {
             return Ok(repo.GetAll<Category>().Where(c => c.IsDeleted)
                 .Select(c => new { c.Id, c.Name }));
         }
+        [Authorize(Roles = "Admin, MANAGER")]
         [HttpPatch("Restore")]
-        public IActionResult RestoreCategory(int id)
+        public async Task<IActionResult> RestoreCategory(int id)
         {
             var category = repo.Get<Category>(id);
             if (category == null)
@@ -74,7 +79,7 @@ namespace Tafe.Controllers
                 return NotFound();
             }
 
-            repo.Restore<Category>(id).Wait();
+            await repo.Restore<Category>(id);
             repo.Save();
 
             return Ok(category);

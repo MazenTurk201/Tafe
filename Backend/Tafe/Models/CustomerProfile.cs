@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Tafe.Models;
 
-public class CustomerProfile
+public class CustomerProfile : IProfileTemplate
 {
     [Key]
     public string UserId { get; set; }

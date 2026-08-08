@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Tafe.Models;
 
-public class DeliveryProfile
+public class DeliveryProfile : IProfileTemplate
 {
     [Key]
     public string UserId { get; set; }

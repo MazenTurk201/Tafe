@@ -1,11 +1,13 @@
-﻿using Tafe.DTO;
+﻿#nullable disable
+using Tafe.DTO;
 
 namespace Tafe.DTOs
 {
     public class EmployeeCreateDTO
     {
-        public AppUserRegisterDTO User { get; set; } = null!;
+        public AppUserRegisterDTO User { get; set; } = null;
         public decimal Salary { get; set; }
         public DateOnly HireDate { get; set; }
+        public string RoleName { get; set; }
     }
 }
