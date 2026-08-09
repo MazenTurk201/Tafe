@@ -21,7 +21,7 @@ namespace Tafe.Controllers
             return Ok(repo.GetAll<Unit>().Where(u => !u.IsDeleted)
                 .Select(u => new { u.Id, u.Name }));
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
         public IActionResult CreateUnit(string Name)
         {
@@ -33,7 +33,7 @@ namespace Tafe.Controllers
             }
             return BadRequest(ModelState);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpDelete]
         public async Task<IActionResult> DeleteUnit(int id)
         {
@@ -41,7 +41,7 @@ namespace Tafe.Controllers
             repo.Save();
             return Ok();
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
         public IActionResult PatchUnit(int id, string Name)
         {
@@ -57,7 +57,7 @@ namespace Tafe.Controllers
 
             return Ok(unit);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreUnit(int id)
         {
@@ -68,7 +68,7 @@ namespace Tafe.Controllers
 
             return Ok(unit);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
         public IActionResult GetDeletedUnits()
         {

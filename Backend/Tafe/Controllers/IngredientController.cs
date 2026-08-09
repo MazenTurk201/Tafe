@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tafe.DTOs;
 using Tafe.Repository;
 
 namespace Tafe.Controllers
@@ -22,24 +22,39 @@ namespace Tafe.Controllers
                 .Select(u => new {
                     u.Id,
                     u.Name,
-                    u.Quantity,
                     u.MinQuantityAlert,
-                    Unit = $"{u.Unit.Name} (Id: {u.UnitId})"
-                    }));
+                    Unit = new
+                    {
+                        u.UnitId,
+                        u.Unit.Name
+                    },
+                    Quantity = u.Quantity
+                        + u.StockTransactions.Where(st => 
+                            st.Type == StockTransactionType.Purchase ||
+                            st.Type == StockTransactionType.Return
+                        ).Sum(st => st.Quantity)
+                        - u.StockTransactions.Where(st => 
+                            st.Type == StockTransactionType.Sale || 
+                            st.Type == StockTransactionType.Waste || 
+                            st.Type == StockTransactionType.Adjustment
+                        ).Sum(st => st.Quantity)
+                    }
+                )
+            );
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
-        public IActionResult CreateIngredient(string Name, decimal Quantity, decimal MinQuantityAlert, int UnitId)
+        public IActionResult CreateIngredient(IngredientCreateDTO ingredientCreate)
         {
             if (ModelState.IsValid)
             {
-                repo.Add(new Ingredient { Name = Name, Quantity = Quantity, MinQuantityAlert = MinQuantityAlert, UnitId = UnitId });
+                repo.Add(new Ingredient { Name = ingredientCreate.Name, Quantity = ingredientCreate.Quantity, MinQuantityAlert = ingredientCreate.MinQuantityAlert, UnitId = ingredientCreate.UnitId });
                 repo.Save();
                 return Ok();
             }
             return BadRequest(ModelState);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpDelete]
         public async Task<IActionResult> DeleteIngredient(int id)
         {
@@ -47,26 +62,26 @@ namespace Tafe.Controllers
             repo.Save();
             return Ok();
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
-        public IActionResult PatchIngredient(int id, string? Name, decimal Quantity, decimal MinQuantityAlert, int UnitId)
+        public IActionResult PatchIngredient(IngredientDTO ingredientDTO)
         {
-            var Ingredient = repo.Get<Ingredient>(id);
+            var Ingredient = repo.Get<Ingredient>(ingredientDTO.Id);
             if (Ingredient == null)
             {
                 return NotFound();
             }
 
-            Ingredient.Name = Name;
-            Ingredient.Quantity = Quantity;
-            Ingredient.MinQuantityAlert = MinQuantityAlert;
-            Ingredient.UnitId = UnitId;
+            Ingredient.Name = ingredientDTO.Name;
+            Ingredient.Quantity = ingredientDTO.Quantity;
+            Ingredient.MinQuantityAlert = ingredientDTO.MinQuantityAlert;
+            Ingredient.UnitId = ingredientDTO.UnitId;
             repo.Update(Ingredient);
             repo.Save();
 
             return Ok(Ingredient);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreIngredient(int id)
         {
@@ -77,7 +92,7 @@ namespace Tafe.Controllers
 
             return Ok(Ingredient);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
         public IActionResult GetDeletedIngredients()
         {

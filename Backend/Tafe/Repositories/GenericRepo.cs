@@ -69,7 +69,7 @@ namespace Tafe.Repository
             }
             else if (typeof(T) == typeof(Ingredient))
             {
-                return (IQueryable<T>)db.Ingredients.AsNoTracking().Include(u=>u.Unit);
+                return (IQueryable<T>)db.Ingredients.AsNoTracking().Include(u=>u.Unit).Include(st=>st.StockTransactions);
             }
             else if (typeof(T) == typeof(Product))
             {
@@ -78,6 +78,22 @@ namespace Tafe.Repository
             else if (typeof(T) == typeof(PurchaseInvoice))
             {
                 return (IQueryable<T>)db.PurchaseInvoices.AsNoTracking().Include(s => s.Supplier).Include(i => i.Items).ThenInclude(pi => pi.Ingredient).ThenInclude(u => u.Unit);
+            }
+            else if (typeof(T) == typeof(Supplier))
+            {
+                return (IQueryable<T>)db.Suppliers.AsNoTracking().Include(pi => pi.PurchaseInvoices).ThenInclude(i => i.Items).ThenInclude(pi => pi.Ingredient).ThenInclude(u => u.Unit);
+            }
+            else if (typeof(T) == typeof(StockTransaction))
+            {
+                return (IQueryable<T>)db.StockTransactions.AsNoTracking().Include(i => i.Ingredient).ThenInclude(u => u.Unit);
+            }
+            else if (typeof(T) == typeof(InventoryCount))
+            {
+                return (IQueryable<T>)db.InventoryCounts.AsNoTracking().Include(i => i.Ingredient).ThenInclude(u => u.Unit);
+            }
+            else if (typeof(T) == typeof(CafeTable))
+            {
+                return (IQueryable<T>)db.CafeTables.AsNoTracking().Include(o => o.Orders).Include(r => r.Reservations);
             }
             else
             {

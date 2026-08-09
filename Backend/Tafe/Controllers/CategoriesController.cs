@@ -21,7 +21,7 @@ namespace Tafe.Controllers
             return Ok(repo.GetAll<Category>().Where(c => !c.IsDeleted)
                 .Select(c => new { c.Id, c.Name }));
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
         public IActionResult AddCategories(string Name) 
         {
@@ -29,7 +29,7 @@ namespace Tafe.Controllers
             repo.Save();
             return CreatedAtAction(nameof(GetCategories), new { id = repo.Get<Category>(Name)!.Id });
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
         public IActionResult PatchCategories(int id, string Name)
         {
@@ -45,7 +45,7 @@ namespace Tafe.Controllers
 
             return Ok(category);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpDelete]
         public async Task<IActionResult> DeleteCategories(int id)
         {
@@ -60,14 +60,14 @@ namespace Tafe.Controllers
 
             return Ok(category);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
         public IActionResult GetDeletedCategories()
         {
-            return Ok(repo.GetAll<Category>().Where(c => c.IsDeleted)
+            return Ok(repo.GetAll<Category>()
                 .Select(c => new { c.Id, c.Name }));
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreCategory(int id)
         {

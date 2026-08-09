@@ -29,7 +29,7 @@ namespace Tafe.Controllers
                 }
             ));
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
         public IActionResult AddProducts(ProductCreateDTO product) 
         {
@@ -37,7 +37,7 @@ namespace Tafe.Controllers
             repo.Save();
             return CreatedAtAction(nameof(GetProducts), new { id = repo.Get<Product>(product.Name)!.Id });
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
         public IActionResult PatchProducts(ProductDTO product)
         {
@@ -55,7 +55,7 @@ namespace Tafe.Controllers
 
             return Ok(Product);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpDelete]
         public async Task<IActionResult> DeleteProducts(int id)
         {
@@ -70,11 +70,11 @@ namespace Tafe.Controllers
 
             return Ok(Product);
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
         public IActionResult GetDeletedProducts()
         {
-            return Ok(repo.GetAll<Product>().Where(c => c.IsDeleted)
+            return Ok(repo.GetAll<Product>()
                 .Select(c => new {
                     c.Id,
                     c.Name,
@@ -83,7 +83,7 @@ namespace Tafe.Controllers
                     c.Ingredients
                     }));
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreProduct(int id)
         {
@@ -98,9 +98,9 @@ namespace Tafe.Controllers
 
             return Ok();
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPut("AddIngredient")]
-        public async Task<IActionResult> AddIngredientToProduct(int ProductId, int IngredientId, decimal Quantity)
+        public IActionResult AddIngredientToProduct(int ProductId, int IngredientId, decimal Quantity)
         {
             var Product = repo.Get<Product>(ProductId);
             if (Product == null)
@@ -125,9 +125,9 @@ namespace Tafe.Controllers
 
             return Ok();
         }
-        [Authorize(Roles = "Admin, MANAGER")]
+        [Authorize(Roles = "Admin, Manager")]
         [HttpDelete("RemoveIngredient")]
-        public async Task<IActionResult> RemoveIngredientToProduct(int ProductId, int IngredientId)
+        public IActionResult RemoveIngredientFromProduct(int ProductId, int IngredientId)
         {
             var Product = repo.Get<Product>(ProductId);
             if (Product == null)

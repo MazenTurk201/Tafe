@@ -14,9 +14,9 @@ namespace Tafe.Controllers
     {
         private readonly GenericRepo repo;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly RoleManager<ApplicationUser> roleManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public EmployeeProfileController(GenericRepo repo, UserManager<ApplicationUser> userManager, RoleManager<ApplicationUser> roleManager)
+        public EmployeeProfileController(GenericRepo repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.repo = repo;
             this.userManager = userManager;
@@ -98,7 +98,9 @@ namespace Tafe.Controllers
 
                 if (!result.Succeeded) { return BadRequest(result.Errors); }
                 repo.Add(new EmployeeProfile { UserId = appUser.Id, Salary = employeeCreateDTO.Salary, HireDate = employeeCreateDTO.HireDate, IsActive = true, User = appUser });
-                if (roleManager.FindByNameAsync(employeeCreateDTO.RoleName) == null) return BadRequest();
+                var role = await roleManager.FindByNameAsync(employeeCreateDTO.RoleName);
+                if (role == null)
+                    return BadRequest("Role not found.");
                 await userManager.AddToRoleAsync(appUser, employeeCreateDTO.RoleName);
                 repo.Save();
                 return CreatedAtAction(nameof(GetEmployeeProfiles), new { id = appUser.Id }, null);

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.DTOs;
@@ -8,7 +9,7 @@ namespace Tafe.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, MANAGER")]
+    [Authorize(Roles = "Admin, Manager")]
     public class SuppliersController : ControllerBase
     {
         private readonly GenericRepo repo;
@@ -144,57 +145,132 @@ namespace Tafe.Controllers
             }));
         }
         [HttpPost("PurchaseInvoices")]
-        public IActionResult CreatePurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO)
+public IActionResult CreatePurchaseInvoice(PurchaseInvoiceDTO dto)
+{
+    var supplier = repo.Get<Supplier>(dto.SupplierId);
+
+    if (supplier == null)
+    {
+        return NotFound("Supplier not found.");
+    }
+
+    if (dto.Items == null || dto.Items.Count == 0)
+    {
+        return BadRequest("Invoice must contain at least one item.");
+    }
+
+    foreach (var item in dto.Items)
+    {
+        var ingredient = repo.Get<Ingredient>(item.IngredientId);
+
+        if (ingredient == null)
         {
-            var supplier = repo.Get<Supplier>(purchaseInvoiceDTO.SupplierId);
-            if (supplier == null)
-            {
-                return NotFound();
-            }
-
-            if (purchaseInvoiceDTO.Items == null || purchaseInvoiceDTO.Items.Count == 0)
-            { 
-                return BadRequest("Invoice must contain at least one item.");
-            }
-
-            var purchaseInvoice = new PurchaseInvoice
-            {
-                InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
-                SupplierId = purchaseInvoiceDTO.SupplierId,
-                Total = purchaseInvoiceDTO.Total,
-                Items = [.. purchaseInvoiceDTO.Items.Select(i => new PurchaseInvoiceItem
-                {
-                    IngredientId = i.IngredientId,
-                    Quantity = i.Quantity,
-                    UnitPrice = i.Price,
-                    Total = i.Quantity * i.Price
-                })]
-            };
-
-            foreach (var item in purchaseInvoice.Items) 
-            { 
-                var ingredient = repo.Get<Ingredient>(item.IngredientId);
-                if (ingredient == null) 
-                { 
-                    return NotFound( $"Ingredient with ID {item.IngredientId} not found." );
-                }
-            }
-
-            repo.Add(purchaseInvoice);
-
-            foreach (var item in purchaseInvoice.Items)
-            {
-                StockTransaction stockTransaction = new()
-                {
-                    IngredientId = item.IngredientId,
-                    Quantity = item.Quantity,
-                    Type = StockTransactionType.Purchase,
-                };
-                repo.Add(stockTransaction);
-            }
-            
-            repo.Save();
-            return Ok();
+            return NotFound(
+                $"Ingredient with ID {item.IngredientId} not found."
+            );
         }
+
+        if (item.Quantity <= 0)
+        {
+            return BadRequest(
+                $"Quantity for ingredient {item.IngredientId} must be greater than 0."
+            );
+        }
+
+        if (item.Price < 0)
+        {
+            return BadRequest(
+                $"Price for ingredient {item.IngredientId} cannot be negative."
+            );
+        }
+    }
+
+    var purchaseInvoice = new PurchaseInvoice
+    {
+        InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
+        SupplierId = dto.SupplierId,
+
+        Total = dto.Items.Sum(i => i.Quantity * i.Price),
+
+        Items = dto.Items.Select(i => new PurchaseInvoiceItem
+        {
+            IngredientId = i.IngredientId,
+            Quantity = i.Quantity,
+            UnitPrice = i.Price,
+            Total = i.Quantity * i.Price
+        }).ToList()
+    };
+
+    // Save invoice first so Id is generated
+    repo.Add(purchaseInvoice);
+    repo.Save();
+
+    // Now purchaseInvoice.Id is available
+    foreach (var item in purchaseInvoice.Items)
+    {
+        var stockTransaction = new StockTransaction
+        {
+            IngredientId = item.IngredientId,
+            Quantity = item.Quantity,
+            Type = StockTransactionType.Purchase,
+            ReferenceId = purchaseInvoice.Id,
+            Notes = $"Purchase Invoice: {purchaseInvoice.InvoiceNumber}"
+        };
+
+        repo.Add(stockTransaction);
+    }
+
+    repo.Save();
+
+    return Ok(new
+    {
+        purchaseInvoice.Id,
+        purchaseInvoice.InvoiceNumber,
+        purchaseInvoice.Total
+    });
+}
+        [HttpDelete("PurchaseInvoices/{id}")]
+public async Task<IActionResult> DeletePurchaseInvoice(int id)
+{
+    var invoice = repo.Get<PurchaseInvoice>(id);
+
+    if (invoice == null)
+    {
+        return NotFound("Purchase invoice not found.");
+    }
+
+    var transactions = repo.GetAll<StockTransaction>()
+        .Where(st =>
+            st.ReferenceId == invoice.Id &&
+            st.Type == StockTransactionType.Purchase &&
+            !st.IsDeleted)
+        .ToList();
+
+    foreach (var transaction in transactions)
+    {
+        repo.Add(new StockTransaction
+        {
+            IngredientId = transaction.IngredientId,
+
+            Quantity = transaction.Quantity,
+
+            Type = StockTransactionType.Adjustment,
+
+            // Keep the reference to the invoice
+            ReferenceId = invoice.Id,
+
+            Notes = $"Reversal of purchase invoice {invoice.InvoiceNumber}"
+        });
+    }
+
+    await repo.SoftDelete<PurchaseInvoice>(id);
+
+    repo.Save();
+
+    return Ok(new
+    {
+        Message = "Purchase invoice deleted successfully."
+    });
+}
     }
 }

@@ -14,7 +14,7 @@ namespace Tafe.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, MANAGER")]
+    [Authorize(Roles = "Admin, Manager")]
     public class RoleController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> role;
@@ -28,8 +28,10 @@ namespace Tafe.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityRole identityRole = new();
-                identityRole.Name = roleName;
+                IdentityRole identityRole = new()
+                {
+                    Name = roleName
+                };
                 IdentityResult identityResult = await role.CreateAsync(identityRole);
                 if (identityResult.Succeeded)
                 {
@@ -43,15 +45,17 @@ namespace Tafe.Controllers
             return BadRequest(ModelState);
         }
         [HttpGet]
-        public async Task<IActionResult> GetRoles()
+        public IActionResult GetRoles()
         {
-            return Ok(role.Roles.ToList().Select(e => new { Id=e.Id, Name=e.Name}));
+            return Ok(role.Roles.ToList().Select(e => new { e.Id, e.Name}));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(string id)
         {
-            IdentityRole targetRole = new();
-            targetRole.Id = id;
+            IdentityRole targetRole = new()
+            {
+                Id = id
+            };
             await role.DeleteAsync(targetRole);
             return Ok();
         }
