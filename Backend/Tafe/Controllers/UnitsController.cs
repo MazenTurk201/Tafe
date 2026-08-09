@@ -23,12 +23,12 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
-        public IActionResult CreateUnit(string Name)
+        public async Task<IActionResult> CreateUnit(string Name)
         {
             if (ModelState.IsValid)
             {
                 repo.Add(new Unit { Name = Name });
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             return BadRequest(ModelState);
@@ -38,12 +38,12 @@ namespace Tafe.Controllers
         public async Task<IActionResult> DeleteUnit(int id)
         {
             await repo.SoftDelete<Unit>(id);
-            repo.Save();
+            await repo.Save();
             return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
-        public IActionResult PatchUnit(int id, string Name)
+        public async Task<IActionResult> PatchUnit(int id, string Name)
         {
             var unit = repo.Get<Unit>(id);
             if (unit == null)
@@ -52,8 +52,8 @@ namespace Tafe.Controllers
             }
 
             unit.Name = Name;
-            repo.Update(unit);
-            repo.Save();
+            await repo.Update(unit);
+            await repo.Save();
 
             return Ok(unit);
         }
@@ -64,7 +64,7 @@ namespace Tafe.Controllers
             var unit = repo.Get<Unit>(id);
 
             await repo.Restore<Unit>(id);
-            repo.Save();
+            await repo.Save();
 
             return Ok(unit);
         }

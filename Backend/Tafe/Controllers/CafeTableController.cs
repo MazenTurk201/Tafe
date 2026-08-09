@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tafe.DTOs;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -18,32 +20,32 @@ namespace Tafe.Controllers
         [HttpGet]
         public IActionResult GetCafeTables()
         {
-            return Ok(repo.GetAll<CafeTable>().Where(c => !c.IsDeleted)
+            return Ok(repo.GetAll<CafeTable>()
                 .Select(c => new { c.Id, c.Name, c.Capacity, c.IsOccupied, TotalOrders = c.Orders.Select(t=>t.Total), Reservations = c.Reservations.Select(t => new{Start = t.StartTime, End = t.EndTime, Note=t.Notes}) }));
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
-        public IActionResult AddCafeTables(string Name) 
+        public async Task<IActionResult> AddCafeTables(string Name) 
         {
             repo.Add(new CafeTable { Name = Name, Capacity = 0, IsOccupied = false });
-            repo.Save();
+            await repo.Save();
             return CreatedAtAction(nameof(GetCafeTables), new { id = repo.Get<CafeTable>(Name)!.Id });
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpPatch]
-        public IActionResult PatchCafeTables(int id, string? Name, int? Capacity, bool? IsOccupied)
+        public async Task<IActionResult> PatchCafeTables(CafeTableDTO cafeTableDTO)
         {
-            var CafeTable = repo.Get<CafeTable>(id);
+            var CafeTable = repo.Get<CafeTable>(cafeTableDTO.Id);
             if (CafeTable == null)
             {
                 return NotFound();
             }
 
-            CafeTable.Name = Name;
-            CafeTable.Capacity = Capacity ?? 0;
-            CafeTable.IsOccupied = IsOccupied ?? false;
-            repo.Update(CafeTable);
-            repo.Save();
+            CafeTable.Name = cafeTableDTO.Name;
+            CafeTable.Capacity = cafeTableDTO.Capacity;
+            CafeTable.IsOccupied = cafeTableDTO.IsOccupied;
+            await repo.Update(CafeTable);
+            await repo.Save();
 
             return Ok(CafeTable);
         }
@@ -58,7 +60,7 @@ namespace Tafe.Controllers
             }
 
             await repo.SoftDelete<CafeTable>(id);
-            repo.Save();
+            await repo.Save();
 
             return Ok(CafeTable);
         }
@@ -66,23 +68,108 @@ namespace Tafe.Controllers
         [HttpGet("Deleted")]
         public IActionResult GetDeletedCafeTables()
         {
-            return Ok(repo.GetAll<CafeTable>()
+            return Ok(repo.GetAllDeleted<CafeTable>()
                 .Select(c => new { c.Id, c.Name }));
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreCafeTable(int id)
         {
-            var CafeTable = repo.Get<CafeTable>(id);
-            if (CafeTable == null)
+            await repo.Restore<CafeTable>(id);
+            await repo.Save();
+
+            return Ok();
+        }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpGet("Reservation/Active")]
+        public IActionResult Reservation()
+        {
+            return Ok(repo.GetAll<CafeTable>()
+                .Where(c => c.Reservations.Any(r => r.StartTime <= DateTime.Now && r.EndTime >= DateTime.Now))
+                .ToList()
+            );
+        }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpGet("Reservation/Active/Count")]
+        public IActionResult ReservationCount()
+        {
+            return Ok(repo.GetAll<CafeTable>()
+                .Count(c => c.Reservations.Any(r => r.StartTime <= DateTime.Now && r.EndTime >= DateTime.Now))
+            );
+        }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpGet("Reservation/Active/{id}")]
+        public IActionResult ReservationById(int id)
+        {
+            var cafeTable = repo.Get<CafeTable>(id);
+            if (cafeTable == null)
             {
                 return NotFound();
             }
 
-            await repo.Restore<CafeTable>(id);
-            repo.Save();
+            var activeReservation = cafeTable.Reservations
+                .FirstOrDefault(r => r.StartTime <= DateTime.Now && r.EndTime >= DateTime.Now);
 
-            return Ok(CafeTable);
+            if (activeReservation == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(activeReservation);
+        }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpGet("Reservation/AddReservation")]
+        public async Task<IActionResult> AddReservation(ReservationDTO reservationDTO)
+        {
+            var cafeTable = repo.Get<CafeTable>(reservationDTO.TableId);
+            if (cafeTable == null)
+            {
+                return NotFound();
+            }
+
+            repo.Add(new Reservation
+            {
+                StartTime = reservationDTO.StartTime,
+                EndTime = reservationDTO.EndTime,
+                Notes = reservationDTO.Notes,
+                TableId = reservationDTO.TableId,
+                CustomerId = reservationDTO.CustomerId,
+                Guests = reservationDTO.Guests
+            });
+            await repo.Save();
+
+            return Ok();
+        }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpDelete("Reservation/CancelReservation")]
+        public async Task<IActionResult> CancelReservationAsync(int reservationId)
+        {
+            var reservation = repo.Get<Reservation>(reservationId);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            await repo.SoftDelete<Reservation>(reservationId);
+            await repo.Save();
+
+            return Ok();
+        }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpGet("Reservation/CanceledReservation")]
+        public IActionResult GetCanceledReservationAsync()
+        {
+            return Ok(repo.GetAllDeleted<Reservation>()
+                .Select(r => new { r.Id, r.StartTime, r.EndTime, r.Notes, r.TableId, r.CustomerId, CustName = r.Customer.User.FullName, r.Guests }));
+        }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpGet("Reservation/RestoreReservation")]
+        public async Task<IActionResult> RestoreReservationAsync(int reservationId)
+        {
+            await repo.Restore<Reservation>(reservationId);
+            await repo.Save();
+
+            return Ok();
         }
     }
 }

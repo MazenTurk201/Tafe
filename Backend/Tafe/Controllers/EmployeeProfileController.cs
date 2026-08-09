@@ -102,13 +102,13 @@ namespace Tafe.Controllers
                 if (role == null)
                     return BadRequest("Role not found.");
                 await userManager.AddToRoleAsync(appUser, employeeCreateDTO.RoleName);
-                repo.Save();
+                await repo.Save();
                 return CreatedAtAction(nameof(GetEmployeeProfiles), new { id = appUser.Id }, null);
             }
             return BadRequest(ModelState);
         }
         [HttpPatch]
-        public IActionResult UpdateEmployeeProfile(EmployeeProfileUpdateDTO employeeProfileUpdateDTO)
+        public async Task<IActionResult> UpdateEmployeeProfile(EmployeeProfileUpdateDTO employeeProfileUpdateDTO)
         {
             EmployeeProfile? profile = repo.GetP<EmployeeProfile>(employeeProfileUpdateDTO.UserId);
             if (profile != null)
@@ -116,8 +116,8 @@ namespace Tafe.Controllers
                 profile.Salary = employeeProfileUpdateDTO.Salary;
                 profile.HireDate = employeeProfileUpdateDTO.HireDate;
                 profile.IsActive = employeeProfileUpdateDTO.IsActive;
-                repo.Update(profile);
-                repo.Save();
+                await repo.Update(profile);
+                await repo.Save();
                 return Ok();
             }
             else
@@ -149,7 +149,7 @@ namespace Tafe.Controllers
             {
                 user.IsDeleted = true;
                 await userManager.UpdateAsync(user);
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             else
@@ -165,7 +165,7 @@ namespace Tafe.Controllers
             {
                 user.IsDeleted = false;
                 await userManager.UpdateAsync(user);
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             else

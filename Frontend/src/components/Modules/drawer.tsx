@@ -58,7 +58,7 @@ const SidebarDrawer = () => {
           <h2 className="text-3xl font-bold relative -top-15 -left-10">{t("welcome")}</h2>
           <ul className="-mt-10">
             {ItemDrawer("/", "Main")}
-            {ItemDrawer("/contact", "Contact")}
+            {ItemDrawer("/orders", "Orders")}
             {ItemDrawer("/donate", "Donate")}
             {ItemDrawer("/about", "About")}
             {ItemDrawer("/services", "Services")}

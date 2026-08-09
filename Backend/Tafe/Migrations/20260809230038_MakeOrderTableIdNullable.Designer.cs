@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tafe.DB;
 
@@ -11,9 +12,11 @@ using Tafe.DB;
 namespace Tafe.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20260809230038_MakeOrderTableIdNullable")]
+    partial class MakeOrderTableIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -463,13 +466,16 @@ namespace Tafe.Migrations
                     b.Property<DateTime>("CheckIn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CheckOut")
+                    b.Property<DateTime>("CheckOut")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EmployeeProfileId")
+                    b.Property<int>("EmployeeProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmployeeUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -487,7 +493,7 @@ namespace Tafe.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeProfileId");
+                    b.HasIndex("EmployeeUserId");
 
                     b.ToTable("Attendances");
                 });
@@ -1278,7 +1284,7 @@ namespace Tafe.Migrations
                 {
                     b.HasOne("EmployeeProfile", "Employee")
                         .WithMany("Attendances")
-                        .HasForeignKey("EmployeeProfileId")
+                        .HasForeignKey("EmployeeUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

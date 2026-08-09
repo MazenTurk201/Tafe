@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.Models;
@@ -23,7 +24,7 @@ namespace Tafe.Controllers
                 .Select(ic => new { ic.Id, ic.Name }));
         }
         [HttpPost]
-        public IActionResult CreateInventoryCount(InventoryCountCreateDTO inventoryCount)
+        public async Task<IActionResult> CreateInventoryCount(InventoryCountCreateDTO inventoryCount)
         {
             if (ModelState.IsValid)
             {
@@ -44,7 +45,7 @@ namespace Tafe.Controllers
                     Notes = inventoryCount.Notes
                 };
                 repo.Add(stockTransaction);
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             return BadRequest(ModelState);
@@ -53,18 +54,16 @@ namespace Tafe.Controllers
         public async Task<IActionResult> DeleteInventoryCount(int id)
         {
             await repo.SoftDelete<InventoryCount>(id);
-            repo.Save();
+            await repo.Save();
             return Ok();
         }
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreInventoryCount(int id)
         {
-            var inventoryCount = repo.Get<InventoryCount>(id);
-
             await repo.Restore<InventoryCount>(id);
-            repo.Save();
+            await repo.Save();
 
-            return Ok(inventoryCount);
+            return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]

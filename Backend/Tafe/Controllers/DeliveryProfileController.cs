@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -94,21 +95,21 @@ namespace Tafe.Controllers
                 if (!result.Succeeded) { return BadRequest(result.Errors); }
                 repo.Add(new DeliveryProfile { UserId = appUser.Id, Vehicle = DeliveryCreateDTO.Vehicle , DeliveryFees = DeliveryCreateDTO.DeliveryFees, User = appUser });
                 await userManager.AddToRoleAsync(appUser, "Delivery");
-                repo.Save();
+                await repo.Save();
                 return CreatedAtAction(nameof(GetDeliveryProfiles), new { id = appUser.Id }, null);
             }
             return BadRequest(ModelState);
         }
         [HttpPatch]
-        public IActionResult UpdateDeliveryProfile(DeliveryProfileUpdateDTO DeliveryProfileUpdateDTO)
+        public async Task<IActionResult> UpdateDeliveryProfile(DeliveryProfileUpdateDTO DeliveryProfileUpdateDTO)
         {
             DeliveryProfile? profile = repo.GetP<DeliveryProfile>(DeliveryProfileUpdateDTO.UserId);
             if (profile != null)
             {
                 profile.Vehicle = DeliveryProfileUpdateDTO.Vehicle;
                 profile.DeliveryFees = DeliveryProfileUpdateDTO.DeliveryFees;
-                repo.Update(profile);
-                repo.Save();
+                await repo.Update(profile);
+                await repo.Save();
                 return Ok();
             }
             else
@@ -139,7 +140,7 @@ namespace Tafe.Controllers
             {
                 user.IsDeleted = true;
                 await userManager.UpdateAsync(user);
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             else
@@ -155,7 +156,7 @@ namespace Tafe.Controllers
             {
                 user.IsDeleted = false;
                 await userManager.UpdateAsync(user);
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             else

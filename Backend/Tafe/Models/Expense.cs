@@ -9,14 +9,11 @@ namespace Tafe.Models
         [Required]
         [MaxLength(100)]
         public new string Name { get; set; }
-
         public ExpenseType Type { get; set; }
-
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
-
+        [DataType(DataType.DateTime)]
         public DateTime ExpenseDate { get; set; }
-
         [AllowNull]
         public string Notes { get; set; }
     }

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.DTOs;
@@ -31,15 +32,15 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
-        public IActionResult AddProducts(ProductCreateDTO product) 
+        public async Task<IActionResult> AddProducts(ProductCreateDTO product) 
         {
             repo.Add(new Product { Name = product.Name, Price=product.Price, CategoryId = product.CategoryId});
-            repo.Save();
+            await repo.Save();
             return CreatedAtAction(nameof(GetProducts), new { id = repo.Get<Product>(product.Name)!.Id });
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
-        public IActionResult PatchProducts(ProductDTO product)
+        public async Task<IActionResult> PatchProducts(ProductDTO product)
         {
             var Product = repo.Get<Product>(product.Id);
             if (Product == null)
@@ -50,8 +51,8 @@ namespace Tafe.Controllers
             Product.Name = product.Name;
             Product.Price = product.Price;
             Product.CategoryId = product.CategoryId;
-            repo.Update(Product);
-            repo.Save();
+            await repo.Update(Product);
+            await repo.Save();
 
             return Ok(Product);
         }
@@ -66,7 +67,7 @@ namespace Tafe.Controllers
             }
 
             await repo.SoftDelete<Product>(id);
-            repo.Save();
+            await repo.Save();
 
             return Ok(Product);
         }
@@ -87,20 +88,14 @@ namespace Tafe.Controllers
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreProduct(int id)
         {
-            var Product = repo.Get<Product>(id);
-            if (Product == null)
-            {
-                return NotFound();
-            }
-
             await repo.Restore<Product>(id);
-            repo.Save();
+            await repo.Save();
 
             return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPut("AddIngredient")]
-        public IActionResult AddIngredientToProduct(int ProductId, int IngredientId, decimal Quantity)
+        public async Task<IActionResult> AddIngredientToProduct(int ProductId, int IngredientId, decimal Quantity)
         {
             var Product = repo.Get<Product>(ProductId);
             if (Product == null)
@@ -121,13 +116,13 @@ namespace Tafe.Controllers
             }
             
             repo.Add(new ProductIngredient { IngredientId = IngredientId, ProductId = ProductId, Quantity = Quantity });
-            repo.Save();
+            await repo.Save();
 
             return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpDelete("RemoveIngredient")]
-        public IActionResult RemoveIngredientFromProduct(int ProductId, int IngredientId)
+        public async Task<IActionResult> RemoveIngredientFromProduct(int ProductId, int IngredientId)
         {
             var Product = repo.Get<Product>(ProductId);
             if (Product == null)
@@ -148,7 +143,7 @@ namespace Tafe.Controllers
             }
             
             repo.Delete(ProductIngredient);
-            repo.Save();
+            await repo.Save();
 
             return Ok();
         }

@@ -33,12 +33,12 @@ namespace Tafe.Controllers
             );
         }
         [HttpPost]
-        public IActionResult CreateSupplier(SupplierCreateDTO supplier)
+        public async Task<IActionResult> CreateSupplier(SupplierCreateDTO supplier)
         {
             if (ModelState.IsValid)
             {
                 repo.Add(new Supplier { Name = supplier.Name, Email = supplier.Email, Phone = supplier.Phone, Address = supplier.Address });
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             return BadRequest(ModelState);
@@ -47,11 +47,11 @@ namespace Tafe.Controllers
         public async Task<IActionResult> DeleteSupplier(int id)
         {
             await repo.SoftDelete<Supplier>(id);
-            repo.Save();
+            await repo.Save();
             return Ok();
         }
         [HttpPatch]
-        public IActionResult PatchSupplier(SupplierDTO supplier)
+        public async Task<IActionResult> PatchSupplier(SupplierDTO supplier)
         {
             var Supplierr = repo.Get<Supplier>(supplier.Id);
             if (Supplierr == null)
@@ -63,8 +63,8 @@ namespace Tafe.Controllers
             Supplierr.Address = supplier.Address;
             Supplierr.Email = supplier.Email;
             Supplierr.Phone = supplier.Phone;
-            repo.Update(Supplierr);
-            repo.Save();
+            await repo.Update(Supplierr);
+            await repo.Save();
 
             return Ok();
         }
@@ -74,7 +74,7 @@ namespace Tafe.Controllers
             var Supplier = repo.Get<Supplier>(id);
 
             await repo.Restore<Supplier>(id);
-            repo.Save();
+            await repo.Save();
 
             return Ok(Supplier);
         }
@@ -145,7 +145,7 @@ namespace Tafe.Controllers
             }));
         }
         [HttpPost("PurchaseInvoices")]
-public IActionResult CreatePurchaseInvoice(PurchaseInvoiceDTO dto)
+public async Task<IActionResult> CreatePurchaseInvoice(PurchaseInvoiceDTO dto)
 {
     var supplier = repo.Get<Supplier>(dto.SupplierId);
 
@@ -203,7 +203,7 @@ public IActionResult CreatePurchaseInvoice(PurchaseInvoiceDTO dto)
 
     // Save invoice first so Id is generated
     repo.Add(purchaseInvoice);
-    repo.Save();
+    await repo.Save();
 
     // Now purchaseInvoice.Id is available
     foreach (var item in purchaseInvoice.Items)
@@ -220,7 +220,7 @@ public IActionResult CreatePurchaseInvoice(PurchaseInvoiceDTO dto)
         repo.Add(stockTransaction);
     }
 
-    repo.Save();
+    await repo.Save();
 
     return Ok(new
     {
@@ -265,12 +265,22 @@ public async Task<IActionResult> DeletePurchaseInvoice(int id)
 
     await repo.SoftDelete<PurchaseInvoice>(id);
 
-    repo.Save();
+    await repo.Save();
 
     return Ok(new
     {
         Message = "Purchase invoice deleted successfully."
     });
-}
+    }
+        [HttpPatch("Restore/PurchaseInvoices/{id}")]
+        public async Task<IActionResult> RestorePurchaseInvoice(int id)
+        {
+            await repo.Restore<PurchaseInvoice>(id);
+            await repo.Save();
+            return Ok(new
+            {
+                Message = "Purchase invoice restored successfully."
+            });
+        }   
     }
 }

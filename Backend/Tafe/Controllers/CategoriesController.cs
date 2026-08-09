@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.Models;
 using Tafe.Repository;
@@ -23,15 +24,15 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
-        public IActionResult AddCategories(string Name) 
+        public async Task<IActionResult> AddCategories(string Name) 
         {
             repo.Add(new Category { Name = Name });
-            repo.Save();
+            await repo.Save();
             return CreatedAtAction(nameof(GetCategories), new { id = repo.Get<Category>(Name)!.Id });
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
-        public IActionResult PatchCategories(int id, string Name)
+        public async Task<IActionResult> PatchCategories(int id, string Name)
         {
             var category = repo.Get<Category>(id);
             if (category == null)
@@ -40,8 +41,8 @@ namespace Tafe.Controllers
             }
 
             category.Name = Name;
-            repo.Update(category);
-            repo.Save();
+            await repo.Update(category);
+            await repo.Save();
 
             return Ok(category);
         }
@@ -56,7 +57,7 @@ namespace Tafe.Controllers
             }
 
             await repo.SoftDelete<Category>(id);
-            repo.Save();
+            await repo.Save();
 
             return Ok(category);
         }
@@ -71,16 +72,10 @@ namespace Tafe.Controllers
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreCategory(int id)
         {
-            var category = repo.Get<Category>(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
             await repo.Restore<Category>(id);
-            repo.Save();
+            await repo.Save();
 
-            return Ok(category);
+            return Ok();
         }
     }
 }

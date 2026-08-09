@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.DTOs;
@@ -44,12 +45,12 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
-        public IActionResult CreateIngredient(IngredientCreateDTO ingredientCreate)
+        public async Task<IActionResult> CreateIngredient(IngredientDTO ingredientCreate)
         {
             if (ModelState.IsValid)
             {
                 repo.Add(new Ingredient { Name = ingredientCreate.Name, Quantity = ingredientCreate.Quantity, MinQuantityAlert = ingredientCreate.MinQuantityAlert, UnitId = ingredientCreate.UnitId });
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             return BadRequest(ModelState);
@@ -59,12 +60,12 @@ namespace Tafe.Controllers
         public async Task<IActionResult> DeleteIngredient(int id)
         {
             await repo.SoftDelete<Ingredient>(id);
-            repo.Save();
+            await repo.Save();
             return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch]
-        public IActionResult PatchIngredient(IngredientDTO ingredientDTO)
+        public async Task<IActionResult> PatchIngredient(IngredientDTO ingredientDTO)
         {
             var Ingredient = repo.Get<Ingredient>(ingredientDTO.Id);
             if (Ingredient == null)
@@ -76,8 +77,8 @@ namespace Tafe.Controllers
             Ingredient.Quantity = ingredientDTO.Quantity;
             Ingredient.MinQuantityAlert = ingredientDTO.MinQuantityAlert;
             Ingredient.UnitId = ingredientDTO.UnitId;
-            repo.Update(Ingredient);
-            repo.Save();
+            await repo.Update(Ingredient);
+            await repo.Save();
 
             return Ok(Ingredient);
         }
@@ -85,12 +86,10 @@ namespace Tafe.Controllers
         [HttpPatch("Restore")]
         public async Task<IActionResult> RestoreIngredient(int id)
         {
-            var Ingredient = repo.Get<Ingredient>(id);
-
             await repo.Restore<Ingredient>(id);
-            repo.Save();
+            await repo.Save();
 
-            return Ok(Ingredient);
+            return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]

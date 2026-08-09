@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -106,13 +107,13 @@ namespace Tafe.Controllers
                     User = appUser
                     });
                 await userManager.AddToRoleAsync(appUser, "Clinet");
-                repo.Save();
+                await repo.Save();
                 return CreatedAtAction(nameof(GetCustomerProfiles), new { id = appUser.Id }, null);
             }
             return BadRequest(ModelState);
         }
         [HttpPatch]
-        public IActionResult UpdateCustomerProfile(CustomerProfileUpdateDTO CustomerProfileUpdateDTO)
+        public async Task<IActionResult> UpdateCustomerProfile(CustomerProfileUpdateDTO CustomerProfileUpdateDTO)
         {
             CustomerProfile? profile = repo.GetP<CustomerProfile>(CustomerProfileUpdateDTO.UserId);
             if (profile != null)
@@ -121,8 +122,8 @@ namespace Tafe.Controllers
                 profile.TotalSpent = CustomerProfileUpdateDTO.TotalSpent;
                 profile.Vip = CustomerProfileUpdateDTO.Vip;
                 profile.BirthDate = CustomerProfileUpdateDTO.BirthDate;
-                repo.Update(profile);
-                repo.Save();
+                await repo.Update(profile);
+                await repo.Save();
                 return Ok();
             }
             else
@@ -155,7 +156,7 @@ namespace Tafe.Controllers
             {
                 user.IsDeleted = true;
                 await userManager.UpdateAsync(user);
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             else
@@ -171,7 +172,7 @@ namespace Tafe.Controllers
             {
                 user.IsDeleted = false;
                 await userManager.UpdateAsync(user);
-                repo.Save();
+                await repo.Save();
                 return Ok();
             }
             else

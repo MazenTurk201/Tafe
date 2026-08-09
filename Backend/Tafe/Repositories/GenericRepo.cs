@@ -9,13 +9,13 @@ namespace Tafe.Repository
         private readonly DBContext db;
         public GenericRepo(DBContext db) => this.db = db;
         public void Add<T>(T obj) where T : class => db.Add(obj);
-        public void Update<T>(T obj) where T : class
+        public async Task Update<T>(T obj) where T : class
         {
             T? targetEntity;
 
             int id = (int)db.Entry(obj).Properties.First().CurrentValue!;
 
-            targetEntity = db.Set<T>().Find(id);
+            targetEntity = await db.Set<T>().FindAsync(id);
             if (targetEntity != null)
             {
                 foreach (var prop in typeof(T).GetProperties())
@@ -33,17 +33,17 @@ namespace Tafe.Repository
 
         }
 
-        public void Delete<T>(int id) where T : class, IEntityTemplate => db.Set<T>().Where(obj => obj.Id == id).ExecuteDelete();
+        public async Task Delete<T>(int id) where T : class, IEntityTemplate => await db.Set<T>().Where(obj => obj.Id == id).ExecuteDeleteAsync();
         public void Delete<T>(T obj) where T : class => db.Remove(obj);
         public async Task SoftDelete<T>(int id) where T : class, IEntityTemplate => await db.Set<T>().Where(obj => obj.Id == id).ExecuteUpdateAsync(set => set.SetProperty(e => e.IsDeleted, true));
         public async Task Restore<T>(int id) where T : class, IEntityTemplate => await db.Set<T>().IgnoreQueryFilters().Where(obj => obj.Id == id).ExecuteUpdateAsync(set => set.SetProperty(e => e.IsDeleted, false));
-        public void Save() => db.SaveChanges();
-        public T? Get<T>(int id) where T : class, IEntityTemplate => Query<T>().FirstOrDefault(obj => obj.Id == id);
-        public T? Get<T>(string Name) where T : class, IEntityTemplate => Query<T>().FirstOrDefault(obj => obj.Name == Name);
-        public T? GetP<T>(string UserId) where T : class, IProfileTemplate => Query<T>().FirstOrDefault(obj => obj.UserId == UserId);
-        public List<T> GetAll<T>() where T : class => Query<T>().ToList();
-        public List<T> GetAllDeleted<T>() where T : class, IEntityTemplate => Query<T>().IgnoreQueryFilters().Where(obj => obj.IsDeleted).ToList();
-        public List<T> Search<T>(string Name) where T : class, IEntityTemplate => Query<T>().Where(obj => obj.Name.Contains(Name)).ToList();
+        public async Task Save() => await db.SaveChangesAsync();
+        public  T? Get<T>(int id) where T : class, IEntityTemplate => Query<T>().FirstOrDefault(obj => obj.Id == id);
+        public  T? Get<T>(string Name) where T : class, IEntityTemplate => Query<T>().FirstOrDefault(obj => obj.Name == Name);
+        public  T? GetP<T>(string UserId) where T : class, IProfileTemplate => Query<T>().FirstOrDefault(obj => obj.UserId == UserId);
+        public  List<T> GetAll<T>() where T : class => Query<T>().ToList();
+        public  List<T> GetAllDeleted<T>() where T : class, IEntityTemplate => Query<T>().IgnoreQueryFilters().Where(obj => obj.IsDeleted).ToList();
+        public  List<T> Search<T>(string Name) where T : class, IEntityTemplate => Query<T>().Where(obj => obj.Name.Contains(Name)).ToList();
 
         private IQueryable<T> Query<T>() where T : class
         {
@@ -94,6 +94,26 @@ namespace Tafe.Repository
             else if (typeof(T) == typeof(CafeTable))
             {
                 return (IQueryable<T>)db.CafeTables.AsNoTracking().Include(o => o.Orders).Include(r => r.Reservations);
+            }
+            else if (typeof(T) == typeof(Reservation))
+            {
+                return (IQueryable<T>)db.Reservations.AsNoTracking().Include(c => c.Customer).ThenInclude(u => u.User);
+            }
+            else if (typeof(T) == typeof(Shift))
+            {
+                return (IQueryable<T>)db.Shifts.AsNoTracking().Include(u => u.User);
+            }
+            else if (typeof(T) == typeof(Payment))
+            {
+                return (IQueryable<T>)db.Payments.AsNoTracking().Include(o => o.Order).ThenInclude(c => c.Customer).ThenInclude(u => u!.User);
+            }
+            else if (typeof(T) == typeof(Order))
+            {
+                return (IQueryable<T>)db.Orders.AsNoTracking()
+                    .Include(o => o.Items).ThenInclude(i => i.Product)
+                    .Include(o => o.Customer).ThenInclude(c => c!.User)
+                    .Include(o => o.Cashier)
+                    .Include(o => o.Table);
             }
             else
             {
