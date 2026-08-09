@@ -27,9 +27,7 @@ namespace Tafe.Controllers
         {
             repo.Add(new Category { Name = Name });
             repo.Save();
-            return CreatedAtAction(nameof(GetCategories),
-                new { id = repo.Get<Category>(Name)!.Id },
-                repo.Get<Category>(Name));
+            return CreatedAtAction(nameof(GetCategories), new { id = repo.Get<Category>(Name)!.Id });
         }
         [Authorize(Roles = "Admin, MANAGER")]
         [HttpPatch]

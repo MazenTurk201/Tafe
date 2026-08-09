@@ -277,85 +277,17 @@ namespace Tafe
             setTimeout(updateSwaggerCounts, 500);
             setInterval(updateSwaggerCounts, 2000);
         });
-// =============================
-// Swagger Auto Save JWT
-// =============================
-window.addEventListener(""load"", () => {
-
-    const AUTH_NAME = ""Bearer"";
-
-    // Restore token after refresh
-    const restore = setInterval(() => {
-
-        if (!window.ui || !window.ui.preauthorizeApiKey)
-            return;
-
-        clearInterval(restore);
-
-        const token = localStorage.getItem(""swagger_jwt"");
-
-        if (token) {
-            window.ui.preauthorizeApiKey(AUTH_NAME, token);
-            console.log(""Swagger JWT Restored"");
-        }
-
-    }, 300);
-
-    // Watch every response
-    const oldFetch = window.fetch;
-
-    window.fetch = async (...args) => {
-
-        const response = await oldFetch(...args);
-
-        try {
-
-            const url = args[0].toString();
-
-            // Login endpoint only
-            if (url.includes(""/login"")) {
-
-                const clone = response.clone();
-                const json = await clone.json();
-
-                // حاول تلاقي التوكن بأي اسم
-                const token =
-                    json.token ??
-                    json.accessToken ??
-                    json.jwt ??
-                    json.jwtToken ??
-                    json.data?.token ??
-                    json.data?.accessToken ??
-                    null;
-
-                if (token) {
-
-                    localStorage.setItem(""swagger_jwt"", token);
-
-                    if (window.ui?.preauthorizeApiKey) {
-                        window.ui.preauthorizeApiKey(AUTH_NAME, token);
-                    }
-
-                    console.log(""Swagger JWT Saved"");
-                }
-            }
-
-        }
-        catch { }
-
-        return response;
-    };
-
-});
 // ================================
-// Auto Save / Restore JWT
+// Swagger JWT Auto Save / Restore
 // ================================
 (() => {
 
     const STORAGE_KEY = ""swagger_jwt"";
     const SCHEME_NAME = ""Bearer"";
 
-    // Restore JWT after page load
+    // ==========================================
+    // Restore JWT after Swagger UI is initialized
+    // ==========================================
     const restoreTimer = setInterval(() => {
 
         if (!window.ui?.preauthorizeApiKey)
@@ -366,46 +298,89 @@ window.addEventListener(""load"", () => {
         const token = localStorage.getItem(STORAGE_KEY);
 
         if (token) {
-            window.ui.preauthorizeApiKey(SCHEME_NAME, token);
-            console.log(""JWT Restored"");
+
+            window.ui.preauthorizeApiKey(
+                SCHEME_NAME,
+                token
+            );
+
+            console.log(""Swagger JWT Restored"");
         }
 
     }, 300);
 
-    // Intercept every request
-    const oldFetch = window.fetch;
+
+    // ==========================================
+    // Intercept Swagger API requests
+    // ==========================================
+    const originalFetch = window.fetch;
 
     window.fetch = async (...args) => {
 
-        const response = await oldFetch(...args);
+        const response = await originalFetch(...args);
 
         try {
 
-            const url = args[0].toString().toLowerCase();
+            const requestUrl =
+                args[0]?.toString()?.toLowerCase() ?? """";
 
-            if (url.includes(""/login"")) {
+            // Only inspect login response
+            if (requestUrl.includes(""/login"")) {
 
-                const json = await response.clone().json();
+                const clone = response.clone();
 
-                if (json.token) {
+                const json = await clone.json();
 
-                    localStorage.setItem(STORAGE_KEY, json.token);
+                // Support different response formats
+                const token =
+                    json?.token ??
+                    json?.accessToken ??
+                    json?.jwt ??
+                    json?.jwtToken ??
+                    json?.data?.token ??
+                    json?.data?.accessToken ??
+                    null;
 
+
+                if (token) {
+
+                    // Save token
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        token
+                    );
+
+                    console.log(""Swagger JWT Saved"");
+
+
+                    // Authorize Swagger immediately
                     if (window.ui?.preauthorizeApiKey) {
-                        window.ui.preauthorizeApiKey(SCHEME_NAME, json.token);
-                    }
 
-                    console.log(""JWT Saved"");
+                        window.ui.preauthorizeApiKey(
+                            SCHEME_NAME,
+                            token
+                        );
+
+                        console.log(
+                            ""Swagger Authorization Updated""
+                        );
+                    }
                 }
             }
 
-        } catch { }
+        }
+        catch (error) {
+
+            // Ignore non-JSON responses
+            // or endpoints that don't return JSON
+        }
+
 
         return response;
     };
 
 })();
-        </script>";
+</script>";
                 });
             }
 

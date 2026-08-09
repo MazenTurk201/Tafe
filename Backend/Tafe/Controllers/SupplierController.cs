@@ -27,7 +27,9 @@ namespace Tafe.Controllers
                     u.Phone,
                     u.Email,
                     u.Address
-                    }));
+                    }
+                )
+            );
         }
         [HttpPost]
         public IActionResult CreateSupplier(SupplierCreateDTO supplier)
@@ -86,6 +88,113 @@ namespace Tafe.Controllers
                     u.Email,
                     u.Address
                     }));
+        }
+        [HttpGet("{id}/PurchaseInvoices")]
+        public IActionResult GetSupplierPurchaseInvoices(int id)
+        {
+            var supplier = repo.Get<Supplier>(id);
+            if (supplier == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(supplier.PurchaseInvoices.Select(pi => new
+            {
+                pi.Id,
+                pi.InvoiceNumber,
+                pi.Total,
+                pi.CreatedAt,
+                Items = pi.Items.Select(item => new
+                {
+                    item.Id,
+                    item.IngredientId,
+                    IngredientName = item.Ingredient.Name,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.Total
+                })
+            }));
+        }
+        [HttpGet("PurchaseInvoices")]
+        public IActionResult GetPurchaseInvoices()
+        {
+            List<PurchaseInvoice> purchaseInvoices = repo.GetAll<PurchaseInvoice>();
+            if (purchaseInvoices == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(purchaseInvoices.Select(pi => new
+            {
+                pi.Id,
+                pi.InvoiceNumber,
+                pi.SupplierId,
+                SupplierName = pi.Supplier.Name,
+                pi.Total,
+                pi.CreatedAt,
+                Items = pi.Items.Select(item => new
+                {
+                    item.Id,
+                    item.IngredientId,
+                    IngredientName = item.Ingredient.Name,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.Total
+                })
+            }));
+        }
+        [HttpPost("PurchaseInvoices")]
+        public IActionResult CreatePurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO)
+        {
+            var supplier = repo.Get<Supplier>(purchaseInvoiceDTO.SupplierId);
+            if (supplier == null)
+            {
+                return NotFound();
+            }
+
+            if (purchaseInvoiceDTO.Items == null || purchaseInvoiceDTO.Items.Count == 0)
+            { 
+                return BadRequest("Invoice must contain at least one item.");
+            }
+
+            var purchaseInvoice = new PurchaseInvoice
+            {
+                InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
+                SupplierId = purchaseInvoiceDTO.SupplierId,
+                Total = purchaseInvoiceDTO.Total,
+                Items = [.. purchaseInvoiceDTO.Items.Select(i => new PurchaseInvoiceItem
+                {
+                    IngredientId = i.IngredientId,
+                    Quantity = i.Quantity,
+                    UnitPrice = i.Price,
+                    Total = i.Quantity * i.Price
+                })]
+            };
+
+            foreach (var item in purchaseInvoice.Items) 
+            { 
+                var ingredient = repo.Get<Ingredient>(item.IngredientId);
+                if (ingredient == null) 
+                { 
+                    return NotFound( $"Ingredient with ID {item.IngredientId} not found." );
+                }
+            }
+
+            repo.Add(purchaseInvoice);
+
+            foreach (var item in purchaseInvoice.Items)
+            {
+                StockTransaction stockTransaction = new()
+                {
+                    IngredientId = item.IngredientId,
+                    Quantity = item.Quantity,
+                    Type = StockTransactionType.Purchase,
+                };
+                repo.Add(stockTransaction);
+            }
+            
+            repo.Save();
+            return Ok();
         }
     }
 }

@@ -18,24 +18,24 @@ namespace Tafe.Controllers
         [HttpGet]
         public IActionResult GetProducts()
         {
-            return Ok(repo.GetAll<Product>().Where(c => !c.IsDeleted)
-                .Select(c => new { 
-                    c.Id,
-                    c.Name,
-                    c.Price,
-                    Categiry = $"{c.Category.Name} (Id: {c.CategoryId})",
-                    c.Ingredients
-                }));
+            return Ok(
+                repo.GetAll<Product>().Where(c => !c.IsDeleted)
+                    .Select(c => new { 
+                        c.Id,
+                        c.Name,
+                        c.Price,
+                        Categiry = $"{c.Category.Name} (Id: {c.CategoryId})",
+                        Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
+                }
+            ));
         }
         [Authorize(Roles = "Admin, MANAGER")]
         [HttpPost]
         public IActionResult AddProducts(ProductCreateDTO product) 
         {
-            repo.Add(new Product { Name = product.Name, Price=product.Price, CategoryId = product.CategoryId, Ingredients = product.IngredientsId});
+            repo.Add(new Product { Name = product.Name, Price=product.Price, CategoryId = product.CategoryId});
             repo.Save();
-            return CreatedAtAction(nameof(GetProducts),
-                new { id = repo.Get<Product>(product.Name)!.Id },
-                repo.Get<Product>(product.Name));
+            return CreatedAtAction(nameof(GetProducts), new { id = repo.Get<Product>(product.Name)!.Id });
         }
         [Authorize(Roles = "Admin, MANAGER")]
         [HttpPatch]
@@ -50,7 +50,6 @@ namespace Tafe.Controllers
             Product.Name = product.Name;
             Product.Price = product.Price;
             Product.CategoryId = product.CategoryId;
-            Product.Ingredients = product.Ingredients;
             repo.Update(Product);
             repo.Save();
 
@@ -97,7 +96,61 @@ namespace Tafe.Controllers
             await repo.Restore<Product>(id);
             repo.Save();
 
-            return Ok(Product);
+            return Ok();
+        }
+        [Authorize(Roles = "Admin, MANAGER")]
+        [HttpPut("AddIngredient")]
+        public async Task<IActionResult> AddIngredientToProduct(int ProductId, int IngredientId, decimal Quantity)
+        {
+            var Product = repo.Get<Product>(ProductId);
+            if (Product == null)
+            {
+                return NotFound("Product not found.");
+            }
+            
+            var Ingredient = repo.Get<Ingredient>(IngredientId);
+            if (Ingredient == null)
+            {
+                return NotFound("Ingredient not found.");
+            }
+
+            var exists = repo.GetAll<ProductIngredient>() .Any(x => x.ProductId == ProductId && x.IngredientId == IngredientId);
+            if (exists)
+            { 
+                return Conflict("This ingredient already exists in this product.");
+            }
+            
+            repo.Add(new ProductIngredient { IngredientId = IngredientId, ProductId = ProductId, Quantity = Quantity });
+            repo.Save();
+
+            return Ok();
+        }
+        [Authorize(Roles = "Admin, MANAGER")]
+        [HttpDelete("RemoveIngredient")]
+        public async Task<IActionResult> RemoveIngredientToProduct(int ProductId, int IngredientId)
+        {
+            var Product = repo.Get<Product>(ProductId);
+            if (Product == null)
+            {
+                return NotFound("Product not found.");
+            }
+            
+            var Ingredient = repo.Get<Ingredient>(IngredientId);
+            if (Ingredient == null)
+            {
+                return NotFound("Ingredient not found.");
+            }
+
+            ProductIngredient ProductIngredient = repo.GetAll<ProductIngredient>().FirstOrDefault(x => x.ProductId == ProductId && x.IngredientId == IngredientId)!;
+            if (ProductIngredient == null)
+            { 
+                return NotFound("This ingredient is not part of this product.");
+            }
+            
+            repo.Delete(ProductIngredient);
+            repo.Save();
+
+            return Ok();
         }
     }
 }

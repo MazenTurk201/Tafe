@@ -34,6 +34,7 @@ namespace Tafe.Repository
         }
 
         public void Delete<T>(int id) where T : class, IEntityTemplate => db.Set<T>().Where(obj => obj.Id == id).ExecuteDelete();
+        public void Delete<T>(T obj) where T : class => db.Remove(obj);
         public async Task SoftDelete<T>(int id) where T : class, IEntityTemplate => await db.Set<T>().Where(obj => obj.Id == id).ExecuteUpdateAsync(set => set.SetProperty(e => e.IsDeleted, true));
         public async Task Restore<T>(int id) where T : class, IEntityTemplate => await db.Set<T>().IgnoreQueryFilters().Where(obj => obj.Id == id).ExecuteUpdateAsync(set => set.SetProperty(e => e.IsDeleted, false));
         public void Save() => db.SaveChanges();
@@ -64,7 +65,7 @@ namespace Tafe.Repository
             }
             else if (typeof(T) == typeof(Category))
             {
-                return (IQueryable<T>)db.Categories.AsNoTracking().Include(p=>p.Products);
+                return (IQueryable<T>)db.Categories.AsNoTracking().Include(p=>p.Products).ThenInclude(i=>i.Ingredients).ThenInclude(i=>i.Ingredient).ThenInclude(u=>u.Unit);
             }
             else if (typeof(T) == typeof(Ingredient))
             {
@@ -72,7 +73,11 @@ namespace Tafe.Repository
             }
             else if (typeof(T) == typeof(Product))
             {
-                return (IQueryable<T>)db.Products.AsNoTracking().Include(c=>c.Category).Include(i=>i.Ingredients);
+                return (IQueryable<T>)db.Products.AsNoTracking().Include(c=>c.Category).Include(i=>i.Ingredients).ThenInclude(pi=>pi.Ingredient).ThenInclude(u=>u.Unit);
+            }
+            else if (typeof(T) == typeof(PurchaseInvoice))
+            {
+                return (IQueryable<T>)db.PurchaseInvoices.AsNoTracking().Include(s => s.Supplier).Include(i => i.Items).ThenInclude(pi => pi.Ingredient).ThenInclude(u => u.Unit);
             }
             else
             {
