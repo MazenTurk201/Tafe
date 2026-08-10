@@ -936,10 +936,7 @@ namespace Tafe.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployeeProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EmployeeUserId")
+                    b.Property<string>("EmployeeProfileId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
@@ -965,7 +962,7 @@ namespace Tafe.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeUserId");
+                    b.HasIndex("EmployeeProfileId");
 
                     b.ToTable("SalaryPayments");
                 });
@@ -1406,7 +1403,7 @@ namespace Tafe.Migrations
                 {
                     b.HasOne("EmployeeProfile", "Employee")
                         .WithMany("SalaryPayments")
-                        .HasForeignKey("EmployeeUserId");
+                        .HasForeignKey("EmployeeProfileId");
 
                     b.Navigation("Employee");
                 });

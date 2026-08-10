@@ -109,7 +109,7 @@ namespace Tafe.Controllers
 
         [Authorize]
         [HttpGet("My")]
-        public async Task<IActionResult> MyAttendance(
+        public IActionResult MyAttendance(
             DateTime? From,
             DateTime? To)
         {
@@ -173,7 +173,7 @@ namespace Tafe.Controllers
 
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("All")]
-        public async Task<IActionResult> GetAll(
+        public IActionResult GetAll(
             DateTime? From,
             DateTime? To,
             string? EmployeeId)
@@ -243,7 +243,7 @@ namespace Tafe.Controllers
 
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Summary")]
-        public async Task<IActionResult> Summary(
+        public IActionResult Summary(
             DateTime? From,
             DateTime? To)
         {
@@ -303,7 +303,7 @@ namespace Tafe.Controllers
 
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Today")]
-        public async Task<IActionResult> Today()
+        public IActionResult Today()
         {
             var today = DateTime.UtcNow.Date;
 

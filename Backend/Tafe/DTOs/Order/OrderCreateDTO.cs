@@ -17,6 +17,7 @@ namespace Tafe.DTOs
         public decimal Tax { get; set; }
 
         public decimal Service { get; set; }
+        public bool UsePoints { get; set; }
 
         public List<OrderItemCreateDTO> Items { get; set; } = [];
     }

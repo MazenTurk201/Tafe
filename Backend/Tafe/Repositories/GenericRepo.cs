@@ -107,6 +107,10 @@ namespace Tafe.Repository
             {
                 return (IQueryable<T>)db.Payments.AsNoTracking().Include(o => o.Order).ThenInclude(c => c.Customer).ThenInclude(u => u!.User);
             }
+            else if (typeof(T) == typeof(SalaryPayment))
+            {
+                return (IQueryable<T>)db.SalaryPayments.AsNoTracking().Include(e => e.Employee).ThenInclude(u => u!.User);
+            }
             else if (typeof(T) == typeof(Order))
             {
                 return (IQueryable<T>)db.Orders.AsNoTracking()

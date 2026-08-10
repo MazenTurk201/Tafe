@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tafe.Repository;
 
@@ -18,7 +17,7 @@ namespace Tafe.Controllers
         [HttpGet]
         public IActionResult GetUnits()
         {
-            return Ok(repo.GetAll<Unit>().Where(u => !u.IsDeleted)
+            return Ok(repo.GetAll<Unit>()
                 .Select(u => new { u.Id, u.Name }));
         }
         [Authorize(Roles = "Admin, Manager")]

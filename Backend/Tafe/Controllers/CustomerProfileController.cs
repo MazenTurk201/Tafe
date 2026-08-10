@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +42,33 @@ namespace Tafe.Controllers
         [HttpGet("{userId}")]
         public IActionResult GetCustomerProfileById(string userId)
         {
+            var CustomerProfile = repo.GetP<CustomerProfile>(userId);
+
+            if (CustomerProfile == null || CustomerProfile.User.IsDeleted)
+            {
+                return NotFound();
+            }
+
+            var CustomerProfileDTO = new CustomerProfileDTO
+            {
+                UserId = CustomerProfile.UserId,
+                UserName = CustomerProfile.User.UserName,
+                FullName = CustomerProfile.User.FullName,
+                Email = CustomerProfile.User.Email,
+                Points = CustomerProfile.Points,
+                TotalSpent = CustomerProfile.TotalSpent,
+                Vip = CustomerProfile.Vip,
+                BirthDate = CustomerProfile.BirthDate
+            };
+
+            return Ok(CustomerProfileDTO);
+        }
+        [HttpGet("Profile")]
+        public IActionResult GetCustomerProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
             var CustomerProfile = repo.GetP<CustomerProfile>(userId);
 
             if (CustomerProfile == null || CustomerProfile.User.IsDeleted)

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Diagnostics;
 using System.Text;
 using Tafe.DB;
 using Tafe.Models;
@@ -392,6 +393,25 @@ namespace Tafe
 
 
             app.MapControllers();
+
+            
+            var frontendPath = Path.GetFullPath(
+                Path.Combine(
+                    app.Environment.ContentRootPath,
+                    "..", "..",
+                    "Frontend"
+                )
+            );
+
+            string RunType = app.Environment.IsDevelopment() ? "dev" : "start";
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "npm",
+                Arguments = $"run {RunType}",
+                WorkingDirectory = frontendPath,
+                UseShellExecute = true
+            });
 
             app.Run();
         }

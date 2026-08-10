@@ -6,7 +6,7 @@ namespace Tafe.Models
 {
     public class SalaryPayment : EntityTemplate
     {
-        public int EmployeeProfileId { get; set; }
+        public string EmployeeProfileId { get; set; }
 
         public virtual EmployeeProfile Employee { get; set; }
 

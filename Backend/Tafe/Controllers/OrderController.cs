@@ -109,94 +109,288 @@ namespace Tafe.Controllers
 
         // ===================== POST =====================
 
+
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderCreateDTO orderCreate)
+{
+    // =========================================================
+    // VALIDATION
+    // =========================================================
+
+    if (orderCreate.Items == null || orderCreate.Items.Count == 0)
+    {
+        return BadRequest("Order must contain at least one item.");
+    }
+
+    // =========================================================
+    // CASHIER
+    // =========================================================
+
+    var cashierId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    if (string.IsNullOrEmpty(cashierId))
+    {
+        return Unauthorized();
+    }
+
+    var cashier = db.Set<ApplicationUser>()
+        .FirstOrDefault(c => c.Id == cashierId);
+
+    if (cashier == null)
+    {
+        return Unauthorized();
+    }
+
+    // =========================================================
+    // CUSTOMER
+    // =========================================================
+
+    CustomerProfile? customer = null;
+    CustomerPoint? customerPoints = null;
+
+    if (!string.IsNullOrWhiteSpace(orderCreate.CustomerId))
+    {
+        customer = repo.GetP<CustomerProfile>(
+            orderCreate.CustomerId);
+
+        if (customer == null)
         {
-            if (orderCreate.Items == null || orderCreate.Items.Count == 0)
-            {
-                return BadRequest("Order must contain at least one item.");
-            }
+            return NotFound("Customer not found.");
+        }
 
-            var cashierId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (cashierId == null)
-            {
-                return Unauthorized();
-            }
+        customerPoints = repo.GetAll<CustomerPoint>()
+            .FirstOrDefault(cp =>
+                cp.CustomerId == orderCreate.CustomerId);
+    }
 
-            var cashier = db.Set<ApplicationUser>().Find(cashierId);
-            if (cashier == null)
-            {
-                return Unauthorized();
-            }
+    // =========================================================
+    // ORDER
+    // =========================================================
 
-            if (!string.IsNullOrWhiteSpace(orderCreate.CustomerId))
-            {
-                var customer = repo.GetP<CustomerProfile>(orderCreate.CustomerId);
-                if (customer == null)
-                {
-                    return NotFound("Customer not found.");
-                }
-            }
+    var order = new Order
+    {
+        CashierId = cashierId,
+        Cashier = cashier,
 
-            var order = new Order
+        CustomerId = orderCreate.CustomerId,
+
+        TableId = orderCreate.TableId,
+
+        OrderType = orderCreate.TableId.HasValue
+            ? OrderType.DineIn
+            : orderCreate.OrderType,
+
+        // الخصم العادي فقط في البداية
+        Discount = orderCreate.Discount,
+
+        Tax = orderCreate.Tax,
+        Service = orderCreate.Service
+    };
+
+    // =========================================================
+    // ITEMS
+    // =========================================================
+
+    foreach (var itemDTO in orderCreate.Items)
+    {
+        var product = repo.Get<Product>(
+            itemDTO.ProductId);
+
+        if (product == null)
+        {
+            return NotFound(
+                $"Product {itemDTO.ProductId} not found.");
+        }
+
+        var itemTotal =
+            (product.Price * itemDTO.Quantity)
+            - itemDTO.Discount;
+
+        if (itemTotal < 0)
+        {
+            return BadRequest(
+                $"Invalid discount for product {product.Name}.");
+        }
+
+        order.Items.Add(new OrderItem
+        {
+            ProductId = itemDTO.ProductId,
+
+            Quantity = itemDTO.Quantity,
+
+            UnitPrice = product.Price,
+
+            Discount = itemDTO.Discount,
+
+            Total = itemTotal,
+
+            Notes = itemDTO.Notes
+        });
+    }
+
+    // =========================================================
+    // CALCULATE SUBTOTAL
+    // =========================================================
+
+    order.SubTotal = order.Items.Sum(i => i.Total);
+
+    // =========================================================
+    // CUSTOMER POINTS DISCOUNT
+    // =========================================================
+
+    int usedPoints = 0;
+
+    if (customerPoints != null &&
+        customerPoints.Points > 0)
+    {
+        // 100 Point = 10 EGP
+
+        var availablePoints = customerPoints.Points / 10;
+
+        // أقصى عدد نقاط ممكن نستخدمه
+        // هو قيمة الطلب بعد خصم الخصم العادي
+
+        var remainingAmount =
+            order.SubTotal - order.Discount;
+
+        if (remainingAmount > 0)
+        {
+            usedPoints = Math.Min(
+                availablePoints,
+                (int)remainingAmount);
+        }
+
+        // إضافة قيمة الـ points إلى الـ Discount
+        order.Discount += usedPoints;
+    }
+
+    // =========================================================
+    // PREVENT DISCOUNT FROM EXCEEDING SUBTOTAL
+    // =========================================================
+
+    if (order.Discount > order.SubTotal)
+    {
+        order.Discount = order.SubTotal;
+    }
+
+    // =========================================================
+    // TOTALS
+    // =========================================================
+
+    RecalculateTotals(order);
+
+    // =========================================================
+    // TABLE
+    // =========================================================
+
+    if (order.TableId.HasValue)
+    {
+        var table = db.CafeTables
+            .FirstOrDefault(t =>
+                t.Id == order.TableId.Value);
+
+        if (table == null)
+        {
+            return NotFound("Table not found.");
+        }
+
+        if (table.IsOccupied)
+        {
+            return Conflict(
+                "Table is already occupied.");
+        }
+
+        table.IsOccupied = true;
+    }
+
+    // =========================================================
+    // ADD ORDER
+    // =========================================================
+
+    repo.Add(order);
+
+    // =========================================================
+    // STOCK
+    // =========================================================
+
+    foreach (var item in order.Items)
+    {
+        DeductStock(item, cashierId);
+    }
+
+    // =========================================================
+    // SPEND CUSTOMER POINTS
+    // =========================================================
+
+    if (customerPoints != null && usedPoints > 0)
+    {
+        customerPoints.Points -= usedPoints;
+
+        customerPoints.UpdatedAt =
+            DateTime.UtcNow;
+
+        customerPoints.Reason =
+            $"Used {usedPoints} points for order {order.Id}";
+    }
+
+    // =========================================================
+    // EARN NEW POINTS
+    // =========================================================
+
+    if (!string.IsNullOrWhiteSpace(order.CustomerId))
+    {
+        if (customerPoints == null)
+        {
+            customerPoints = new CustomerPoint
             {
-                CashierId = cashierId,
-                Cashier = cashier,
-                CustomerId = orderCreate.CustomerId,
-                TableId = orderCreate.TableId,
-                OrderType = orderCreate.TableId.HasValue ? OrderType.DineIn : orderCreate.OrderType,
-                Discount = orderCreate.Discount,
-                Tax = orderCreate.Tax,
-                Service = orderCreate.Service
+                CustomerId = order.CustomerId,
+                Points = 0,
+                UpdatedAt = DateTime.UtcNow
             };
 
-            foreach (var itemDTO in orderCreate.Items)
-            {
-                var product = repo.Get<Product>(itemDTO.ProductId);
-                if (product == null)
-                {
-                    return NotFound($"Product {itemDTO.ProductId} not found.");
-                }
-
-                order.Items.Add(new OrderItem
-                {
-                    ProductId = itemDTO.ProductId,
-                    Quantity = itemDTO.Quantity,
-                    UnitPrice = product.Price,
-                    Discount = itemDTO.Discount,
-                    Total = product.Price * itemDTO.Quantity - itemDTO.Discount,
-                    Notes = itemDTO.Notes
-                });
-            }
-
-            RecalculateTotals(order);
-
-            if (order.TableId is not null)
-            {
-                var table = await db.CafeTables
-                    .FirstOrDefaultAsync(t => t.Id == order.TableId);
-
-                if (table == null)
-                    return NotFound("Table not found.");
-
-                if (table.IsOccupied)
-                    return Conflict("Table is already occupied.");
-
-                table.IsOccupied = true;
-            }
-
-            repo.Add(order);
-            await repo.Save();
-
-            foreach (var item in order.Items)
-            {
-                DeductStock(item, cashierId);
-            }
-            await repo.Save();
-
-            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, ToDTO(repo.Get<Order>(order.Id)!));
+            repo.Add(customerPoints);
         }
+
+        var earnedPoints =
+            (int)(order.Total / 10);
+
+        customerPoints.Points += earnedPoints;
+
+        customerPoints.UpdatedAt =
+            DateTime.UtcNow;
+
+        customerPoints.Reason =
+            $"Earned {earnedPoints} points from order {order.Id}";
+    }
+
+    // =========================================================
+    // SAVE EVERYTHING
+    // =========================================================
+
+    await repo.Save();
+
+    // =========================================================
+    // RESPONSE
+    // =========================================================
+
+    var createdOrder =
+        repo.Get<Order>(order.Id);
+
+    if (createdOrder == null)
+    {
+        return StatusCode(
+            StatusCodes.Status500InternalServerError,
+            "Order was created but could not be retrieved.");
+    }
+
+    return CreatedAtAction(
+        nameof(GetOrder),
+        new { id = order.Id },
+        ToDTO(createdOrder));
+}
+
+
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpPost("AddPayment")]
         public async Task<IActionResult> AddPayment(PaymentCreateDTO paymentDTO)
