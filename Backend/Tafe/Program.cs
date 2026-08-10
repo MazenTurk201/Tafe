@@ -397,18 +397,14 @@ namespace Tafe
             
             var frontendPath = Path.GetFullPath(
                 Path.Combine(
-                    app.Environment.ContentRootPath,
-                    "..", "..",
-                    "Frontend"
+                    builder.Configuration["FrontPath"]!
                 )
             );
-
-            string RunType = app.Environment.IsDevelopment() ? "dev" : "start";
 
             Process.Start(new ProcessStartInfo
             {
                 FileName = "npm",
-                Arguments = $"run {RunType}",
+                Arguments = "run dev",
                 WorkingDirectory = frontendPath,
                 UseShellExecute = true
             });
