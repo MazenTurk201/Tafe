@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../Utilties/changeMode';
+import { useAuth } from "@/context/AuthContext";
 
 const SidebarDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +38,8 @@ const SidebarDrawer = () => {
     );
   }
 
+  const { isAuthenticated, logout, } = useAuth();
+
 
   return (
     <div className="relative">
@@ -70,6 +73,7 @@ const SidebarDrawer = () => {
             <button onClick={() => { toggleTheme(); setIsOpen(false); }} className="drawericons outlineButton">
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
+            {isAuthenticated && ( <button onClick={logout} className="rounded-lg bg-red-500 px-4 py-2 text-white" > Logout </button> )}
           </div>
         </div>
       </div>
