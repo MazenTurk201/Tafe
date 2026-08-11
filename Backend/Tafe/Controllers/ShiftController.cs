@@ -72,6 +72,20 @@ namespace Tafe.Controllers
                 .Where(s => s.OpenedAt.Date == DateTime.UtcNow.Date)
                 .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName, u.User.FullName } }));
         }
+        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [HttpGet("Status")]
+        public IActionResult MyStatus()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var user = repo.GetAll<ApplicationUser>().FirstOrDefault(u => u.Id == userId);
+            if (user == null) return Unauthorized();
+
+            var activeShift = repo.GetAll<Shift>().FirstOrDefault(s => s.UserId == userId && !s.IsClosed);
+            
+            return Ok(activeShift != null);
+        }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("{startDate}/{endDate}")]
         public IActionResult GetShifts(DateTime startDate, DateTime endDate)
@@ -101,7 +115,7 @@ namespace Tafe.Controllers
             }
             return BadRequest(ModelState);
         }
-        [Authorize(Roles = "Admin, Manager")]
+        [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpPost("CloseShift")]
         public async Task<IActionResult> CloseShift(decimal ClosingCash)
         {

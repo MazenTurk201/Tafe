@@ -5,6 +5,7 @@ import { dashboardApi } from "../../api/dashboardApi";
 import { getApiError } from "../../lib/api-error";
 import DisplayCard from "../Widgets/DisplayCard";
 import type { Dashboard } from "../../types/dashboard";
+import { ShiftApi } from "@/api/shiftsApi";
 
 export default function Main() {
   const { t, i18n } = useTranslation();
@@ -12,11 +13,14 @@ export default function Main() {
   const [dashboard, setDashboard] =
     useState<Dashboard | null>(null);
 
+
   const [loading, setLoading] =
     useState<boolean>(true);
 
   const [error, setError] =
     useState<string | null>(null);
+
+  const [hasActiveShift, setHasActiveShift] = useState(false);
 
   // =========================
   // Language Direction
@@ -53,9 +57,43 @@ export default function Main() {
     fetchDashboard();
   }, []);
 
+  // Shifts
+
+  useEffect(() => {
+  const fetchShiftStatus = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const status = await ShiftApi.GetStatus();
+
+      setHasActiveShift(status);
+    } catch (err) {
+      console.error(err);
+      setError(getApiError(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchShiftStatus();
+}, []);
+
   return (
     <main className="flex min-h-full w-full flex-1 flex-col items-center gap-5 bg-white px-16 py-22 text-black dark:bg-black dark:text-white not-sm:p-5 md:pt-32">
-
+      {hasActiveShift ? (
+  <button 
+  // onClick={handleCloseShift}
+  >
+    إغلاق الشيفت
+  </button>
+) : (
+  <button 
+  // onClick={handleOpenShift}
+  >
+    فتح الشيفت
+  </button>
+)}
       {/* Welcome */}
       <h1 className="relative bottom-10 text-xl">
         {t("welcome")}
