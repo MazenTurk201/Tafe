@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using Tafe.DB;
 using Tafe.Models;
@@ -80,11 +81,14 @@ namespace Tafe
                 };
             });
 
+            string conString = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
+            ? $"Data Source={builder.Configuration["DBServerIP"]};Initial Catalog=Tafe;Integrated Security=True;Encrypt=False;Trust Server Certificate=True" 
+            : "Server=localhost,1433;Database=Tafe;User Id=sa;Password=Db_201201;TrustServerCertificate=True;Encrypt=True";
+
             builder.Services.AddDbContext<DBContext>(options =>
             {
                 options.UseSqlServer(
-                    // $"Data Source={builder.Configuration["DBServerIP"]};Initial Catalog=TafeDB;Integrated Security=True;Encrypt=False;Trust Server Certificate=True"
-                    "Server=localhost,1433;Database=Tafe;User Id=sa;Password=Db_201201;TrustServerCertificate=True;Encrypt=True"
+                    conString
                 );
             });
 
