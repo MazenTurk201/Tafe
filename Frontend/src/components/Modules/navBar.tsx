@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SidebarDrawer from "./drawer";
-import ThemeImage from "../Utilties/ThemeImage";
+import ThemeImage from "@/components/Utilties/ThemeImage";
 
 function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,7 +24,7 @@ function NavBar() {
       <div className="flex items-center gap-5">
         {/* <img src="/images/logo.png" alt="Logo" className="w-10 h-10" /> */}
         <ThemeImage size={90}/>
-        <div className='not-sm:hidden'>Tawlefty</div>
+        <div className='not-sm:hidden'>Tafe</div>
       </div>
       <div className="flex items-center justify-start">
         <SidebarDrawer />
