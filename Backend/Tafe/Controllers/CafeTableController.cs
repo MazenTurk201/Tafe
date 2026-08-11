@@ -118,7 +118,7 @@ namespace Tafe.Controllers
             return Ok(activeReservation);
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
-        [HttpGet("Reservation/AddReservation")]
+        [HttpPost("Reservation/AddReservation")]
         public async Task<IActionResult> AddReservation(ReservationDTO reservationDTO)
         {
             var cafeTable = repo.Get<CafeTable>(reservationDTO.TableId);
@@ -163,7 +163,7 @@ namespace Tafe.Controllers
                 .Select(r => new { r.Id, r.StartTime, r.EndTime, r.Notes, r.TableId, r.CustomerId, CustName = r.Customer.User.FullName, r.Guests }));
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
-        [HttpGet("Reservation/RestoreReservation")]
+        [HttpPatch("Reservation/RestoreReservation")]
         public async Task<IActionResult> RestoreReservationAsync(int reservationId)
         {
             await repo.Restore<Reservation>(reservationId);

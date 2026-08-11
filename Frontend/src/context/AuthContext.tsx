@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 
-import api from "../services/api";
+import { authApi } from "../api/authApi";
 
 interface AuthContextType {
   token: string | null;
@@ -15,7 +15,8 @@ interface AuthContextType {
 
   login: (
     username: string,
-    password: string
+    password: string,
+    rememmberMe: boolean
   ) => Promise<void>;
 
   register: (
@@ -63,20 +64,17 @@ export function AuthProvider({
 
   const login = async (
     username: string,
-    password: string
+    password: string,
+    rememmberMe: boolean
   ) => {
-    const response = await api.post<{
-      token: string;
-      expireDate: string;
-    }>("/api/Account/Login", {
+    const { token, expires } = await authApi.login({
       username,
       password,
+      rememmberMe,
     });
 
-    const { token, expireDate } = response.data;
-
     localStorage.setItem("token", token);
-    localStorage.setItem("expireDate", expireDate);
+    localStorage.setItem("expireDate", expires);
 
     setToken(token);
   };
@@ -85,7 +83,7 @@ export function AuthProvider({
     username: string,
     password: string
   ) => {
-    await api.post("/api/Account/Register", {
+    await authApi.register({
       username,
       password,
     });

@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using Tafe.DB;
 using Tafe.Models;
 using Tafe.Repository;
@@ -18,7 +19,14 @@ namespace Tafe
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    // الباك كان بيقبل الـ enums أرقام فقط، لكنه بيردّ بيها نصوص
+                    // فبقى في عدم توافق مع الفرونت. السطر ده بيخليه يقبل النصوص برضه.
+                    options.JsonSerializerOptions.Converters.Add(
+                        new JsonStringEnumConverter());
+                });
 
             builder.Services.AddEndpointsApiExplorer();
 

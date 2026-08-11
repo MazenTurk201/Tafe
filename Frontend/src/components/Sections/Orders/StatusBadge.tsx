@@ -15,6 +15,9 @@ export default function StatusBadge({ status }: Props) {
     Ready:
       "bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400",
 
+    Delivered:
+      "bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400",
+
     Completed:
       "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400",
 

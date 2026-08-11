@@ -1,116 +1,41 @@
-import axios from "axios";
+import { del, get, patch, post } from "../lib/request";
 import type {
   Order,
   OrderCreate,
-  OrderUpdate,
-  OrderStatusUpdate,
   OrderItemCreate,
   OrderItemUpdate,
+  OrderStatusUpdate,
+  OrderUpdate,
 } from "../types/order";
 
-const API_URL =
-  import.meta.env.VITE_API_URL ?? "http://localhost:5069";
-
-const api = axios.create({
-  baseURL: `${API_URL}/api`,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
-
 export const ordersApi = {
-  getAll: async (): Promise<Order[]> => {
-    const res = await api.get<Order[]>("/Orders");
-    return res.data;
-  },
+  getAll: () => get<Order[]>("/Orders"),
+  getById: (id: number) => get<Order>(`/Orders/${id}`),
+  getActive: () => get<Order[]>("/Orders/Active"),
+  getToday: () => get<Order[]>("/Orders/Today"),
+  getDeleted: () => get<Order[]>("/Orders/Deleted"),
 
-  getById: async (id: number): Promise<Order> => {
-    const res = await api.get<Order>(`/Orders/${id}`);
-    return res.data;
-  },
+  create: (data: OrderCreate) =>
+    post<Order>("/Orders", data),
 
-  getActive: async (): Promise<Order[]> => {
-    const res = await api.get<Order[]>("/Orders/Active");
-    return res.data;
-  },
+  addItem: (orderId: number, data: OrderItemCreate) =>
+    post<Order>(`/Orders/AddItem?orderId=${orderId}`, data),
 
-  getToday: async (): Promise<Order[]> => {
-    const res = await api.get<Order[]>("/Orders/Today");
-    return res.data;
-  },
+  update: (data: OrderUpdate) =>
+    patch<Order>("/Orders", data),
 
-  getDeleted: async (): Promise<Order[]> => {
-    const res = await api.get<Order[]>("/Orders/Deleted");
-    return res.data;
-  },
+  updateStatus: (data: OrderStatusUpdate) =>
+    patch<Order>("/Orders/Status", data),
 
-  create: async (data: OrderCreate): Promise<Order> => {
-    const res = await api.post<Order>("/Orders", data);
-    return res.data;
-  },
+  updateItem: (data: OrderItemUpdate) =>
+    patch<Order>("/Orders/Item", data),
 
-  addItem: async (
-    orderId: number,
-    data: OrderItemCreate
-  ): Promise<Order> => {
-    const res = await api.post<Order>(
-      `/Orders/AddItem?orderId=${orderId}`,
-      data
-    );
+  deleteItem: (id: number) =>
+    del<Order>(`/Orders/Item/${id}`),
 
-    return res.data;
-  },
+  deleteOrder: (id: number) =>
+    del<void>(`/Orders/${id}`),
 
-  update: async (data: OrderUpdate): Promise<Order> => {
-    const res = await api.patch<Order>("/Orders", data);
-    return res.data;
-  },
-
-  updateStatus: async (
-    data: OrderStatusUpdate
-  ): Promise<Order> => {
-    const res = await api.patch<Order>(
-      "/Orders/Status",
-      data
-    );
-
-    return res.data;
-  },
-
-  updateItem: async (
-    data: OrderItemUpdate
-  ): Promise<Order> => {
-    const res = await api.patch<Order>(
-      "/Orders/Item",
-      data
-    );
-
-    return res.data;
-  },
-
-  deleteItem: async (id: number): Promise<Order> => {
-    const res = await api.delete<Order>(
-      `/Orders/Item/${id}`
-    );
-
-    return res.data;
-  },
-
-  deleteOrder: async (id: number): Promise<void> => {
-    await api.delete(`/Orders/${id}`);
-  },
-
-  restore: async (id: number): Promise<void> => {
-    await api.patch(`/Orders/Restore?id=${id}`);
-  },
+  restore: (id: number) =>
+    patch<void>(`/Orders/Restore?id=${id}`),
 };

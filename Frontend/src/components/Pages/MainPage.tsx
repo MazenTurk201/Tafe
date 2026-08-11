@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import api from "../../services/api";
+import { dashboardApi } from "../../api/dashboardApi";
+import { getApiError } from "../../lib/api-error";
 import DisplayCard from "../Widgets/DisplayCard";
-
-interface Dashboard {
-  totalCashPayments: number;
-  totalSales: number;
-  totalOrders: number;
-  totalCustomers: number;
-  totalProducts: number;
-  totalVips: number;
-  totalActiveOrders: number;
-}
+import type { Dashboard } from "../../types/dashboard";
 
 export default function Main() {
   const { t, i18n } = useTranslation();
@@ -47,20 +39,12 @@ export default function Main() {
         setLoading(true);
         setError(null);
 
-        const response =
-          await api.get<Dashboard>(
-            "/api/Dashboard"
-          );
-
-        setDashboard(response.data);
+        setDashboard(
+          await dashboardApi.getSummary()
+        );
       } catch (err) {
         console.error(err);
-
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("Unknown error");
-        }
+        setError(getApiError(err));
       } finally {
         setLoading(false);
       }

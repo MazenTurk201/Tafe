@@ -1,6 +1,7 @@
 export interface LoginRequest {
   username: string;
   password: string;
+  rememmberMe: boolean;
 }
 
 export interface RegisterRequest {
@@ -10,5 +11,5 @@ export interface RegisterRequest {
 
 export interface AuthResponse {
   token: string;
-  expireDate: string;
+  expires: string;
 }

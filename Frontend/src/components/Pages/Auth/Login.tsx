@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
+import { getApiError } from "../../../lib/api-error";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export default function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [rememmberMe, setrememmberMe] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,15 +24,17 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await login(username, password);
+      await login(username, password, rememmberMe);
 
       navigate("/", {
         replace: true,
       });
-    } catch (error: any) {
+    } catch (error) {
       setError(
-        error.response?.data?.message ??
-        "Username or password is incorrect"
+        getApiError(
+          error,
+          "Username or password is incorrect"
+        )
       );
     } finally {
       setLoading(false);
@@ -76,6 +80,18 @@ export default function Login() {
           required
           className="w-full rounded-lg border p-3 dark:bg-zinc-800"
         />
+
+        <input
+          type="checkbox"
+          name="rememmberMe"
+          id="rememmberMe"
+          checked={rememmberMe}
+          onChange={(e) =>
+            setrememmberMe(e.target.checked)
+          }
+        />
+
+        <span>Rememmber Me</span>
 
         <button
           type="submit"

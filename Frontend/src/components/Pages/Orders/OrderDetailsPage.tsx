@@ -14,9 +14,10 @@ import { ordersApi } from "../../../api/ordersApi";
 import StatusBadge from "../../Sections/Orders/StatusBadge";
 
 const statuses: OrderStatus[] = [
-  "Pending",  
+  "Pending",
   "Preparing",
   "Ready",
+  "Delivered",
   "Completed",
   "Cancelled",
 ];
