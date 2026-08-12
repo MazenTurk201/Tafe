@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import type { Order } from "../../../types/order";
-import StatusBadge from "../../Sections/Orders/StatusBadge";
+import type { Order } from "@/types/order";
+import StatusBadge from "@/components/Sections/Orders/StatusBadge";
 
 interface Props {
   order: Order;

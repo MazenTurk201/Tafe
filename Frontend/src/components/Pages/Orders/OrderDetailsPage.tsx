@@ -8,10 +8,12 @@ import {
 import type {
   Order,
   OrderStatus,
-} from "../../../types/order";
+} from "@/types/order";
 
-import { ordersApi } from "../../../api/ordersApi";
-import StatusBadge from "../../Sections/Orders/StatusBadge";
+import { ordersApi } from "@/api/ordersApi";
+import StatusBadge from "@/components/Sections/Orders/StatusBadge";
+import AddItemDialog from "@/components/Widgets/AddItemDialog";
+import type { ProductSearchResult } from "@/types/product";
 
 const statuses: OrderStatus[] = [
   "Pending",
@@ -122,8 +124,28 @@ export default function OrderDetailsPage() {
     );
   }
 
+  const fetchOrder = async () => {
+    const data = await ordersApi.getById(order.id);
+    setOrder(data);
+  };
+
+  const handleAddItem = async (
+  product: ProductSearchResult,
+  notes: string
+) => {
+  await ordersApi.addItem(order.id, {
+    productId: product.id,
+    quantity: 1,
+    discount: 0,
+    notes: notes,
+  });
+
+  // Refresh
+  await fetchOrder();
+};
+
   return (
-    <main className="w-full max-w-5xl px-5 py-8">
+    <main className="w-full px-5 py-8">
       {/* Header */}
 
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -229,10 +251,13 @@ export default function OrderDetailsPage() {
           dark:border-zinc-800 dark:bg-zinc-900
         "
       >
-        <div className="border-b border-zinc-200 p-5 dark:border-zinc-800">
+        <div className="flex items-center justify-between border-b border-zinc-200 p-5 dark:border-zinc-800">
           <h2 className="font-bold">
             Order Items
           </h2>
+          {/* <button className="" onClick={() =>
+                  addItem(3007, {productId:2, discount:0, quantity: 1, notes: "Added Item"})}>Add Item</button> */}
+          <AddItemDialog onConfirm={handleAddItem}/>
         </div>
 
         <div className="divide-y divide-zinc-100 dark:divide-zinc-800">

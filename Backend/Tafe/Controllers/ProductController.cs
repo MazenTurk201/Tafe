@@ -20,12 +20,26 @@ namespace Tafe.Controllers
         public IActionResult GetProducts()
         {
             return Ok(
-                repo.GetAll<Product>().Where(c => !c.IsDeleted)
+                repo.GetAll<Product>()
                     .Select(c => new { 
                         c.Id,
                         c.Name,
                         c.Price,
                         Categiry = $"{c.Category.Name} (Id: {c.CategoryId})",
+                        Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
+                }
+            ));
+        }
+        [HttpGet("Search")]
+        public IActionResult SearchProducts(string Name)
+        {
+            return Ok(
+                repo.Search<Product>(Name)
+                    .Select(c => new { 
+                        c.Id,
+                        c.Name,
+                        c.Price,
+                        Category = $"{c.Category.Name} (Id: {c.CategoryId})",
                         Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
                 }
             ));

@@ -15,7 +15,7 @@ namespace Tafe
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -395,9 +395,18 @@ namespace Tafe
 })();
 </script>";
                 });
+                app.UseCors("AllowedPolicy");
             }
 
-            app.UseCors("AllowedPolicy");
+            app.UseStaticFiles();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider
+                    .GetRequiredService<DBContext>();
+            
+                await db.Database.MigrateAsync();
+            }
 
 
             app.UseAuthentication();
@@ -405,6 +414,8 @@ namespace Tafe
 
 
             app.MapControllers();
+
+            app.MapFallbackToFile("index.html");
 
             
             var frontendPath = Path.GetFullPath(

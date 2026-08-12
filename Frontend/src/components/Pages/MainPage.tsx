@@ -6,6 +6,7 @@ import { getApiError } from "../../lib/api-error";
 import DisplayCard from "../Widgets/DisplayCard";
 import type { Dashboard } from "../../types/dashboard";
 import { ShiftApi } from "@/api/shiftsApi";
+import ShiftCashDialog from "../Widgets/ShiftCashDialog";
 
 export default function Main() {
   const { t, i18n } = useTranslation();
@@ -79,20 +80,55 @@ export default function Main() {
   fetchShiftStatus();
 }, []);
 
+
+const handleOpenShift = async (cash: number) => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    await ShiftApi.OpenShift(cash);
+
+    setHasActiveShift(true);
+  } catch (err) {
+    console.error(err);
+    setError(getApiError(err));
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleCloseShift = async (cash: number) => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    await ShiftApi.CloseShift(cash);
+
+    setHasActiveShift(false);
+  } catch (err) {
+    console.error(err);
+    setError(getApiError(err));
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   return (
     <main className="flex min-h-full w-full flex-1 flex-col items-center gap-5 bg-white px-16 py-22 text-black dark:bg-black dark:text-white not-sm:p-5 md:pt-32">
-      {hasActiveShift ? (
-  <button 
-  // onClick={handleCloseShift}
-  >
-    إغلاق الشيفت
-  </button>
+
+{hasActiveShift ? (
+  <ShiftCashDialog
+    mode="close"
+    onConfirm={handleCloseShift}
+  />
 ) : (
-  <button 
-  // onClick={handleOpenShift}
-  >
-    فتح الشيفت
-  </button>
+  <ShiftCashDialog
+    mode="open"
+    onConfirm={handleOpenShift}
+  />
 )}
       {/* Welcome */}
       <h1 className="relative bottom-10 text-xl">

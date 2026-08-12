@@ -4336,7 +4336,7 @@
     ]
   },
   "packageFolders": {
-    "/home/t/.nuget/packages/": {}
+    "/root/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
@@ -4344,11 +4344,11 @@
       "projectUniqueName": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/Tafe.csproj",
       "projectName": "Tafe",
       "projectPath": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/Tafe.csproj",
-      "packagesPath": "/home/t/.nuget/packages/",
+      "packagesPath": "/root/.nuget/packages/",
       "outputPath": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/t/.nuget/NuGet/NuGet.Config"
+        "/root/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

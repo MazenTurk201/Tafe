@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import type { Order } from "../../../types/order";
-import { ordersApi } from "../../../api/ordersApi";
-import OrderCard from "../Orders/OrderCard";
+import type { Order } from "@/types/order";
+import { ordersApi } from "@/api/ordersApi";
+import OrderCard from "@/components/Widgets/OrderCard";
 
 type Filter =
   | "all"
@@ -75,7 +75,7 @@ export default function OrdersPage() {
   }, [orders, search]);
 
   return (
-    <main className="w-full max-w-7xl px-5 py-8">
+    <main className="w-full px-5 py-8">
       {/* Header */}
 
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
