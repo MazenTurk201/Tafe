@@ -24,11 +24,11 @@ namespace Tafe.Controllers
                 .Where(o => o.Status == OrderStatus.Completed && o.Payments.Any(p => p.Method == PaymentMethod.Cash))
                 .Sum(o => o.Total);
             var totalSales = repo.GetAll<Order>().Where(o => o.Status == OrderStatus.Completed).Sum(o => o.Total);
-            var totalOrders = repo.GetAll<Order>().Count(o => o.Status == OrderStatus.Completed);
+            var totalOrders = repo.GetAll<Order>().Count;
             var totalCustomers = repo.GetAll<CustomerProfile>().Count;
             var totalProducts = repo.GetAll<Product>().Count;
             var totalVipCustomers = repo.GetAll<CustomerProfile>().Count(c => c.Vip);
-            var totalActiveOrders = repo.GetAll<Order>().Count(o => o.Status == OrderStatus.Pending);
+            var totalActiveOrders = repo.GetAll<Order>().Count(o => o.Status != OrderStatus.Cancelled || o.Status != OrderStatus.Completed || o.IsDeleted == false);
 
             return Ok(new
             {

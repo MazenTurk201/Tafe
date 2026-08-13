@@ -2,26 +2,116 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  font-family: Calibri, sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: Calibri, sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background-color);
-  color: var(--primary);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --main: #e100ff;
-  --main-hover: #c000ff;
-  --background-main: #e100ff20;
-  --border-color: #9500a9;
-  --card: oklch(96.7% 0.003 264.542);
-  --card-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+
+  /* ========================================
+     ☕ COFFEE HOUSE — GOLD / BROWN THEME
+     ======================================== */
+
+  /* Main Brand Color
+     غيّر اللون ده فقط لو عايز تغير لون الثيم */
+  --main: #C9963E;
+
+
+  /* ========================================
+     🎨 Colors Derived From Main
+     ======================================== */
+
+  /* Hover = Main أغمق */
+  --main-hover: color-mix(
+    in srgb,
+    var(--main) 75%,
+    #000
+  );
+
+  /* لون فاتح جدًا من الـ Main */
+  --main-light: color-mix(
+    in srgb,
+    var(--main) 15%,
+    transparent
+  );
+
+  /* Background Main */
+  --background-main: color-mix(
+    in srgb,
+    var(--main) 25%,
+    transparent
+  );
+
+  /* Border مشتق من Main */
+  --border-color: color-mix(
+    in srgb,
+    var(--main) 65%,
+    #3A2415
+  );
+
+  /* ========================================
+     ☕ Background
+     ======================================== */
+
+  /* بني قهوة غامق */
+  --background: ;
+
+  /* أغمق شوية للعناصر الكبيرة */
+  --background-dark: #1B100B;
+
+  /* ========================================
+     🃏 Cards
+     ======================================== */
+
+  --card: #322016;
+  --card-foreground: #F5E8D0;
+
+
+  /* ========================================
+     ✍️ Text
+     ======================================== */
+
+  --foreground: var(--main);
+
+  --primary: #F2E3C6;
+  --primary-foreground: #241710;
+
+
+  /* ========================================
+     Secondary
+     ======================================== */
+
+  --secondary: #4A3020;
+  --secondary-foreground: #F5E8D0;
+
+
+  /* ========================================
+     Accent
+     ======================================== */
+
+  --accent: color-mix(
+    in srgb,
+    var(--main) 35%,
+    #3A2415
+  );
+
+  --accent-foreground: #FFF4DC;
+
+
+  /* ========================================
+     📐 UI
+     ======================================== */
+
   --radius: 0.625rem;
+
+
+  /* ========================================
+     🌐 Global
+     ======================================== */
+
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 .dark {
@@ -36,6 +126,7 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
 }
+
 
 .card{
   background-color: var(--card);
@@ -61,6 +152,10 @@ button{
 /* Use filter to darken on hover since CSS doesn't support color functions or nesting here */
 button:hover {
   filter: brightness(90%);
+}
+
+#root > div {
+  background-color: var(--background-color);
 }
 
 .menuiconbutton{
