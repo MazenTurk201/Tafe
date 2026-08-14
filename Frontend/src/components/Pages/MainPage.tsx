@@ -172,7 +172,7 @@ const handleCloseShift = async (cash: number) => {
         {!loading &&
           !error &&
           dashboard && (
-            <div className="grid min-h-full w-full flex-1 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5 bg-white px-16 py-22 text-black dark:bg-black dark:text-white not-sm:p-5 md:pt-32">
+            <div className="grid min-h-full w-full flex-1 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5 px-16 py-22 text-black dark:text-white not-sm:p-5 md:pt-32">
                 {DisplayCard("Total VIPs", dashboard.totalVips.toString())}
                 {DisplayCard("Total Active Orders", dashboard.totalActiveOrders.toString())}
                 {DisplayCard("Total Cash Payments", dashboard.totalCashPayments.toString() + "$")}

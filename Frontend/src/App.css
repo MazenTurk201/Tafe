@@ -192,3 +192,11 @@ main{
   margin-top: 15px;
   padding-top: 10px;
 }
+
+.bg-background{
+  background-color: var(--accent-foreground);
+}
+
+input:focus{
+  outline: none;
+}

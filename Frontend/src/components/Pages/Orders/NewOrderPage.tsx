@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import type {
   OrderType,
   OrderCreate,
 } from "@/types/order";
 import type { ProductSearchResult } from "@/types/product";
 import type { CustomerProfile } from "@/types/customer";
-
 import { ordersApi } from "@/api/ordersApi";
 import { tablesApi } from "@/api/tablesApi";
 import { customersApi } from "@/api/customersApi";
 import type { CafeTable } from "@/types/cafeTable";
-
+import { ShiftApi } from "@/api/shiftsApi";
 import AddItemDialog from "@/components/Widgets/AddItemDialog";
 
 interface DraftItem {
@@ -37,6 +35,8 @@ export default function NewOrderPage() {
   const [tableId, setTableId] = useState<number | null>(null);
 
   const [items, setItems] = useState<DraftItem[]>([]);
+
+  const [hasActiveShift, setHasActiveShift] = useState(false);
 
   const [customerSearch, setCustomerSearch] =
     useState("");
@@ -175,6 +175,22 @@ export default function NewOrderPage() {
     if (id) setOrderType("DineIn");
   };
 
+  // Shifts
+  
+    useEffect(() => {
+    const fetchShiftStatus = async () => {
+      try {
+        const status = await ShiftApi.GetStatus();
+  
+        setHasActiveShift(status);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+  
+    fetchShiftStatus();
+  }, []);
+
   const handleSubmit = async () => {
     if (items.length === 0) {
       setError(
@@ -216,6 +232,8 @@ export default function NewOrderPage() {
 
   return (
     <main className="w-full px-5 py-8">
+      {hasActiveShift?
+      <>
       {/* Header */}
 
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -604,6 +622,8 @@ export default function NewOrderPage() {
           </button>
         </section>
       </div>
+      </>
+      : <div className="h-dvh flex justify-center items-center text-center text-2xl font-bold pb-30 animate-pulse">Open Shift Plz..</div> }
     </main>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { ShiftApi } from "@/api/shiftsApi";
 import type { Order } from "@/types/order";
 import { ordersApi } from "@/api/ordersApi";
 import OrderCard from "@/components/Widgets/OrderCard";
@@ -16,6 +16,29 @@ export default function OrdersPage() {
   const [filter, setFilter] = useState<Filter>("active");
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [hasActiveShift, setHasActiveShift] = useState(false);
+
+  
+
+  // Shifts
+
+  useEffect(() => {
+  const fetchShiftStatus = async () => {
+    try {
+      setLoading(true);
+
+      const status = await ShiftApi.GetStatus();
+
+      setHasActiveShift(status);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchShiftStatus();
+}, []);
 
   const loadOrders = async () => {
     try {
@@ -76,7 +99,9 @@ export default function OrdersPage() {
 
   return (
     <main className="w-full px-5 py-8">
-      {/* Header */}
+    {hasActiveShift ? 
+    <>
+    {/* Header */}
 
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -179,6 +204,9 @@ export default function OrdersPage() {
           ))}
         </div>
       )}
+    </>
+    : <div className="h-dvh flex justify-center items-center text-center text-2xl font-bold pb-30 animate-pulse">Open Shift Plz..</div> }
+      
     </main>
   );
 }

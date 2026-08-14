@@ -9,19 +9,19 @@ import {
 
 function ListItem(Title: string, Link: string) {
     return <li>
-        <a target='_blank' href={Link} rel="noreferrer" className="hover:text-purple-400 transition-colors">🔗 {Title}</a>
+        <a target='_blank' href={Link} rel="noreferrer" className="hover:text-(--main-hover) transition-colors">🔗 {Title}</a>
     </li>
 }
 
 function Footer() {
-    return <footer className='w-full flex not-sm:flex-col items-center justify-evenly gap-5 p-10 bg-zinc-50 dark:bg-black text-zinc-800 dark:text-zinc-200'>
+    return <footer className='w-full flex not-sm:flex-col items-center justify-evenly gap-5 p-10 text-zinc-800 dark:text-zinc-200'>
         <div className='flex flex-col items-center justify-center text-left'>
             <ThemeImage size={200}/>
             <p>Thanks for visiting out Cafe {"<3`"}</p>
             <p>&copy; {new Date().getFullYear()} Turk. All rights reserved.</p>
         </div>
-        <div className='w-full'>
-            <p>Products:</p>
+        <div className='w-full flex flex-col items-center justify-center'>
+            <p className='font-bold text-xl text-left'>Products:</p>
             <ul>
                 {ListItem("Main", "/")}
                 {ListItem("Menu", "/Menu")}
