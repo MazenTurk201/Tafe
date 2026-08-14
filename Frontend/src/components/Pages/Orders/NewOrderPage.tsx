@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import type {
   OrderType,
   OrderCreate,
+  PaymentMethod,
 } from "@/types/order";
 import type { ProductSearchResult } from "@/types/product";
 import type { CustomerProfile } from "@/types/customer";
@@ -23,6 +24,16 @@ const orderTypes: OrderType[] = [
   "DineIn",
   "TakeAway",
   "Delivery",
+];
+
+const paymentMethods: PaymentMethod[] = [
+  "Cash",
+  "Visa",
+  "MasterCard",
+  "InstaPay",
+  "VodafoneCash",
+  "Wallet",
+  "GiftCard",
 ];
 
 export default function NewOrderPage() {
@@ -50,6 +61,13 @@ export default function NewOrderPage() {
   const [discount, setDiscount] = useState(0);
   const [tax, setTax] = useState(0);
   const [service, setService] = useState(0);
+
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("Cash");
+  const [paymentAmount, setPaymentAmount] =
+    useState<number | null>(null);
+  const [transactionNumber, setTransactionNumber] =
+    useState("");
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -220,6 +238,18 @@ export default function NewOrderPage() {
       setError(null);
 
       const created = await ordersApi.create(payload);
+
+      try {
+        await ordersApi.addPayment({
+          orderId: created.id,
+          method: paymentMethod,
+          amount: paymentAmount ?? total,
+          transactionNumber:
+            transactionNumber.trim() || undefined,
+        });
+      } catch (err) {
+        console.error(err);
+      }
 
       navigate(`/orders/${created.id}`);
     } catch (err) {
@@ -591,6 +621,62 @@ export default function NewOrderPage() {
               value={service}
               onChange={setService}
             />
+          </div>
+
+          <div className="mt-6 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+            <h2 className="mb-3 font-bold">Payment</h2>
+
+            <div className="flex flex-wrap gap-2">
+              {paymentMethods.map((method) => (
+                <button
+                  key={method}
+                  onClick={() =>
+                    setPaymentMethod(method)
+                  }
+                  className={`
+                    rounded-xl px-3 py-2 text-xs font-medium
+                    ${
+                      paymentMethod === method
+                        ? "bg-black text-white dark:bg-white dark:text-black"
+                        : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                    }
+                  `}
+                >
+                  {method}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 space-y-4">
+              <NumberField
+                label="Amount"
+                value={paymentAmount ?? total}
+                onChange={setPaymentAmount}
+              />
+
+              {paymentMethod !== "Cash" && (
+                <label className="block">
+                  <span className="mb-1 block text-sm font-medium text-zinc-500">
+                    Transaction Number
+                  </span>
+
+                  <input
+                    type="text"
+                    value={transactionNumber}
+                    onChange={(e) =>
+                      setTransactionNumber(e.target.value)
+                    }
+                    placeholder="Ex: 1234-5678"
+                    className="
+                      w-full rounded-xl border border-zinc-200
+                      bg-white px-4 py-2 outline-none
+                      focus:border-black
+                      dark:border-zinc-800 dark:bg-zinc-900
+                    "
+                  />
+                </label>
+              )}
+            </div>
           </div>
 
           <div className="mt-6 space-y-2 border-t border-zinc-200 pt-4 dark:border-zinc-800">

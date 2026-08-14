@@ -161,7 +161,7 @@ button:hover {
 .menuiconbutton{
   font-size: 1.5rem;
   cursor: pointer;
-  color: var(--primary);
+  color: var(--background);
 }
 
 .drawericons{

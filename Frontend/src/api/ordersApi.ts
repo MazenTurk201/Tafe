@@ -6,6 +6,7 @@ import type {
   OrderItemUpdate,
   OrderStatusUpdate,
   OrderUpdate,
+  PaymentCreate,
 } from "../types/order";
 
 export const ordersApi = {
@@ -20,6 +21,9 @@ export const ordersApi = {
 
   addItem: (orderId: number, data: OrderItemCreate) =>
     post<Order>(`/Orders/AddItem?orderId=${orderId}`, data),
+
+  addPayment: (data: PaymentCreate) =>
+    post<void>("/Orders/AddPayment", data),
 
   update: (data: OrderUpdate) =>
     patch<Order>("/Orders", data),

@@ -8,6 +8,7 @@ import {
 import type {
   Order,
   OrderStatus,
+  PaymentMethod,
 } from "@/types/order";
 
 import { ordersApi } from "@/api/ordersApi";
@@ -24,6 +25,16 @@ const statuses: OrderStatus[] = [
   "Cancelled",
 ];
 
+const paymentMethods: PaymentMethod[] = [
+  "Cash",
+  "Visa",
+  "MasterCard",
+  "InstaPay",
+  "VodafoneCash",
+  "Wallet",
+  "GiftCard",
+];
+
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -31,6 +42,17 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState<Order | null>(
     null
   );
+
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("Cash");
+  const [paymentAmount, setPaymentAmount] =
+    useState<number | null>(null);
+  const [transactionNumber, setTransactionNumber] =
+    useState("");
+  const [paymentMessage, setPaymentMessage] =
+    useState<string | null>(null);
+  const [addingPayment, setAddingPayment] =
+    useState(false);
 
   const [loading, setLoading] = useState(true);
 
@@ -144,6 +166,37 @@ export default function OrderDetailsPage() {
   await fetchOrder();
 };
 
+  const handleAddPayment = async () => {
+    if (!order) return;
+
+    try {
+      setAddingPayment(true);
+      setPaymentMessage(null);
+
+      await ordersApi.addPayment({
+        orderId: order.id,
+        method: paymentMethod,
+        amount: paymentAmount ?? order.total,
+        transactionNumber:
+          transactionNumber.trim() || undefined,
+      });
+
+      setPaymentMessage(
+        `Payment of ${(paymentAmount ?? order.total).toFixed(2)} added (${paymentMethod}).`
+      );
+
+      setPaymentAmount(null);
+      setTransactionNumber("");
+    } catch (error) {
+      console.error(error);
+      setPaymentMessage(
+        "Failed to add payment. Make sure you have an active shift."
+      );
+    } finally {
+      setAddingPayment(false);
+    }
+  };
+
   return (
     <main className="w-full px-5 py-8">
       {/* Header */}
@@ -240,6 +293,110 @@ export default function OrderDetailsPage() {
             </button>
           ))}
         </div>
+      </section>
+
+      {/* Payment */}
+
+      <section
+        className="
+          mb-6 rounded-2xl border
+          border-zinc-200 bg-white p-5
+          dark:border-zinc-800 dark:bg-zinc-900
+        "
+      >
+        <h2 className="mb-4 font-bold">
+          Add Payment
+        </h2>
+
+        <div className="flex flex-wrap gap-2">
+          {paymentMethods.map((method) => (
+            <button
+              key={method}
+              onClick={() =>
+                setPaymentMethod(method)
+              }
+              className={`
+                rounded-xl px-4 py-2 text-sm
+                ${
+                  paymentMethod === method
+                    ? "bg-black text-white dark:bg-white dark:text-black"
+                    : "bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                }
+              `}
+            >
+              {method}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <label className="block">
+            <span className="mb-1 block text-sm text-zinc-500">
+              Amount
+            </span>
+
+            <input
+              type="number"
+              min={0}
+              value={paymentAmount ?? order.total}
+              onChange={(e) =>
+                setPaymentAmount(
+                  Math.max(0, Number(e.target.value))
+                )
+              }
+              className="
+                w-full rounded-xl border border-zinc-200
+                bg-white px-4 py-2 outline-none
+                focus:border-black
+                dark:border-zinc-800 dark:bg-zinc-900
+              "
+            />
+          </label>
+
+          {paymentMethod !== "Cash" && (
+            <label className="block md:col-span-2">
+              <span className="mb-1 block text-sm text-zinc-500">
+                Transaction Number
+              </span>
+
+              <input
+                type="text"
+                value={transactionNumber}
+                onChange={(e) =>
+                  setTransactionNumber(e.target.value)
+                }
+                placeholder="Ex: 1234-5678"
+                className="
+                  w-full rounded-xl border border-zinc-200
+                  bg-white px-4 py-2 outline-none
+                  focus:border-black
+                  dark:border-zinc-800 dark:bg-zinc-900
+                "
+              />
+            </label>
+          )}
+        </div>
+
+        {paymentMessage && (
+          <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+            {paymentMessage}
+          </p>
+        )}
+
+        <button
+          onClick={handleAddPayment}
+          disabled={addingPayment}
+          className="
+            mt-4 rounded-xl bg-black px-5 py-2
+            text-sm font-semibold text-white
+            hover:bg-zinc-800 disabled:opacity-50
+            dark:bg-white dark:text-black
+          "
+        >
+          {addingPayment
+            ? "Adding payment..."
+            : "Add Payment"}
+        </button>
       </section>
 
       {/* Items */}

@@ -11,6 +11,15 @@ export type OrderStatus =
   | "Completed"
   | "Cancelled";
 
+export type PaymentMethod =
+  | "Cash"
+  | "Visa"
+  | "MasterCard"
+  | "InstaPay"
+  | "VodafoneCash"
+  | "Wallet"
+  | "GiftCard";
+
 export interface OrderItem {
   id: number;
   orderId: number;
@@ -94,4 +103,11 @@ export interface OrderItemUpdate {
   quantity: number;
   discount: number;
   notes?: string;
+}
+
+export interface PaymentCreate {
+  orderId: number;
+  method: PaymentMethod;
+  amount: number;
+  transactionNumber?: string;
 }
