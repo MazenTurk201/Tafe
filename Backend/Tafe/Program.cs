@@ -103,7 +103,7 @@ namespace Tafe
             builder.Services.AddScoped<GenericRepo>();
 
             builder.Services.AddCors(
-                option => option.AddPolicy("AllowedPolicy", policy =>
+                option => option.AddPolicy("AllowedFrontend", policy =>
                 {
                     //policy.WithOrigins();
                     policy.AllowAnyOrigin()
@@ -395,7 +395,6 @@ namespace Tafe
 })();
 </script>";
                 });
-                app.UseCors("AllowedPolicy");
             }
 
             app.UseStaticFiles();
@@ -407,6 +406,8 @@ namespace Tafe
             
                 await db.Database.MigrateAsync();
             }
+
+            app.UseCors("AllowedFrontend");
 
 
             app.UseAuthentication();

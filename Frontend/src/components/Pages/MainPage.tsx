@@ -117,7 +117,7 @@ const handleCloseShift = async (cash: number) => {
 
 
   return (
-    <main className="flex min-h-full w-full flex-1 flex-col items-center gap-5 bg-white px-16 py-22 text-black dark:bg-black dark:text-white not-sm:p-5 md:pt-32">
+    <main className="flex min-h-full w-full flex-1 flex-col items-center gap-5 px-16 py-22 text-black dark:text-white not-sm:p-5 md:pt-32">
 
 {hasActiveShift ? (
   <ShiftCashDialog
@@ -130,17 +130,12 @@ const handleCloseShift = async (cash: number) => {
     onConfirm={handleOpenShift}
   />
 )}
+      <br />
+
       {/* Welcome */}
-      <h1 className="relative bottom-10 text-xl">
+      <h1 className="text-xl mt-10 font-bold">
         {t("welcome")}
       </h1>
-
-      <h2 className="mb-4 text-lg font-bold">
-          {t(
-            "dashboards_list",
-            "Dashboard"
-          )}
-        </h2>
 
       
         {/* Loading */}
@@ -177,7 +172,7 @@ const handleCloseShift = async (cash: number) => {
         {!loading &&
           !error &&
           dashboard && (
-            <div className="flex gap-5">
+            <div className="grid min-h-full w-full flex-1 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5 bg-white px-16 py-22 text-black dark:bg-black dark:text-white not-sm:p-5 md:pt-32">
                 {DisplayCard("Total VIPs", dashboard.totalVips.toString())}
                 {DisplayCard("Total Active Orders", dashboard.totalActiveOrders.toString())}
                 {DisplayCard("Total Cash Payments", dashboard.totalCashPayments.toString() + "$")}

@@ -48,7 +48,7 @@ export default function ShiftCashDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button>
+        <button className="absolute left-1 m-5">
           {isOpen ? "فتح الشيفت" : "إغلاق الشيفت"}
         </button>
       </DialogTrigger>

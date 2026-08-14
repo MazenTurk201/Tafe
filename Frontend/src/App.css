@@ -182,3 +182,13 @@ footer{
   border-top-left-radius: var(--radius-4xl);
   border-top-right-radius: var(--radius-4xl);
 }
+
+.accordion{
+  border-radius: var(--radius);
+  border: none;
+}
+
+main{
+  margin-top: 15px;
+  padding-top: 10px;
+}

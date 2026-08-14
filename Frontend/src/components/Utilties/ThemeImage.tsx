@@ -5,7 +5,7 @@ interface ThemeImageProps {
 
 export default function ThemeImage({ size }: ThemeImageProps) {
   return (
-    <div className="flex justify-center p-4 m-5">
+    <div className="flex justify-center m-0 p-0">
       <img 
         src="/images/logo.png" 
         alt="Logo" 

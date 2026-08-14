@@ -14,37 +14,34 @@ function ListItem(Title: string, Link: string) {
 }
 
 function Footer() {
-    return <footer className='w-full flex not-sm:flex-col items-center justify-center gap-5 p-10 bg-zinc-50 dark:bg-black text-zinc-800 dark:text-zinc-200'>
-        <div className='flex flex-col items-center justify-center text-left gap-3'>
-            {/* <img 
-                src={theme === 'dark' ? '/images/logoDark.png' : '/images/logo.png'} 
-             alt="Turk Logo" className="w-20 h-20" /> */}
-            <ThemeImage size={250}/>
-            <p>Thanks for visiting my portfolio! {"<3`"}</p>
-            <p>&copy; {new Date().getFullYear()} Mazen Sameh. All rights reserved.</p>
+    return <footer className='w-full flex not-sm:flex-col items-center justify-evenly gap-5 p-10 bg-zinc-50 dark:bg-black text-zinc-800 dark:text-zinc-200'>
+        <div className='flex flex-col items-center justify-center text-left'>
+            <ThemeImage size={200}/>
+            <p>Thanks for visiting out Cafe {"<3`"}</p>
+            <p>&copy; {new Date().getFullYear()} Turk. All rights reserved.</p>
         </div>
-        <div className='w-90'>
+        <div className='w-full'>
             <p>Products:</p>
             <ul>
-                {ListItem("Love Choice", "https://mazenturk201.github.io/Love-Choice")}
-                {ListItem("Turk Translate", "https://github.com/MazenTurk201/Turk-Translate/releases/latest")}
-                {ListItem("Easy-Command", "https://github.com/MazenTurk201/Easy-Command/releases/latest")}
+                {ListItem("Main", "/")}
+                {ListItem("Menu", "/Menu")}
+                {ListItem("Reservation", "/Reservation")}
                 <li>
                     Let's build something amazing together!
                 </li>
             </ul>
         </div>
-        <div className='md:w-1/5 w-full flex flex-col items-center justify-center gap-2'>
+        <div className='md:w-1/5 w-full flex flex-col items-center justify-center gap-5'>
             <Accordion type="single" collapsible className='w-full'>
-                <AccordionItem value={'1'}>
-                    <AccordionTrigger>How to contact?</AccordionTrigger>
+                <AccordionItem value={'1'} className='my-5'>
+                    <AccordionTrigger className='accordion'>How to contact?</AccordionTrigger>
                     <AccordionContent className='flex flex-col items-start justify-start gap-2'>
                         <div>Contact me via <a target='_blank' className='text-green-500' href="https://wa.me/201092130013?text=Hello+Turk">Whatsapp</a></div>
                         <div>Contact me via <a target='_blank' className='text-red-500' href="mailto:maznktr@gmail.com">Email</a></div>
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value={'2'}>
-                    <AccordionTrigger>What services do I offer?</AccordionTrigger>
+                <AccordionItem value={'2'} className='my-5'>
+                    <AccordionTrigger className='accordion'>What services do I offer?</AccordionTrigger>
                     <AccordionContent className='flex flex-col items-start justify-start gap-2'>
                         <div className='flex flex-col items-start justify-start gap-2'>
                             I specialize in IT Engineering
@@ -59,8 +56,8 @@ function Footer() {
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value={'3'}>
-                    <AccordionTrigger>Are you available for freelance?</AccordionTrigger>
+                <AccordionItem value={'3'} className='my-5'>
+                    <AccordionTrigger className='accordion'>Are you available for freelance?</AccordionTrigger>
                     <AccordionContent>
                         Yes, I am open to freelance opportunities. Feel free to reach out to discuss your project and how I can help bring it to life!
                     </AccordionContent>
