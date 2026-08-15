@@ -49,7 +49,7 @@ namespace Tafe.Controllers
         {
             if (ModelState.IsValid)
             {
-                repo.Add(new Ingredient { Name = ingredientCreate.Name, Quantity = ingredientCreate.Quantity, MinQuantityAlert = ingredientCreate.MinQuantityAlert, UnitId = ingredientCreate.UnitId });
+                repo.Add(new Ingredient { Name = ingredientCreate.Name, MinQuantityAlert = ingredientCreate.MinQuantityAlert, UnitId = ingredientCreate.UnitId });
                 await repo.Save();
                 return Ok();
             }

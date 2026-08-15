@@ -1,5 +1,6 @@
 #nullable disable
 using System.Diagnostics.CodeAnalysis;
+using Tafe.Models;
 
 namespace Tafe.DTOs
 {
@@ -44,5 +45,6 @@ namespace Tafe.DTOs
         public DateTime? UpdatedAt { get; set; }
 
         public List<OrderItemDTO> Items { get; set; } = [];
+        public ICollection<Payment> Payments { get; set; }
     }
 }

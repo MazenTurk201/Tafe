@@ -55,7 +55,7 @@
      ======================================== */
 
   /* بني قهوة غامق */
-  --background: ;
+  --background: #593322;
 
   /* أغمق شوية للعناصر الكبيرة */
   --background-dark: #1B100B;
@@ -124,7 +124,7 @@
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --accent-foreground: var(--background-dark);
 }
 
 
@@ -161,7 +161,7 @@ button:hover {
 .menuiconbutton{
   font-size: 1.5rem;
   cursor: pointer;
-  color: var(--background);
+  color: var(--background-color);
 }
 
 .drawericons{

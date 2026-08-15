@@ -814,6 +814,7 @@ namespace Tafe.Controllers
                 Total = o.Total,
                 CreatedAt = o.CreatedAt,
                 UpdatedAt = o.UpdatedAt,
+                Payments = o.Payments,
                 Items = (o.Items ?? []).Select(i => new OrderItemDTO
                 {
                     Id = i.Id,
