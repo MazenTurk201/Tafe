@@ -1,5 +1,4 @@
-import { useState, 
-type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 // @ts-ignore: allow CSS side-effect import without type declarations
 import "./Login.css";
 
@@ -13,7 +12,10 @@ interface LoginProps {
   onRegister?: () => void;
 }
 
-export default function Login({ onSubmit, onRegister }: LoginProps) {
+export default function Login({
+  onSubmit,
+  onRegister,
+}: LoginProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -161,13 +163,20 @@ export default function Login({ onSubmit, onRegister }: LoginProps) {
                     stroke="currentColor"
                     strokeWidth="1.8"
                   />
+
                   <path
                     d="M8 10V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V10"
                     stroke="currentColor"
                     strokeWidth="1.8"
                     strokeLinecap="round"
                   />
-                  <circle cx="12" cy="15.5" r="1.2" fill="currentColor" />
+
+                  <circle
+                    cx="12"
+                    cy="15.5"
+                    r="1.2"
+                    fill="currentColor"
+                  />
                 </svg>
 
                 <input
@@ -198,18 +207,21 @@ export default function Login({ onSubmit, onRegister }: LoginProps) {
                         strokeWidth="1.8"
                         strokeLinecap="round"
                       />
+
                       <path
                         d="M10.6 10.6C10.24 10.96 10.02 11.46 10.02 12C10.02 13.09 10.91 13.98 12 13.98C12.54 13.98 13.04 13.76 13.4 13.4"
                         stroke="currentColor"
                         strokeWidth="1.8"
                         strokeLinecap="round"
                       />
+
                       <path
                         d="M9.88 5.08C10.56 4.89 11.27 4.8 12 4.8C17.25 4.8 20.55 9.12 21.5 10.6C21.72 10.94 21.72 11.06 21.5 11.4C20.95 12.26 19.7 13.9 17.8 15.2"
                         stroke="currentColor"
                         strokeWidth="1.8"
                         strokeLinecap="round"
                       />
+
                       <path
                         d="M6.3 6.3C4.72 7.43 3.62 8.92 2.5 10.6C2.28 10.94 2.28 11.06 2.5 11.4C3.45 12.88 6.75 17.2 12 17.2C13.13 17.2 14.2 17 15.18 16.62"
                         stroke="currentColor"
@@ -224,6 +236,7 @@ export default function Login({ onSubmit, onRegister }: LoginProps) {
                         stroke="currentColor"
                         strokeWidth="1.8"
                       />
+
                       <circle
                         cx="12"
                         cy="12"
@@ -238,23 +251,20 @@ export default function Login({ onSubmit, onRegister }: LoginProps) {
             </div>
 
             <div className="form-options">
-    <label className="remember">
-      <input
-          type="checkbox"
-      checked={remember}
-      onChange={(event) => setRemember(event.target.checked)}
-      disabled={loading}
-    />
-    <span className="checkmark" />
-    <span>Remember me</span>
-  </label>
-      </div>
+              <label className="remember">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(event) =>
+                    setRemember(event.target.checked)
+                  }
+                  disabled={loading}
+                />
+                <span className="checkmark" />
+                <span>Remember me</span>
+              </label>
+            </div>
 
-
-              
-                
-              
-            
             {error && (
               <div className="error-message" role="alert">
                 <span>!</span>
@@ -275,7 +285,11 @@ export default function Login({ onSubmit, onRegister }: LoginProps) {
               ) : (
                 <>
                   Sign In
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
+                  >
                     <path
                       d="M4 10H16M11 5L16 10L11 15"
                       stroke="currentColor"
@@ -288,18 +302,20 @@ export default function Login({ onSubmit, onRegister }: LoginProps) {
               )}
             </button>
           </form>
-                <div className="create-account">
-                 <span>Don't have an account?</span>
 
-                <button
-                 type="button"
-                 className="create-account-button"
-                 onClick={onRegister}
-                 disabled={loading}
-  >
-    Create Account
-  </button>
-</div>
+          <div className="create-account">
+            <span>Don't have an account?</span>
+
+            <button
+              type="button"
+              className="create-account-button"
+              onClick={onRegister}
+              disabled={loading}
+            >
+              Create Account
+            </button>
+          </div>
+
           <footer className="login-footer">
             <span>© {new Date().getFullYear()}</span>
             <span className="footer-dot" />

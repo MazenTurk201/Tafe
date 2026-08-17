@@ -1,23 +1,30 @@
 import { useState } from "react";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
+import MainMenu from "./components/MainMenu/MainMenu";
 
-function App() {
-  const [page, setPage] = useState<"login" | "register">("register");
+type Page = "login" | "register" | "main";
+
+export default function App() {
+  const [page, setPage] = useState<Page>("login");
 
   if (page === "login") {
     return (
       <Login
-        {...({ onRegister: () => setPage("register") } as any)}
+        onRegister={() => setPage("register")}
+        onSubmit={() => setPage("main")}
       />
     );
   }
 
-  return (
-    <Register
-      onSignIn={() => setPage("login")}
-    />
-  );
-}
+  if (page === "register") {
+    return (
+      <Register
+        onSignIn={() => setPage("login")}
+        onSubmit={() => setPage("main")}
+      />
+    );
+  }
 
-export default App;
+  return <MainMenu onLogout={() => setPage("login")} />;
+}
