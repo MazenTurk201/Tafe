@@ -33,6 +33,8 @@ packages/
 
 # --- EF Core migrations temp / local DBs ---
 *.db
+*.db-shm
+*.db-wal
 *.mdf
 *.ldf
 

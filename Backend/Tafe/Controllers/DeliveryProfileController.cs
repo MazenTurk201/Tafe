@@ -88,7 +88,7 @@ namespace Tafe.Controllers
                     Email = DeliveryCreateDTO.User.Email,
                     FirstName = DeliveryCreateDTO.User.FirstName,
                     LastName = DeliveryCreateDTO.User.LastName,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow
                 };
                 var result = await userManager.CreateAsync(appUser, DeliveryCreateDTO.User.Password);
 

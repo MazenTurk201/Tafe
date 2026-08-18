@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -17,10 +19,10 @@ namespace Tafe.Controllers
             this.repo = repo;
         }
         [HttpGet]
-        public IActionResult GetSalaryPayments()
+        public async Task<IActionResult> GetSalaryPayments()
         {
-            return Ok(repo.GetAll<SalaryPayment>()
-                .Select(u => new { u.Id, u.Name, u.Amount, u.Month, u.Year, u.PaidAt, Employee = new { u.Employee.UserId, u.Employee.User.UserName, u.Employee.User.FullName } }));
+            return Ok(await repo.GetAll<SalaryPayment>()
+                .Select(u => new { u.Id, u.Name, u.Amount, u.Month, u.Year, u.PaidAt, Employee = new { u.Employee.UserId, u.Employee.User.UserName, u.Employee.User.FullName } }).ToListAsync());
         }
         [HttpPost]
         public async Task<IActionResult> CreateSalaryPayment(SalaryPaymentCreateDTO dto)
@@ -76,10 +78,10 @@ namespace Tafe.Controllers
             return Ok(SalaryPayment);
         }
         [HttpGet("Deleted")]
-        public IActionResult GetDeletedSalaryPayments()
+        public async Task<IActionResult> GetDeletedSalaryPayments()
         {
-            return Ok(repo.GetAllDeleted<SalaryPayment>()
-                .Select(u => new { u.Id, u.Name }));
+            return Ok(await repo.GetAllDeleted<SalaryPayment>()
+                .Select(u => new { u.Id, u.Name }).ToListAsync());
         }
     }
 }

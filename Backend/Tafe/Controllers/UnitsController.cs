@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Repository;
 
 namespace Tafe.Controllers
@@ -15,10 +17,10 @@ namespace Tafe.Controllers
             this.repo = repo;
         }
         [HttpGet]
-        public IActionResult GetUnits()
+        public async Task<IActionResult> GetUnits()
         {
-            return Ok(repo.GetAll<Unit>()
-                .Select(u => new { u.Id, u.Name }));
+            return Ok(await repo.GetAll<Unit>()
+                .Select(u => new { u.Id, u.Name }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
@@ -69,10 +71,10 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
-        public IActionResult GetDeletedUnits()
+        public async Task<IActionResult> GetDeletedUnits()
         {
-            return Ok(repo.GetAllDeleted<Unit>()
-                .Select(u => new { u.Id, u.Name }));
+            return Ok(await repo.GetAllDeleted<Unit>()
+                .Select(u => new { u.Id, u.Name }).ToListAsync());
         }
     }
 }

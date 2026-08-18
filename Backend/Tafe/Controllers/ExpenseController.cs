@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.DTOs;
 using Tafe.Models;
 using Tafe.Repository;
@@ -18,10 +19,10 @@ namespace Tafe.Controllers
             this.repo = repo;
         }
         [HttpGet]
-        public IActionResult GetExpenses()
+        public async Task<IActionResult> GetExpenses()
         {
-            return Ok(repo.GetAll<Expense>()
-                .Select(c => new { c.Id, c.Name, c.Amount, c.ExpenseDate, Type = c.Type.ToString(), c.Notes }));
+            return Ok(await repo.GetAll<Expense>()
+                .Select(c => new { c.Id, c.Name, c.Amount, c.ExpenseDate, Type = c.Type.ToString(), c.Notes }).ToListAsync());
         }
         [HttpGet("Total")]
         public IActionResult GetTotalExpenses()
@@ -84,10 +85,10 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
-        public IActionResult GetDeletedExpenses()
+        public async Task<IActionResult> GetDeletedExpenses()
         {
-            return Ok(repo.GetAllDeleted<Expense>()
-                .Select(c => new { c.Id, c.Name, c.Amount, c.ExpenseDate, Type = c.Type.ToString(), c.Notes }));
+            return Ok(await repo.GetAllDeleted<Expense>()
+                .Select(c => new { c.Id, c.Name, c.Amount, c.ExpenseDate, Type = c.Type.ToString(), c.Notes }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]

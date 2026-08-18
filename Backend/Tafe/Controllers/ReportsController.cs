@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -23,9 +25,9 @@ namespace Tafe.Controllers
             return Ok();
         }
         [HttpGet("TopProducts/{limit}")]
-        public IActionResult TopProducts( int limit = 3 )
+        public async Task<IActionResult> TopProducts( int limit = 3 )
         {
-            return Ok(repo.GetAll<Order>()
+            return Ok(await repo.GetAll<Order>()
         .SelectMany(o => o.Items)
         .GroupBy(i => new { i.ProductId, i.Product.Name })
         .Select(g => new 
@@ -36,7 +38,7 @@ namespace Tafe.Controllers
         })
         .OrderByDescending(p => p.TotalQuantity)
         .Take(limit)
-        .ToList());
+        .ToListAsync());
         }
         // Payments
         // Employees

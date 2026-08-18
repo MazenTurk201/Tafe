@@ -95,9 +95,10 @@ namespace Tafe
 
             builder.Services.AddDbContext<DBContext>(options =>
             {
-                options.UseSqlServer(
-                    conString
-                );
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+                // options.UseSqlServer(
+                //     conString
+                // );
             });
 
             builder.Services.AddScoped<GenericRepo>();
@@ -114,6 +115,12 @@ namespace Tafe
 
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<DBContext>();
+                await db.Database.MigrateAsync();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -398,14 +405,6 @@ namespace Tafe
             }
 
             app.UseStaticFiles();
-
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider
-                    .GetRequiredService<DBContext>();
-            
-                await db.Database.MigrateAsync();
-            }
 
             app.UseCors("AllowedFrontend");
 

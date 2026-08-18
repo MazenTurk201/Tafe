@@ -14,7 +14,7 @@ namespace Tafe.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, Manager")]
+    // [Authorize(Roles = "Admin, Manager")]
     public class RoleController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> role;

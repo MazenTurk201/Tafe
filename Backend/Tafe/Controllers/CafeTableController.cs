@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.DTOs;
 using Tafe.Models;
 using Tafe.Repository;
@@ -18,10 +19,10 @@ namespace Tafe.Controllers
             this.repo = repo;
         }
         [HttpGet]
-        public IActionResult GetCafeTables()
+        public async Task<IActionResult> GetCafeTables()
         {
-            return Ok(repo.GetAll<CafeTable>()
-                .Select(c => new { c.Id, c.Name, c.Capacity, c.IsOccupied, TotalOrders = c.Orders.Select(t=>t.Total), Reservations = c.Reservations.Select(t => new{Start = t.StartTime, End = t.EndTime, Note=t.Notes}) }));
+            return Ok(await repo.GetAll<CafeTable>()
+                .Select(c => new { c.Id, c.Name, c.Capacity, c.IsOccupied, TotalOrders = c.Orders.Select(t=>t.Total), Reservations = c.Reservations.Select(t => new{Start = t.StartTime, End = t.EndTime, Note=t.Notes}) }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
@@ -82,19 +83,19 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpGet("Reservation/Active")]
-        public IActionResult Reservation()
+        public async Task<IActionResult> Reservation()
         {
-            return Ok(repo.GetAll<CafeTable>()
-                .Where(c => c.Reservations.Any(r => r.StartTime <= DateTime.Now && r.EndTime >= DateTime.Now))
-                .ToList()
+            return Ok(await repo.GetAll<CafeTable>()
+                .Where(c => c.Reservations.Any(r => r.StartTime <= DateTime.UtcNow && r.EndTime >= DateTime.UtcNow))
+                .ToListAsync()
             );
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpGet("Reservation/Active/Count")]
-        public IActionResult ReservationCount()
+        public async Task<IActionResult> ReservationCount()
         {
-            return Ok(repo.GetAll<CafeTable>()
-                .Count(c => c.Reservations.Any(r => r.StartTime <= DateTime.Now && r.EndTime >= DateTime.Now))
+            return Ok(await repo.GetAll<CafeTable>()
+                .CountAsync(c => c.Reservations.Any(r => r.StartTime <= DateTime.UtcNow && r.EndTime >= DateTime.UtcNow))
             );
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
@@ -108,7 +109,7 @@ namespace Tafe.Controllers
             }
 
             var activeReservation = cafeTable.Reservations
-                .FirstOrDefault(r => r.StartTime <= DateTime.Now && r.EndTime >= DateTime.Now);
+                .FirstOrDefault(r => r.StartTime <= DateTime.UtcNow && r.EndTime >= DateTime.UtcNow);
 
             if (activeReservation == null)
             {
@@ -157,10 +158,10 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpGet("Reservation/CanceledReservation")]
-        public IActionResult GetCanceledReservationAsync()
+        public async Task<IActionResult> GetCanceledReservationAsync()
         {
-            return Ok(repo.GetAllDeleted<Reservation>()
-                .Select(r => new { r.Id, r.StartTime, r.EndTime, r.Notes, r.TableId, r.CustomerId, CustName = r.Customer.User.FullName, r.Guests }));
+            return Ok(await repo.GetAllDeleted<Reservation>()
+                .Select(r => new { r.Id, r.StartTime, r.EndTime, r.Notes, r.TableId, r.CustomerId, CustName = r.Customer.User.FullName, r.Guests }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpPatch("Reservation/RestoreReservation")]

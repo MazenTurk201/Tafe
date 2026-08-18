@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -17,10 +18,10 @@ namespace Tafe.Controllers
             this.repo = repo;
         }
         [HttpGet]
-        public IActionResult GetCategories()
+        public async Task<IActionResult> GetCategories()
         {
-            return Ok(repo.GetAll<Category>().Where(c => !c.IsDeleted)
-                .Select(c => new { c.Id, c.Name }));
+            return Ok(await repo.GetAll<Category>().Where(c => !c.IsDeleted)
+                .Select(c => new { c.Id, c.Name }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
@@ -63,10 +64,10 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
-        public IActionResult GetDeletedCategories()
+        public async Task<IActionResult> GetDeletedCategories()
         {
-            return Ok(repo.GetAll<Category>()
-                .Select(c => new { c.Id, c.Name }));
+            return Ok(await repo.GetAll<Category>()
+                .Select(c => new { c.Id, c.Name }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]

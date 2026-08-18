@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.DTOs;
 using Tafe.Repository;
 
@@ -17,10 +17,9 @@ namespace Tafe.Controllers
             this.repo = repo;
         }
         [HttpGet]
-        public IActionResult GetIngredients()
+        public async Task<IActionResult> GetIngredients()
         {
-            return Ok(repo.GetAll<Ingredient>().Where(u => !u.IsDeleted)
-                .Select(u => new {
+            return Ok(await repo.GetAll<Ingredient>().Select(u => new {
                     u.Id,
                     u.Name,
                     u.MinQuantityAlert,
@@ -29,19 +28,27 @@ namespace Tafe.Controllers
                         u.UnitId,
                         u.Unit.Name
                     },
-                    Quantity = u.Quantity
-                        + u.StockTransactions.Where(st => 
-                            st.Type == StockTransactionType.Purchase ||
-                            st.Type == StockTransactionType.Return
-                        ).Sum(st => st.Quantity)
-                        - u.StockTransactions.Where(st => 
-                            st.Type == StockTransactionType.Sale || 
-                            st.Type == StockTransactionType.Waste || 
-                            st.Type == StockTransactionType.Adjustment
-                        ).Sum(st => st.Quantity)
+                    Quantity = u.StockTransactions.Sum(st => st.Quantity)
                     }
-                )
+                ).ToListAsync()
             );
+        }
+        [HttpGet("Warning")]
+        public async Task<IActionResult> MinQuantityAlert()
+        {
+            return Ok(await repo.GetAll<Ingredient>().Where(x => x.StockTransactions.Sum(st => st.Quantity) <= x.MinQuantityAlert).Select(i => new
+            {
+                i.Id,
+                i.Name,
+                Quantity = i.StockTransactions.Sum(q=>q.Quantity),
+                i.MinQuantityAlert,
+                Unit = i.Unit.Name,
+            }).ToListAsync());
+        }
+        [HttpGet("Warning/Count")]
+        public IActionResult MinQuantityAlertCount()
+        {
+            return Ok(repo.GetAll<Ingredient>().Where(x => x.StockTransactions.Sum(st => st.Quantity) <= x.MinQuantityAlert).Count());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
@@ -74,7 +81,6 @@ namespace Tafe.Controllers
             }
 
             Ingredient.Name = ingredientDTO.Name;
-            Ingredient.Quantity = ingredientDTO.Quantity;
             Ingredient.MinQuantityAlert = ingredientDTO.MinQuantityAlert;
             Ingredient.UnitId = ingredientDTO.UnitId;
             await repo.Update(Ingredient);
@@ -93,10 +99,10 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
-        public IActionResult GetDeletedIngredients()
+        public IActionResult GetDeletedIngredientsAsync()
         {
-            return Ok(repo.GetAllDeleted<Ingredient>()
-                .Select(u => new { u.Id, u.Name }));
+            var deletedIngredients = repo.GetAllDeleted<Ingredient>();
+            return Ok(deletedIngredients.Select(u => new { u.Id, u.Name, u.MinQuantityAlert}));
         }
     }
 }

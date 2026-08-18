@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -11,9 +12,9 @@ namespace Tafe.Controllers
         private readonly GenericRepo repo = repo;
 
         [HttpGet]
-        public IActionResult GetMenu()
+        public async Task<IActionResult> GetMenu()
         {
-            return Ok(repo.GetAll<Category>().Where(c => !c.IsDeleted)
+            return Ok(await repo.GetAll<Category>()
                 .Select(c => new {
                     c.Id,
                     c.Name,
@@ -31,7 +32,7 @@ namespace Tafe.Controllers
                             })
                         })
                     }
-                )
+                ).ToListAsync()
             );
         }
     }

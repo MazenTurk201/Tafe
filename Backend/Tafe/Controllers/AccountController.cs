@@ -32,7 +32,8 @@ namespace Tafe.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     UserName = user.UserName,
-                    Email = user.Email
+                    Email = user.Email,
+                    Address = user.Address
                 };
                 IdentityResult result = await userManager.CreateAsync(userApp, user.Password);
                 if (result.Succeeded)
@@ -63,6 +64,7 @@ namespace Tafe.Controllers
                             new Claim(ClaimTypes.NameIdentifier, userFromDB.Id),
                             new Claim(ClaimTypes.Name, userFromDB.UserName!),
                             new Claim(ClaimTypes.GivenName, userFromDB.FullName),
+                            new Claim(ClaimTypes.StreetAddress, userFromDB.Address),
                         ];
                         var userRole = await userManager.GetRolesAsync(userFromDB);
                         foreach (var role in userRole)
@@ -123,7 +125,7 @@ namespace Tafe.Controllers
             return Ok(userInfo);
         }
         [HttpPatch]
-        [Authorize(Roles = "Admin, Manager")]
+        // [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> AddRoleToUser(string username, string roleName)
         {
             var user = await userManager.FindByNameAsync(username);

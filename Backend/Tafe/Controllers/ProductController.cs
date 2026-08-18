@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.DTOs;
 using Tafe.Repository;
 
@@ -17,10 +18,10 @@ namespace Tafe.Controllers
             this.repo = repo;
         }
         [HttpGet]
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
             return Ok(
-                repo.GetAll<Product>()
+                await repo.GetAll<Product>()
                     .Select(c => new { 
                         c.Id,
                         c.Name,
@@ -28,13 +29,13 @@ namespace Tafe.Controllers
                         Categiry = $"{c.Category.Name} (Id: {c.CategoryId})",
                         Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
                 }
-            ));
+            ).ToListAsync());
         }
         [HttpGet("Search")]
-        public IActionResult SearchProducts(string Name)
+        public async Task<IActionResult> SearchProducts(string Name)
         {
             return Ok(
-                repo.Search<Product>(Name)
+                await repo.Search<Product>(Name)
                     .Select(c => new { 
                         c.Id,
                         c.Name,
@@ -42,7 +43,7 @@ namespace Tafe.Controllers
                         Category = $"{c.Category.Name} (Id: {c.CategoryId})",
                         Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
                 }
-            ));
+            ).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
@@ -87,16 +88,16 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]
-        public IActionResult GetDeletedProducts()
+        public async Task<IActionResult> GetDeletedProducts()
         {
-            return Ok(repo.GetAll<Product>()
+            return Ok(await repo.GetAll<Product>()
                 .Select(c => new {
                     c.Id,
                     c.Name,
                     c.Price,
                     Categiry = $"{c.Category.Name} (Id: {c.CategoryId})",
                     c.Ingredients
-                    }));
+                    }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]

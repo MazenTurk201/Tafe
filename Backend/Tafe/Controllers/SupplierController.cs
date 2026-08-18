@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.DTOs;
 using Tafe.Models;
 using Tafe.Repository;
@@ -117,9 +118,9 @@ namespace Tafe.Controllers
             }));
         }
         [HttpGet("PurchaseInvoices")]
-        public IActionResult GetPurchaseInvoices()
+        public async Task<IActionResult> GetPurchaseInvoices()
         {
-            List<PurchaseInvoice> purchaseInvoices = repo.GetAll<PurchaseInvoice>();
+            List<PurchaseInvoice> purchaseInvoices = await repo.GetAll<PurchaseInvoice>().ToListAsync();
             if (purchaseInvoices == null)
             {
                 return NotFound();
@@ -187,7 +188,7 @@ public async Task<IActionResult> CreatePurchaseInvoice(PurchaseInvoiceDTO dto)
 
     var purchaseInvoice = new PurchaseInvoice
     {
-        InvoiceNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
+        InvoiceNumber = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff"),
         SupplierId = dto.SupplierId,
 
         Total = dto.Items.Sum(i => i.Quantity * i.Price),

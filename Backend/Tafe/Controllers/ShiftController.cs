@@ -34,6 +34,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -51,26 +52,26 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet]
-        public IActionResult GetShifts()
+        public async Task<IActionResult> GetShifts()
         {
-            return Ok(repo.GetAll<Shift>()
-                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName, u.User.FullName } }));
+            return Ok(await repo.GetAll<Shift>()
+                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName, u.User.FullName } }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Active")]
-        public IActionResult GetActiveShifts()
+        public async Task<IActionResult> GetActiveShifts()
         {
-            return Ok(repo.GetAll<Shift>()
+            return Ok(await repo.GetAll<Shift>()
                 .Where(s => s.IsClosed == false)
-                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName } }));
+                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName } }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Today")]
-        public IActionResult GetTodayShifts()
+        public async Task<IActionResult> GetTodayShifts()
         {
-            return Ok(repo.GetAll<Shift>()
+            return Ok(await repo.GetAll<Shift>()
                 .Where(s => s.OpenedAt.Date == DateTime.UtcNow.Date)
-                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName, u.User.FullName } }));
+                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName, u.User.FullName } }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpGet("Status")]
@@ -88,11 +89,11 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("{startDate}/{endDate}")]
-        public IActionResult GetShifts(DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> GetShifts(DateTime startDate, DateTime endDate)
         {
-            return Ok(repo.GetAll<Shift>()
+            return Ok(await repo.GetAll<Shift>()
                 .Where(s => s.OpenedAt >= startDate && s.OpenedAt <= endDate)
-                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName, u.User.FullName } }));
+                .Select(u => new { u.Id, u.Name, u.OpenedAt, u.ClosedAt, u.OpeningCash, u.ClosingCash, u.ExpectedCash, u.Difference, u.IsClosed, User = new { u.User.Id, u.User.UserName, u.User.FullName } }).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager, Cashier")]
         [HttpPost("OpenShift")]
@@ -109,7 +110,7 @@ namespace Tafe.Controllers
                 
                 if (activeShift != null) return BadRequest("You already have an active shift.");
 
-                repo.Add(new Shift { Name = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), ClosedAt = null, IsClosed = false ,OpenedAt = DateTime.UtcNow, OpeningCash = OpeningCash, ClosingCash = 0, ExpectedCash = 0, Difference = 0, UserId = userId });
+                repo.Add(new Shift { Name = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), ClosedAt = null, IsClosed = false ,OpenedAt = DateTime.UtcNow, OpeningCash = OpeningCash, ClosingCash = 0, ExpectedCash = 0, Difference = 0, UserId = userId });
                 await repo.Save();
                 return Ok();
             }
@@ -131,7 +132,7 @@ namespace Tafe.Controllers
             List<Payment> payments = [.. repo.GetAll<Payment>().Where(p => p.ShiftId == shift.Id && p.Method == PaymentMethod.Cash)];
             decimal totalPayments = payments.Sum(p => p.Amount);
 
-            shift.ClosedAt = DateTime.Now;
+            shift.ClosedAt = DateTime.UtcNow;
             shift.IsClosed = true;
             shift.ClosingCash = ClosingCash;
             shift.ExpectedCash = shift.OpeningCash + totalPayments;

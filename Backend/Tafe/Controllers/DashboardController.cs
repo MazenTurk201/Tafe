@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -11,57 +12,65 @@ namespace Tafe.Controllers
     public class DashboardController(GenericRepo repo) : ControllerBase
     {
         private readonly GenericRepo repo = repo;
-        
-        [HttpGet()]
-        public IActionResult GetSalesSummary()
+
+        [HttpGet]
+        public async Task<IActionResult> GetSalesSummary()
         {
-            // 1. تجميع كل أرقام الأوردرات في كويري SQL واحد (Synchronous)
-            var orderStats = repo.GetAll<Order>() // لازم ترجع IQueryable
-                .GroupBy(_ => 1)
-                .Select(g => new
-                {
-                    TotalOrders = g.Count(),
-                    TotalSales = g.Where(o => o.Status == OrderStatus.Completed).Sum(o => o.Total),
-                    ActiveOrders = g.Count(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Completed)
-                })
-                .FirstOrDefault();
+            var orders = repo.GetAll<Order>();
+            var payments = repo.GetAll<Payment>();
+            var customers = repo.GetAll<CustomerProfile>();
+            var products = repo.GetAll<Product>();
 
-            var totalOrders = orderStats?.TotalOrders ?? 0;
-            var totalSales = orderStats?.TotalSales ?? 0;
-            var totalActiveOrders = orderStats?.ActiveOrders ?? 0;
+            var totalOrdersTask =
+                orders.CountAsync();
 
-            // 2. الكاش من جدول المدفوعات مباشرة عشان الدقة
-            var totalCashPayments = repo.GetAll<Payment>()
-                .Where(p => p.Order.Status == OrderStatus.Completed && p.Method == PaymentMethod.Cash)
-                .Sum(p => p.Amount);
+            var totalSalesTask =
+                orders
+                    .Where(o => o.Status == OrderStatus.Completed)
+                    .SumAsync(o => o.Total);
 
-            // 3. العملاء والمنتجات
-            var customerStats = repo.GetAll<CustomerProfile>()
-                .GroupBy(_ => 1)
-                .Select(g => new
-                {
-                    TotalCustomers = g.Count(),
-                    TotalVip = g.Count(c => c.Vip)
-                })
-                .FirstOrDefault();
+            var totalActiveOrdersTask =
+                orders
+                    .CountAsync(o =>
+                        o.Status != OrderStatus.Cancelled &&
+                        o.Status != OrderStatus.Completed);
 
-            var totalCustomers = customerStats?.TotalCustomers ?? 0;
-            var totalVipCustomers = customerStats?.TotalVip ?? 0;
+            var totalCashPaymentsTask =
+                payments
+                    .Where(p =>
+                        p.Order.Status == OrderStatus.Completed &&
+                        p.Method == PaymentMethod.Cash)
+                    .SumAsync(p => p.Amount);
 
-            var totalProducts = repo.GetAll<Product>().Count;
+            var totalCustomersTask =
+                customers.CountAsync();
+
+            var totalVipCustomersTask =
+                customers.CountAsync(c => c.Vip);
+
+            var totalProductsTask =
+                products.CountAsync();
+
+            await Task.WhenAll(
+                totalOrdersTask,
+                totalSalesTask,
+                totalActiveOrdersTask,
+                totalCashPaymentsTask,
+                totalCustomersTask,
+                totalVipCustomersTask,
+                totalProductsTask
+            );
 
             return Ok(new
             {
-                TotalCashPayments = totalCashPayments,
-                TotalSales = totalSales,
-                TotalOrders = totalOrders,
-                TotalCustomers = totalCustomers,
-                TotalProducts = totalProducts,
-                TotalVips = totalVipCustomers,
-                TotalActiveOrders = totalActiveOrders
+                TotalCashPayments = totalCashPaymentsTask.Result,
+                TotalSales = totalSalesTask.Result,
+                TotalOrders = totalOrdersTask.Result,
+                TotalCustomers = totalCustomersTask.Result,
+                TotalProducts = totalProductsTask.Result,
+                TotalVips = totalVipCustomersTask.Result,
+                TotalActiveOrders = totalActiveOrdersTask.Result
             });
         }
-        // Active Shifts...
-
     }
 }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "6lV+PQlC2wgeij2yppEw85A8q41Ec9esDWhu8DazCkg=",
+  "Hash": "Vm9XPDPI/q14Pv8q5KEIr8ZnsZWU0BP/lkerwNHfEc8=",
   "Source": "Tafe",
   "BasePath": "_content/Tafe",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/assets/index-5yEmU-sp.js",
+      "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/assets/index-Bj4k0hBh.js",
       "SourceId": "Tafe",
       "SourceType": "Discovered",
       "ContentRoot": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/",
       "BasePath": "_content/Tafe",
-      "RelativePath": "assets/index-5yEmU-sp.js",
+      "RelativePath": "assets/index-Bj4k0hBh.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,15 +33,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/index-5yEmU-sp.js"
+      "OriginalItemSpec": "wwwroot/assets/index-Bj4k0hBh.js"
     },
     {
-      "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/assets/index-Bi5Y5BqG.css",
+      "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/assets/index-U8JWJZrU.css",
       "SourceId": "Tafe",
       "SourceType": "Discovered",
       "ContentRoot": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/",
       "BasePath": "_content/Tafe",
-      "RelativePath": "assets/index-Bi5Y5BqG.css",
+      "RelativePath": "assets/index-U8JWJZrU.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -52,7 +52,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/index-Bi5Y5BqG.css"
+      "OriginalItemSpec": "wwwroot/assets/index-U8JWJZrU.css"
     },
     {
       "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/favicon.ico",

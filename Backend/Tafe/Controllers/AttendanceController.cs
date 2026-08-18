@@ -1,6 +1,8 @@
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tafe.Models;
 using Tafe.Repository;
 
@@ -25,8 +27,7 @@ namespace Tafe.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-            var employee = repo.GetAll<EmployeeProfile>()
-                .FirstOrDefault(e => e.UserId == userId);
+            var employee = repo.GetAll<EmployeeProfile>().FirstOrDefault(e => e.UserId == userId);
 
             if (employee == null)
                 return NotFound("Employee profile not found.");
@@ -76,7 +77,7 @@ namespace Tafe.Controllers
 
             var attendance = attendances
                 .Where(a =>
-                    a.Employee?.UserId == userId &&
+                    a.Employee!.UserId == userId &&
                     a.CheckOut == null)
                 .OrderByDescending(a => a.CheckIn)
                 .FirstOrDefault();
@@ -121,7 +122,7 @@ namespace Tafe.Controllers
             var attendances = repo.GetAll<Attendance>();
 
             var query = attendances
-                .Where(a => a.Employee?.UserId == userId);
+                .Where(a => a.Employee!.UserId == userId);
 
             if (From.HasValue)
             {
@@ -143,9 +144,9 @@ namespace Tafe.Controllers
 
                     Employee = new
                     {
-                        a.Employee?.UserId,
-                        a.Employee?.User.UserName,
-                        a.Employee?.User.FullName
+                        a.Employee!.UserId,
+                        a.Employee.User.UserName,
+                        a.Employee.User.FullName
                     },
 
                     a.CheckIn,
@@ -173,7 +174,7 @@ namespace Tafe.Controllers
 
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("All")]
-        public IActionResult GetAll(
+        public async Task<IActionResult> GetAll(
             DateTime? From,
             DateTime? To,
             string? EmployeeId)
@@ -202,7 +203,7 @@ namespace Tafe.Controllers
                 query = query.Where(a => a.EmployeeProfileId == EmployeeId);
             }
 
-            var result = query
+            var result = await query
                 .OrderByDescending(a => a.CheckIn)
                 .Select(a => new
                 {
@@ -230,7 +231,7 @@ namespace Tafe.Controllers
 
                     a.Notes
                 })
-                .ToList();
+                .ToListAsync();
 
             return Ok(result);
         }
@@ -243,7 +244,7 @@ namespace Tafe.Controllers
 
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Summary")]
-        public IActionResult Summary(
+        public async Task<IActionResult> Summary(
             DateTime? From,
             DateTime? To)
         {
@@ -263,7 +264,7 @@ namespace Tafe.Controllers
                     a.CheckIn.Date <= To.Value.Date);
             }
 
-            var result = query
+            var result = await query
                 .GroupBy(a => new
                 {
                     a.EmployeeProfileId,
@@ -291,7 +292,7 @@ namespace Tafe.Controllers
                         a.CheckOut == null)
                 })
                 .OrderBy(x => x.FullName)
-                .ToList();
+                .ToListAsync();
 
             return Ok(result);
         }
@@ -303,13 +304,13 @@ namespace Tafe.Controllers
 
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Today")]
-        public IActionResult Today()
+        public async Task<IActionResult> Today()
         {
             var today = DateTime.UtcNow.Date;
 
             var attendances = repo.GetAll<Attendance>();
 
-            var result = attendances
+            var result = await attendances
                 .Where(a => a.CheckIn.Date == today)
                 .OrderByDescending(a => a.CheckIn)
                 .Select(a => new
@@ -334,7 +335,7 @@ namespace Tafe.Controllers
 
                     IsOpen = !a.CheckOut.HasValue
                 })
-                .ToList();
+                .ToListAsync();
 
             return Ok(result);
         }

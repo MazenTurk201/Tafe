@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Tafe.DB;
 using Tafe.Models;
 
@@ -41,9 +42,10 @@ namespace Tafe.Repository
         public  T? Get<T>(int id) where T : class, IEntityTemplate => Query<T>().FirstOrDefault(obj => obj.Id == id);
         public  T? Get<T>(string Name) where T : class, IEntityTemplate => Query<T>().FirstOrDefault(obj => obj.Name == Name);
         public  T? GetP<T>(string UserId) where T : class, IProfileTemplate => Query<T>().FirstOrDefault(obj => obj.UserId == UserId);
-        public  List<T> GetAll<T>() where T : class => Query<T>().ToList();
-        public  List<T> GetAllDeleted<T>() where T : class, IEntityTemplate => Query<T>().IgnoreQueryFilters().Where(obj => obj.IsDeleted).ToList();
-        public  List<T> Search<T>(string Name) where T : class, IEntityTemplate => Query<T>().Where(obj => obj.Name.Contains(Name)).ToList();
+        public  IQueryable<T> GetAll<T>() where T : class => Query<T>();
+        public  IQueryable<T> GetAllDeleted<T>() where T : class, IEntityTemplate => Query<T>().IgnoreQueryFilters().Where(obj => obj.IsDeleted);
+        public  IQueryable<T> Search<T>(string Name) where T : class, IEntityTemplate => Query<T>().Where(obj => obj.Name.Contains(Name));
+        public async Task<decimal> GetStockQuantity(int ingredientId) { return await db.StockTransactions.Where(x => x.IngredientId == ingredientId).SumAsync(x => x.Quantity); }
 
         private IQueryable<T> Query<T>() where T : class
         {

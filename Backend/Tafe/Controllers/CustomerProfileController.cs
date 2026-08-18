@@ -85,7 +85,8 @@ namespace Tafe.Controllers
                 Points = CustomerProfile.Points,
                 TotalSpent = CustomerProfile.TotalSpent,
                 Vip = CustomerProfile.Vip,
-                BirthDate = CustomerProfile.BirthDate
+                BirthDate = CustomerProfile.BirthDate,
+                Address = CustomerProfile.Address
             };
 
             return Ok(CustomerProfileDTO);
@@ -108,7 +109,8 @@ namespace Tafe.Controllers
                 Points = e.Points,
                 TotalSpent = e.TotalSpent,
                 Vip = e.Vip,
-                BirthDate = e.BirthDate
+                BirthDate = e.BirthDate,
+                Address = e.Address
             }));
         }
         [HttpPost]
@@ -122,7 +124,7 @@ namespace Tafe.Controllers
                     Email = CustomerCreateDTO.User.Email,
                     FirstName = CustomerCreateDTO.User.FirstName,
                     LastName = CustomerCreateDTO.User.LastName,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow
                 };
                 var result = await userManager.CreateAsync(appUser, CustomerCreateDTO.User.Password);
 
@@ -132,7 +134,8 @@ namespace Tafe.Controllers
                     Vip = CustomerCreateDTO.Vip,
                     TotalSpent = 0,
                     BirthDate = CustomerCreateDTO.BirthDate,
-                    User = appUser
+                    User = appUser,
+                    Address = CustomerCreateDTO.Address
                     });
                 await userManager.AddToRoleAsync(appUser, "Clinet");
                 await repo.Save();
@@ -150,6 +153,7 @@ namespace Tafe.Controllers
                 profile.TotalSpent = CustomerProfileUpdateDTO.TotalSpent;
                 profile.Vip = CustomerProfileUpdateDTO.Vip;
                 profile.BirthDate = CustomerProfileUpdateDTO.BirthDate;
+                profile.Address = CustomerProfileUpdateDTO.Address;
                 await repo.Update(profile);
                 await repo.Save();
                 return Ok();
@@ -173,7 +177,8 @@ namespace Tafe.Controllers
                 Points = e.Points,
                 TotalSpent = e.TotalSpent,
                 Vip = e.Vip,
-                BirthDate = e.BirthDate
+                BirthDate = e.BirthDate,
+                Address = e.Address
             }));
         }
         [HttpDelete("{userName}")]

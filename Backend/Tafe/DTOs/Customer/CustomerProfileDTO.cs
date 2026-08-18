@@ -15,5 +15,6 @@ namespace Tafe.DTOs
         public bool Vip { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime BirthDate { get; set; }
+        public string Address { get; set; }
     }
 }

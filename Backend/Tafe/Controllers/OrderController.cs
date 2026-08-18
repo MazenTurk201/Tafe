@@ -88,13 +88,13 @@ namespace Tafe.Controllers
         }
 
         [HttpGet("Revenue/{start}/{end}")]
-        public IActionResult GetRevenue(DateTime start, DateTime end)
+        public async Task<IActionResult> GetRevenue(DateTime start, DateTime end)
         {
             if (start > end)
             {
                 (end, start) = (start, end);
             }
-            var orders = repo.GetAll<Order>().Where(o => o.CreatedAt >= start && o.CreatedAt <= end && o.Status != OrderStatus.Cancelled);
+            var orders = await repo.GetAll<Order>().Where(o => o.CreatedAt >= start && o.CreatedAt <= end && o.Status != OrderStatus.Cancelled).ToListAsync();
             return Ok(new
             {
                 StartDate = start,
@@ -815,7 +815,7 @@ namespace Tafe.Controllers
                 CreatedAt = o.CreatedAt,
                 UpdatedAt = o.UpdatedAt,
                 Payments = o.Payments,
-                Items = (o.Items ?? []).Select(i => new OrderItemDTO
+                Items = [.. (o.Items ?? []).Select(i => new OrderItemDTO
                 {
                     Id = i.Id,
                     OrderId = i.OrderId,
@@ -826,7 +826,7 @@ namespace Tafe.Controllers
                     Discount = i.Discount,
                     Total = i.Total,
                     Notes = i.Notes
-                }).ToList()
+                })]
             };
         }
     }
