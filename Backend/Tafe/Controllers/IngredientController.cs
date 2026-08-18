@@ -52,7 +52,7 @@ namespace Tafe.Controllers
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
-        public async Task<IActionResult> CreateIngredient(IngredientDTO ingredientCreate)
+        public async Task<IActionResult> CreateIngredient(IngredientCreateDTO ingredientCreate)
         {
             if (ModelState.IsValid)
             {

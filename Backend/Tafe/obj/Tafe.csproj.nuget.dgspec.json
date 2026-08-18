@@ -10,11 +10,11 @@
         "projectUniqueName": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/Tafe.csproj",
         "projectName": "Tafe",
         "projectPath": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/Tafe.csproj",
-        "packagesPath": "/home/t/.nuget/packages/",
+        "packagesPath": "/root/.nuget/packages/",
         "outputPath": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/t/.nuget/NuGet/NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -44,7 +44,7 @@
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.29, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -54,11 +54,11 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.25, )"
+              "version": "[8.0.29, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[8.0.25, )"
+              "version": "[8.0.29, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
@@ -68,7 +68,7 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[8.0.29, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

@@ -190,7 +190,7 @@ export default function OrderDetailsPage() {
     } catch (error) {
       console.error(error);
       setPaymentMessage(
-        "Failed to add payment. Make sure you have an active shift."
+        "Failed to add payment. Make sure you have an active shift. Error: "+ error
       );
     } finally {
       setAddingPayment(false);

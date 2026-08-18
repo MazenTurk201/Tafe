@@ -10,7 +10,6 @@ namespace Tafe.DTOs
         public int Points { get; set; }
         public bool Vip { get; set; }
         [DataType(DataType.DateTime)]
-        public DateTime BirthDate { get; set; }
-        public string Address { get; set; }
+        public DateOnly BirthDate { get; set; }
     }
 }

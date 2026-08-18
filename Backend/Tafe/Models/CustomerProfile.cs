@@ -17,8 +17,7 @@ public class CustomerProfile : IProfileTemplate
     public bool Vip { get; set; }
 
     [AllowNull]
-    public DateTime BirthDate { get; set; }
-    public string Address { get; set; }
+    public DateOnly BirthDate { get; set; }
     public virtual ICollection<Order> Orders { get; set; } = [];
 
     public virtual ICollection<CustomerPoint> PointsHistory { get; set; } = [];

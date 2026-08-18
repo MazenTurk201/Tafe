@@ -20,56 +20,45 @@ namespace Tafe.Controllers
             var payments = repo.GetAll<Payment>();
             var customers = repo.GetAll<CustomerProfile>();
             var products = repo.GetAll<Product>();
-
-            var totalOrdersTask =
-                orders.CountAsync();
-
-            var totalSalesTask =
-                orders
+        
+            var totalOrders =
+                await orders.CountAsync();
+        
+            var totalSales =
+                (decimal)await orders
                     .Where(o => o.Status == OrderStatus.Completed)
-                    .SumAsync(o => o.Total);
+                    .SumAsync(o => (double)o.Total);
 
-            var totalActiveOrdersTask =
-                orders
-                    .CountAsync(o =>
-                        o.Status != OrderStatus.Cancelled &&
-                        o.Status != OrderStatus.Completed);
+            var totalActiveOrders =
+                await orders.CountAsync(o =>
+                    o.Status != OrderStatus.Cancelled &&
+                    o.Status != OrderStatus.Completed);
 
-            var totalCashPaymentsTask =
-                payments
+            var totalCashPayments =
+                (decimal)await payments
                     .Where(p =>
                         p.Order.Status == OrderStatus.Completed &&
                         p.Method == PaymentMethod.Cash)
-                    .SumAsync(p => p.Amount);
+                    .SumAsync(p => (double)p.Amount);
 
-            var totalCustomersTask =
-                customers.CountAsync();
-
-            var totalVipCustomersTask =
-                customers.CountAsync(c => c.Vip);
-
-            var totalProductsTask =
-                products.CountAsync();
-
-            await Task.WhenAll(
-                totalOrdersTask,
-                totalSalesTask,
-                totalActiveOrdersTask,
-                totalCashPaymentsTask,
-                totalCustomersTask,
-                totalVipCustomersTask,
-                totalProductsTask
-            );
+            var totalCustomers =
+                await customers.CountAsync();
+        
+            var totalVipCustomers =
+                await customers.CountAsync(c => c.Vip);
+        
+            var totalProducts =
+                await products.CountAsync();
 
             return Ok(new
             {
-                TotalCashPayments = totalCashPaymentsTask.Result,
-                TotalSales = totalSalesTask.Result,
-                TotalOrders = totalOrdersTask.Result,
-                TotalCustomers = totalCustomersTask.Result,
-                TotalProducts = totalProductsTask.Result,
-                TotalVips = totalVipCustomersTask.Result,
-                TotalActiveOrders = totalActiveOrdersTask.Result
+                TotalCashPayments = totalCashPayments,
+                TotalSales = totalSales,
+                TotalOrders = totalOrders,
+                TotalCustomers = totalCustomers,
+                TotalProducts = totalProducts,
+                TotalVips = totalVipCustomers,
+                TotalActiveOrders = totalActiveOrders
             });
         }
     }
