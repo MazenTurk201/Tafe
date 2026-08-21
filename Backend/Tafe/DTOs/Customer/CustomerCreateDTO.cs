@@ -9,7 +9,7 @@ namespace Tafe.DTOs
         public AppUserRegisterDTO User { get; set; } = null;
         public int Points { get; set; }
         public bool Vip { get; set; }
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateOnly BirthDate { get; set; }
     }
 }

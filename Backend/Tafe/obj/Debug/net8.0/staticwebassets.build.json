@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Vm9XPDPI/q14Pv8q5KEIr8ZnsZWU0BP/lkerwNHfEc8=",
+  "Hash": "jkQQ4xmzYwFGdOoYdEfmLLxSXfh/LamuwKh7fOVABLY=",
   "Source": "Tafe",
   "BasePath": "_content/Tafe",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/assets/index-Bj4k0hBh.js",
+      "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/assets/index-BvMYr_Au.js",
       "SourceId": "Tafe",
       "SourceType": "Discovered",
       "ContentRoot": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/",
       "BasePath": "_content/Tafe",
-      "RelativePath": "assets/index-Bj4k0hBh.js",
+      "RelativePath": "assets/index-BvMYr_Au.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,7 +33,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/assets/index-Bj4k0hBh.js"
+      "OriginalItemSpec": "wwwroot/assets/index-BvMYr_Au.js"
     },
     {
       "Identity": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/wwwroot/assets/index-U8JWJZrU.css",

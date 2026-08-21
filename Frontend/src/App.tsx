@@ -10,9 +10,10 @@ import { AuthProvider } from './context/AuthContext';
 
 function MainLayout() { 
   return ( 
-    <div className="flex min-h-dvh h-full flex-col items-center bg-zinc-50 font-sans dark:bg-black"> 
-      <NavBar /> 
-      <main className="w-full flex-1"> 
+    <div className="flex min-h-dvh h-full flex-col items-center font-sans"> 
+      <NavBar />
+      <br />
+      <main className="w-full h-full flex-1">
         <Outlet /> 
       </main> 
       <Footer /> 

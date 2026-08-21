@@ -25,10 +25,10 @@ namespace Tafe.Controllers
                     u.MinQuantityAlert,
                     Unit = new
                     {
-                        u.UnitId,
+                        Id = u.UnitId,
                         u.Unit.Name
                     },
-                    Quantity = u.StockTransactions.Sum(st => st.Quantity)
+                    Quantity = u.StockTransactions.Sum(st => (double)st.Quantity)
                     }
                 ).ToListAsync()
             );
@@ -36,19 +36,27 @@ namespace Tafe.Controllers
         [HttpGet("Warning")]
         public async Task<IActionResult> MinQuantityAlert()
         {
-            return Ok(await repo.GetAll<Ingredient>().Where(x => x.StockTransactions.Sum(st => st.Quantity) <= x.MinQuantityAlert).Select(i => new
+            return Ok(await repo.GetAll<Ingredient>().Select(i => new
             {
                 i.Id,
                 i.Name,
-                Quantity = i.StockTransactions.Sum(q=>q.Quantity),
+                Quantity = i.StockTransactions.Sum(q=>(double?)q.Quantity) ?? 0,
                 i.MinQuantityAlert,
                 Unit = i.Unit.Name,
-            }).ToListAsync());
+            })
+            .Where(i => i.Quantity <= (double)i.MinQuantityAlert).ToListAsync());
         }
         [HttpGet("Warning/Count")]
         public IActionResult MinQuantityAlertCount()
         {
-            return Ok(repo.GetAll<Ingredient>().Where(x => x.StockTransactions.Sum(st => st.Quantity) <= x.MinQuantityAlert).Count());
+            return Ok(
+                repo.GetAll<Ingredient>()
+                    .Where(x =>
+                        (x.StockTransactions.Sum(st => (double?)st.Quantity) ?? 0)
+                        <= (double)x.MinQuantityAlert
+                    )
+                    .Count()
+            );
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPost]

@@ -62,9 +62,8 @@ const SidebarDrawer = () => {
           <ul className="-mt-10">
             {ItemDrawer("/", "Main")}
             {ItemDrawer("/orders", "Orders")}
-            {ItemDrawer("/donate", "Donate")}
-            {ItemDrawer("/about", "About")}
-            {ItemDrawer("/services", "Services")}
+            {ItemDrawer("/units", "Units")}
+            {ItemDrawer("/categories", "Categories")}
           </ul>
           <div className="flex w-full justify-evenly mt-auto" dir="rtl">
             <button onClick={toggleLanguage} className="drawericons outlineButton">

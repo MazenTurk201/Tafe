@@ -9,7 +9,7 @@ namespace Tafe.DTOs
         public int Points { get; set; }
         public decimal TotalSpent { get; set; }
         public bool Vip { get; set; }
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateOnly BirthDate { get; set; }
         public string Address { get; set; }
     }

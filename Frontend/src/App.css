@@ -55,7 +55,7 @@
      ======================================== */
 
   /* بني قهوة غامق */
-  --background: #593322;
+  --background: #fff2e6;
 
   /* أغمق شوية للعناصر الكبيرة */
   --background-dark: #1B100B;
@@ -112,6 +112,8 @@
 
   background-color: var(--background);
   color: var(--foreground);
+
+  --text: white;
 }
 
 .dark {
@@ -141,10 +143,8 @@ button{
   outline: none;
   border: none;
   cursor: pointer;
-  --button-background-color: var(--main);
-  --button-text-color: white;
-  background-color: var(--button-background-color);
-  color: var(--button-text-color);
+  background-color: var(--main);
+  color: var(--text);
   padding: 0.5rem .7rem;
   border-radius: 0.15rem 2.5rem;
 }
@@ -159,7 +159,7 @@ button:hover {
 }
 
 .menuiconbutton{
-  font-size: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
   color: var(--background-color);
 }
@@ -199,4 +199,96 @@ main{
 
 input:focus{
   outline: none;
+}
+
+.delete-btn{
+  color: red;
+  border-radius: 25px;
+  background-color: rgba(255, 0, 0, 0.25);
+  margin: 2px 5px;
+}
+
+.update-btn{
+  color: blue;
+  border-radius: 25px;
+  background-color: rgba(135, 207, 235, 0.25);
+  margin: 2px 5px;
+  
+  .dark &{
+    color: skyblue;
+  }
+}
+
+.restore-btn{
+  color: goldenrod;
+  border-radius: 25px;
+  background-color: rgba(255, 217, 0, 0.25);
+  margin: 2px 5px;
+
+  .dark &{
+    color: gold;
+  }
+}
+
+summary{
+  width: fit-content;
+  padding: 10px 15px;
+  border-radius: 25px;
+  background: linear-gradient(45deg, var(--main), var(--main-light));
+  cursor: pointer;
+  color: var(--color-zinc-600);
+  
+  .dark &{
+    color: var(--text);
+  }
+}
+
+.tableCover{
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  position: relative;
+  overflow-x: auto;
+  margin: 20px;
+  border-radius: 16px;
+  border: 2px var(--accent) solid;
+}
+
+table{
+  table-layout: auto;
+  text-align: left;
+  font-size: var(--text-sm) /* 0.875rem = 14px */;
+  line-height: var(--tw-leading, var(--text-sm--line-height) /* calc(1.25 / 0.875) ≈ 1.428571 */);
+  width: 100%;
+
+  @media (width >= 48rem /* 768px */) {
+    table-layout: fixed;
+  }
+  &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+    text-align: right;
+  }
+}
+
+thead{
+  border-bottom: 2px var(--accent) solid;
+  background-color: var(--main-hover);
+}
+
+th{
+  --tw-font-weight: 500;
+  font-weight: 500;
+  padding-inline: 24px;
+  padding-block: 12px;
+}
+
+td{
+  padding-inline: 24px;
+  padding-block: 16px;
+  gap: 5px;
+  width: fit-content;
+}
+
+tr{
+  &:nth-child(even) {
+    background-color: var(--main-light);
+  }
 }

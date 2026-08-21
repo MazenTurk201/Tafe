@@ -115,7 +115,7 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
                   bg-white px-4 py-2 outline-none
                   focus:border-black
                   dark:border-zinc-800 dark:bg-zinc-900
-                `})]})]}),u&&(0,V.jsx)(`p`,{className:`mt-3 text-sm text-zinc-600 dark:text-zinc-400`,children:u}),(0,V.jsx)(`button`,{onClick:async()=>{if(n)try{p(!0),d(null),await yT.addPayment({orderId:n.id,method:i,amount:o??n.total,transactionNumber:c.trim()||void 0}),d(`Payment of ${(o??n.total).toFixed(2)} added (${i}).`),s(null),l(``)}catch(e){console.error(e),d(`Failed to add payment. Make sure you have an active shift.`)}finally{p(!1)}},disabled:f,className:`
+                `})]})]}),u&&(0,V.jsx)(`p`,{className:`mt-3 text-sm text-zinc-600 dark:text-zinc-400`,children:u}),(0,V.jsx)(`button`,{onClick:async()=>{if(n)try{p(!0),d(null),await yT.addPayment({orderId:n.id,method:i,amount:o??n.total,transactionNumber:c.trim()||void 0}),d(`Payment of ${(o??n.total).toFixed(2)} added (${i}).`),s(null),l(``)}catch(e){console.error(e),d(`Failed to add payment. Make sure you have an active shift. Error: `+e)}finally{p(!1)}},disabled:f,className:`
             mt-4 rounded-xl bg-black px-5 py-2
             text-sm font-semibold text-white
             hover:bg-zinc-800 disabled:opacity-50

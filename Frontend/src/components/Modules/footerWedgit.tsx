@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import ThemeImage from '../Utilties/ThemeImage';
 
 import {
@@ -14,20 +15,21 @@ function ListItem(Title: string, Link: string) {
 }
 
 function Footer() {
-    return <footer className='w-full flex not-sm:flex-col items-center justify-evenly gap-5 p-10 text-zinc-800 dark:text-zinc-200'>
+    const { t } = useTranslation();
+    
+    return <footer className='w-full flex not-sm:flex-col items-center justify-evenly gap-5 p-10'>
         <div className='flex flex-col items-center justify-center text-left'>
             <ThemeImage size={200}/>
-            <p>Thanks for visiting out Cafe {"<3`"}</p>
-            <p>&copy; {new Date().getFullYear()} Turk. All rights reserved.</p>
+            <p>{t("footerThx")}</p>
+            <p className='rtl:text-right'>&copy; {new Date().getFullYear()} {t("footerCopyR")}</p>
         </div>
         <div className='w-full flex flex-col items-center justify-center'>
-            <p className='font-bold text-xl text-left'>Products:</p>
+            <p className='font-bold text-xl text-left'>{t("footerBranches")}</p>
             <ul>
-                {ListItem("Main", "/")}
-                {ListItem("Menu", "/Menu")}
-                {ListItem("Reservation", "/Reservation")}
-                <li>
-                    Let's build something amazing together!
+                {ListItem(t("footerBranche"), "/")}
+                <br />
+                <li className='text-xl text-center'>
+                    {t("footerQute")}
                 </li>
             </ul>
         </div>
