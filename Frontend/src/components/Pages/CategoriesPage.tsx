@@ -14,11 +14,8 @@ export default function CategoriesPage() {
   const [loadingD, setLoadingD] = useState(true);
   const { t } = useTranslation();
 
-  
-
   const loadCategories = async () => {
     try {
-      setLoading(true);
       const data = await CategoriesApi.GetCategories();
       setCategory(data);
     } catch (error) {
@@ -26,11 +23,10 @@ export default function CategoriesPage() {
     } finally {
       setLoading(false);
     }
-
   };
+
   const loadDeletedCategories = async () => {
     try {
-      setLoadingD(true);
       const data = await CategoriesApi.GetDeletedCategories();
       setDelCategory(data);
     } catch (error) {
@@ -45,10 +41,35 @@ export default function CategoriesPage() {
       loadCategories(),
       loadDeletedCategories(),
     ]);
-  }
+  };
 
   useEffect(() => {
-    Refresh();
+    let ignore = false;
+
+    (async () => {
+      try {
+        const [data, deletedData] = await Promise.all([
+          CategoriesApi.GetCategories(),
+          CategoriesApi.GetDeletedCategories(),
+        ]);
+
+        if (!ignore) {
+          setCategory(data);
+          setDelCategory(deletedData);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+          setLoadingD(false);
+        }
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleDelete = async (id: number) => {

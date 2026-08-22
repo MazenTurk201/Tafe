@@ -5,8 +5,13 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-  username: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  email: string;
   password: string;
+  confirmPassword: string;
+  address?: string;
 }
 
 export interface AuthResponse {

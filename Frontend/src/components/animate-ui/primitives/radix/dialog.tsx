@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable react-refresh/only-export-components -- animate-ui pattern: hooks co-located with components */
+
 import * as React from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { AnimatePresence, motion, type HTMLMotionProps } from 'motion/react';

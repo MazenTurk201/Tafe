@@ -6,6 +6,9 @@ import NewOrderPage from '@/components/Pages/Orders/NewOrderPage';
 import UnitsPage from '@/components/Pages/UnitsPage';
 import CategoriesPage from '@/components/Pages/CategoriesPage';
 import IngredientsPage from '../Pages/Ingredients/IngredientsPage';
+import MenuPage from '../Pages/MenuPage';
+import ProfilePage from '../Pages/ProfilePage';
+import EmployeeManagementPage from '../Pages/EmployeeManagementPage';
 
 export const routes = [
   { path: '/', element: <Main /> },
@@ -15,5 +18,8 @@ export const routes = [
   { path: "/units", element: <UnitsPage />, },
   { path: "/categories", element: <CategoriesPage />, },
   { path: "/ingredients", element: <IngredientsPage />, },
+  { path: "/menu", element: <MenuPage />, },
+  { path: "/profile", element: <ProfilePage />, },
+  { path: "/employees", element: <EmployeeManagementPage />, },
   { path: '*', element: <NotFound /> }
 ];

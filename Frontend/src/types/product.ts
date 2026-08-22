@@ -9,6 +9,9 @@ export interface ProductSearchResult {
   id: number;
   name: string;
   price: number;
-  categiry: string;
+  Category: Array<{
+    id: number;
+    name: string;
+  }>;
   ingredients: ProductIngredient[];
 }

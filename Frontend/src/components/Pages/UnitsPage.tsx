@@ -13,11 +13,8 @@ export default function UnitsPage() {
   const [loadingD, setLoadingD] = useState(true);
   const { t } = useTranslation();
 
-  
-
   const loadUnits = async () => {
     try {
-      setLoading(true);
       const data = await UnitsApi.GetUnits();
       setUnit(data);
     } catch (error) {
@@ -25,11 +22,10 @@ export default function UnitsPage() {
     } finally {
       setLoading(false);
     }
-
   };
+
   const loadDeletedUnits = async () => {
     try {
-      setLoadingD(true);
       const data = await UnitsApi.GetDeletedUnits();
       setDelUnit(data);
     } catch (error) {
@@ -44,10 +40,35 @@ export default function UnitsPage() {
       loadUnits(),
       loadDeletedUnits(),
     ]);
-  }
+  };
 
   useEffect(() => {
-    Refresh();
+    let ignore = false;
+
+    (async () => {
+      try {
+        const [data, deletedData] = await Promise.all([
+          UnitsApi.GetUnits(),
+          UnitsApi.GetDeletedUnits(),
+        ]);
+
+        if (!ignore) {
+          setUnit(data);
+          setDelUnit(deletedData);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+          setLoadingD(false);
+        }
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleDelete = async (id: number) => {

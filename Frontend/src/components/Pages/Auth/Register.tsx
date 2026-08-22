@@ -8,8 +8,13 @@ export default function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,7 +28,15 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register(username, password);
+      await register({
+        firstName,
+        lastName,
+        userName,
+        email,
+        password,
+        confirmPassword,
+        address,
+      });
 
       navigate("/login", {
         replace: true,
@@ -55,14 +68,57 @@ export default function Register() {
           </div>
         )}
 
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) =>
+              setFirstName(e.target.value)
+            }
+            required
+            className="w-full rounded-lg border p-3 dark:bg-zinc-800"
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) =>
+              setLastName(e.target.value)
+            }
+            className="w-full rounded-lg border p-3 dark:bg-zinc-800"
+          />
+        </div>
+
         <input
           type="text"
           placeholder="Username"
-          value={username}
+          value={userName}
           onChange={(e) =>
-            setUsername(e.target.value)
+            setUserName(e.target.value)
           }
           required
+          className="w-full rounded-lg border p-3 dark:bg-zinc-800"
+        />
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+          required
+          className="w-full rounded-lg border p-3 dark:bg-zinc-800"
+        />
+
+        <input
+          type="text"
+          placeholder="Address (optional)"
+          value={address}
+          onChange={(e) =>
+            setAddress(e.target.value)
+          }
           className="w-full rounded-lg border p-3 dark:bg-zinc-800"
         />
 
@@ -72,6 +128,17 @@ export default function Register() {
           value={password}
           onChange={(e) =>
             setPassword(e.target.value)
+          }
+          required
+          className="w-full rounded-lg border p-3 dark:bg-zinc-800"
+        />
+
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) =>
+            setConfirmPassword(e.target.value)
           }
           required
           className="w-full rounded-lg border p-3 dark:bg-zinc-800"

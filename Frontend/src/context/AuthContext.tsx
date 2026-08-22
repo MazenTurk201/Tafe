@@ -1,12 +1,14 @@
+/* eslint-disable react-refresh/only-export-components -- context + hook co-located by design */
+
 import {
   createContext,
   useContext,
-  useEffect,
   useState,
   type ReactNode,
 } from "react";
 
 import { authApi } from "../api/authApi";
+import type { RegisterRequest } from "../types/auth";
 
 interface AuthContextType {
   token: string | null;
@@ -20,8 +22,7 @@ interface AuthContextType {
   ) => Promise<void>;
 
   register: (
-    username: string,
-    password: string
+    data: RegisterRequest
   ) => Promise<void>;
 
   logout: () => void;
@@ -35,32 +36,29 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+function getInitialToken(): string | null {
+  const savedToken = localStorage.getItem("token");
+  const expireDate = localStorage.getItem("expireDate");
+
+  if (!savedToken || !expireDate) {
+    return null;
+  }
+
+  if (new Date(expireDate) <= new Date()) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("expireDate");
+
+    return null;
+  }
+
+  return savedToken;
+}
+
 export function AuthProvider({
   children,
 }: AuthProviderProps) {
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    const expireDate = localStorage.getItem("expireDate");
-
-    if (!savedToken || !expireDate) {
-      setLoading(false);
-      return;
-    }
-
-    if (new Date(expireDate) <= new Date()) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("expireDate");
-
-      setToken(null);
-    } else {
-      setToken(savedToken);
-    }
-
-    setLoading(false);
-  }, []);
+  const [token, setToken] = useState<string | null>(getInitialToken);
+  const loading = false;
 
   const login = async (
     username: string,
@@ -80,13 +78,9 @@ export function AuthProvider({
   };
 
   const register = async (
-    username: string,
-    password: string
+    data: RegisterRequest
   ) => {
-    await authApi.register({
-      username,
-      password,
-    });
+    await authApi.register(data);
   };
 
   const logout = () => {

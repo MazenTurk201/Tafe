@@ -56,24 +56,32 @@ export default function OrderDetailsPage() {
 
   const [loading, setLoading] = useState(true);
 
-  const load = async () => {
+  useEffect(() => {
     if (!id) return;
 
-    try {
-      const data = await ordersApi.getById(
-        Number(id)
-      );
+    let ignore = false;
 
-      setOrder(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    (async () => {
+      try {
+        const data = await ordersApi.getById(
+          Number(id)
+        );
 
-  useEffect(() => {
-    load();
+        if (!ignore) {
+          setOrder(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
   }, [id]);
 
   const changeStatus = async (

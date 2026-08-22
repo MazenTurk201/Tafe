@@ -15,7 +15,7 @@ const SidebarDrawer = () => {
 
   // للتأكيد إن الاتجاه مظبوط مع أي تغيير للغة
   useEffect(() => {
-    document.body.dir = idArabic ? 'rtl' : 'ltr';
+    document.body.dir = i18n.language.startsWith('ar') ? 'rtl' : 'ltr';
   }, [i18n.language]);
 
   const toggleLanguage = () => {
@@ -60,11 +60,18 @@ const SidebarDrawer = () => {
         <div className="p-4 pt-20 h-full flex flex-col text-gray-900 dark:text-gray-100">
           <h2 className="text-3xl font-bold relative -top-15 -left-10">{t("welcome")}</h2>
           <ul className="-mt-10">
-            {ItemDrawer("/", "Main")}
-            {ItemDrawer("/orders", "Orders")}
-            {ItemDrawer("/units", "Units")}
-            {ItemDrawer("/categories", "Categories")}
-            {ItemDrawer("/ingredients", "Ingredients")}
+            {ItemDrawer("/", t("main") || "Main")}
+            {ItemDrawer("/menu", t("menu") || "Menu")}
+            {ItemDrawer("/orders", t("orders") || "Orders")}
+            {ItemDrawer("/units", t("units") || "Units")}
+            {ItemDrawer("/categories", t("categories") || "Categories")}
+            {ItemDrawer("/ingredients", t("ingredients") || "Ingredients")}
+            {ItemDrawer("/profile", t("profile") || "Profile")}
+            {isAuthenticated && (
+              <>
+                {ItemDrawer("/employees", t("employees") || "Employees")}
+              </>
+            )}
           </ul>
           <div className="flex w-full justify-evenly mt-auto" dir="rtl">
             <button onClick={toggleLanguage} className="drawericons outlineButton">

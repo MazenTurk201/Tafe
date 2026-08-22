@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable react-refresh/only-export-components -- animate-ui pattern: hooks co-located with components */
+
 import * as React from 'react';
 import { Accordion as AccordionPrimitive } from 'radix-ui';
 import { motion, AnimatePresence, type HTMLMotionProps } from 'motion/react';
@@ -50,13 +52,15 @@ type AccordionItemProps = React.ComponentProps<typeof AccordionPrimitive.Item>;
 
 function AccordionItem(props: AccordionItemProps) {
   const { value } = useAccordion();
-  const [isOpen, setIsOpen] = React.useState(
-    value?.includes(props?.value) ?? false,
-  );
+  const isItemOpen = value?.includes(props?.value) ?? false;
 
-  React.useEffect(() => {
-    setIsOpen(value?.includes(props?.value) ?? false);
-  }, [value, props?.value]);
+  const [isOpen, setIsOpen] = React.useState(isItemOpen);
+  const [prevIsItemOpen, setPrevIsItemOpen] = React.useState(isItemOpen);
+
+  if (isItemOpen !== prevIsItemOpen) {
+    setPrevIsItemOpen(isItemOpen);
+    setIsOpen(isItemOpen);
+  }
 
   return (
     <AccordionItemProvider value={{ isOpen, setIsOpen, value: props.value }}>

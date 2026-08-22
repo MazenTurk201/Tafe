@@ -26,7 +26,11 @@ namespace Tafe.Controllers
                         c.Id,
                         c.Name,
                         c.Price,
-                        Categiry = $"{c.Category.Name} (Id: {c.CategoryId})",
+                        Category = new
+                        {
+                            Id = c.CategoryId,
+                            c.Category.Name
+                        },
                         Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
                 }
             ).ToListAsync());
@@ -40,7 +44,11 @@ namespace Tafe.Controllers
                         c.Id,
                         c.Name,
                         c.Price,
-                        Category = $"{c.Category.Name} (Id: {c.CategoryId})",
+                        Category = new
+                        {
+                            Id = c.CategoryId,
+                            c.Category.Name
+                        },
                         Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
                 }
             ).ToListAsync());
@@ -95,7 +103,11 @@ namespace Tafe.Controllers
                     c.Id,
                     c.Name,
                     c.Price,
-                    Categiry = $"{c.Category.Name} (Id: {c.CategoryId})",
+                    Category = new
+                        {
+                            Id = c.CategoryId,
+                            c.Category.Name
+                        },
                     c.Ingredients
                     }).ToListAsync());
         }

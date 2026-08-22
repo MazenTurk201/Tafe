@@ -18,61 +18,71 @@ export default function OrdersPage() {
   const [search, setSearch] = useState("");
   const [hasActiveShift, setHasActiveShift] = useState(false);
 
-  
-
   // Shifts
 
   useEffect(() => {
-  const fetchShiftStatus = async () => {
-    try {
-      setLoading(true);
+    let ignore = false;
 
-      const status = await ShiftApi.GetStatus();
+    (async () => {
+      try {
+        const status = await ShiftApi.GetStatus();
 
-      setHasActiveShift(status);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchShiftStatus();
-}, []);
-
-  const loadOrders = async () => {
-    try {
-      setLoading(true);
-
-      let data: Order[];
-
-      switch (filter) {
-        case "all":
-          data = await ordersApi.getAll();
-          break;
-
-        case "today":
-          data = await ordersApi.getToday();
-          break;
-
-        case "deleted":
-          data = await ordersApi.getDeleted();
-          break;
-
-        default:
-          data = await ordersApi.getActive();
+        if (!ignore) {
+          setHasActiveShift(status);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
       }
+    })();
 
-      setOrders(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   useEffect(() => {
-    loadOrders();
+    let ignore = false;
+
+    (async () => {
+      try {
+        let data: Order[];
+
+        switch (filter) {
+          case "all":
+            data = await ordersApi.getAll();
+            break;
+
+          case "today":
+            data = await ordersApi.getToday();
+            break;
+
+          case "deleted":
+            data = await ordersApi.getDeleted();
+            break;
+
+          default:
+            data = await ordersApi.getActive();
+        }
+
+        if (!ignore) {
+          setOrders(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
   }, [filter]);
 
   const filteredOrders = useMemo(() => {

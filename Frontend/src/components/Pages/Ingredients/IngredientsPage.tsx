@@ -13,11 +13,8 @@ export default function IngredientsPage() {
   const [loadingD, setLoadingD] = useState(true);
   const { t } = useTranslation();
 
-  
-
   const loadIngredients = async () => {
     try {
-      setLoading(true);
       const data = await IngredientsApi.GetIngredients();
       setIngredient(data);
     } catch (error) {
@@ -25,11 +22,10 @@ export default function IngredientsPage() {
     } finally {
       setLoading(false);
     }
-
   };
+
   const loadDeletedIngredients = async () => {
     try {
-      setLoadingD(true);
       const data = await IngredientsApi.GetDeletedIngredients();
       setDelIngredient(data);
     } catch (error) {
@@ -44,10 +40,35 @@ export default function IngredientsPage() {
       loadIngredients(),
       loadDeletedIngredients(),
     ]);
-  }
+  };
 
   useEffect(() => {
-    Refresh();
+    let ignore = false;
+
+    (async () => {
+      try {
+        const [data, deletedData] = await Promise.all([
+          IngredientsApi.GetIngredients(),
+          IngredientsApi.GetDeletedIngredients(),
+        ]);
+
+        if (!ignore) {
+          setIngredient(data);
+          setDelIngredient(deletedData);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+          setLoadingD(false);
+        }
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleDelete = async (id: number) => {

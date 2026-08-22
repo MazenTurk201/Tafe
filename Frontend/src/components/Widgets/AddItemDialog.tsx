@@ -33,30 +33,39 @@ export default function AddItemDialog({
   const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !search.trim()) return;
 
-    if (!search.trim()) {
-      setProducts([]);
-      return;
-    }
+    let ignore = false;
 
-    const searchProducts = async () => {
+    const timer = setTimeout(async () => {
       try {
         setSearchLoading(true);
 
         const result = await ProductsApi.Search(search);
 
-        setProducts(result);
+        if (!ignore) {
+          setProducts(result);
+        }
       } catch (error) {
         console.error(error);
-        setProducts([]);
-      } finally {
-        setSearchLoading(false);
-      }
-    };
 
-    searchProducts();
+        if (!ignore) {
+          setProducts([]);
+        }
+      } finally {
+        if (!ignore) {
+          setSearchLoading(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      ignore = true;
+      clearTimeout(timer);
+    };
   }, [search, open]);
+
+  const visibleProducts = search.trim() ? products : [];
 
   const handleSubmit = async () => {
     if (!selectedProduct) return;
@@ -126,7 +135,7 @@ export default function AddItemDialog({
           )}
 
           <div className="mt-4 space-y-2">
-            {products.map((product) => (
+            {visibleProducts.map((product) => (
               <button
                 key={product.id}
                 type="button"
@@ -148,7 +157,7 @@ export default function AddItemDialog({
                 </div>
 
                 <div className="text-sm text-gray-500">
-                  {product.categiry}
+                  {product.Category}
                 </div>
               </button>
             ))}
