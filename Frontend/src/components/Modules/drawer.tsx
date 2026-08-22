@@ -64,6 +64,7 @@ const SidebarDrawer = () => {
             {ItemDrawer("/orders", "Orders")}
             {ItemDrawer("/units", "Units")}
             {ItemDrawer("/categories", "Categories")}
+            {ItemDrawer("/ingredients", "Ingredients")}
           </ul>
           <div className="flex w-full justify-evenly mt-auto" dir="rtl">
             <button onClick={toggleLanguage} className="drawericons outlineButton">

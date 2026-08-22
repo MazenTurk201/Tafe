@@ -11,14 +11,14 @@ export interface Ingredient {
 export interface IngredientCreate {
   name: string;
   minQuantityAlert: number;
-  unitId: number;
+  unitId: number | "";
 }
 
 export interface IngredientUpdate {
   id: number;
   name: string;
   minQuantityAlert: number;
-  unitId: number;
+  unitId: number | "";
 }
 
 export interface IngredientWarning {

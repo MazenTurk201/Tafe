@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -10,6 +10,9 @@ import {
 } from "@/components/animate-ui/components/radix/dialog";
 import { useTranslation } from "react-i18next";
 import { IngredientsApi } from "@/api/ingredientsApi";
+import { UnitsApi } from "@/api/unitsApi";
+import type { Unit } from "@/types/unit";
+import type { IngredientCreate } from "@/types/ingredient";
 
 interface AddIngredientDialogProps {
   onSuccess: () => void;
@@ -18,10 +21,23 @@ interface AddIngredientDialogProps {
 export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
   const [name, setName] = useState("");
   const [minQuantityAlert, setMinQuantityAlert] = useState(0);
-  const [unitId, setUnitId] = useState(1);
+  const [unitId, setUnitId] = useState<number | "">("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+  const [units, setUnits] = useState<Unit[]>([]);
+
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const data = await UnitsApi.GetUnits();
+        setUnits(data);
+      } catch (error) {
+        console.error("Failed to load units:", error);
+      }
+    };
+    fetchUnits();
+    }, []);
 
   const handleSubmit = async () => {
 
@@ -36,6 +52,8 @@ export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
       });
       onSuccess();
       setName("");
+      setMinQuantityAlert(0);
+      setUnitId("");
       setOpen(false);
     } catch (error) {
       console.error(error);
@@ -72,16 +90,46 @@ export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
 
         <div className="py-4">
           <label className="mb-2 block">
-            {t("Ingredient")}
+            {t("name")}
           </label>
 
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder={t("IngredientPlaceholder")}
+            placeholder={t("IngredientPlaceholderName")}
             className="w-full rounded-md border px-3 py-2"
           />
+
+          <label className="mb-2 block">
+            {t("minQuantityAlert")}
+          </label>
+
+          <input
+            type="number"
+            value={minQuantityAlert}
+            onChange={(e) => setMinQuantityAlert(Number(e.target.value))}
+            placeholder={t("IngredientPlaceholderMinQA")}
+            className="w-full rounded-md border px-3 py-2"
+          />
+
+          <label className="mb-2 block">
+            {t("Unit")}
+          </label>
+
+          <select
+          value={unitId}
+          onChange={(e) => setUnitId(Number(e.target.value))}
+          className="select-auto" required>
+            <option selected>{t("IngredientPlaceholderSelect")}</option>
+            {
+              units.map((unit) => (
+                <option value={unit.id}>
+                {unit.name}
+                </option>
+              ))
+            }
+          </select>
         </div>
 
         <DialogFooter>
@@ -103,19 +151,34 @@ export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
 
 interface UpdateIngredientDialogProps {
   id: number;
+  model: IngredientCreate;
   onSuccess: () => void;
 }
 
 export function UpdateIngredientDialog({
   id,
+  model,
   onSuccess,
 }: UpdateIngredientDialogProps) {
-  const [name, setName] = useState("");
-  const [minQuantityAlert, setMinQuantityAlert] = useState(0);
-  const [unitId, setUnitId] = useState(1);
+  const [name, setName] = useState(model.name);
+  const [minQuantityAlert, setMinQuantityAlert] = useState(model.minQuantityAlert);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+  const [unitId, setUnitId] = useState<number | "">(model.unitId);
+  const [units, setUnits] = useState<Unit[]>([]);
+
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const data = await UnitsApi.GetUnits();
+        setUnits(data);
+      } catch (error) {
+        console.error("Failed to load units:", error);
+      }
+    };
+    fetchUnits();
+    }, []);
 
   const handleSubmit = async () => {
 
@@ -133,6 +196,8 @@ export function UpdateIngredientDialog({
       });
       onSuccess();
       setName("");
+      setMinQuantityAlert(0);
+      setUnitId("");
       setOpen(false);
     } catch (error) {
       console.error(error);
@@ -169,9 +234,39 @@ export function UpdateIngredientDialog({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder={t("IngredientPlaceholder")}
+            placeholder={t("IngredientPlaceholderName")}
             className="w-full rounded-md border px-3 py-2"
           />
+
+          <label className="mb-2 block">
+            {t("minQuantityAlert")}
+          </label>
+
+          <input
+            type="number"
+            value={minQuantityAlert}
+            onChange={(e) => setMinQuantityAlert(Number(e.target.value))}
+            placeholder={t("IngredientPlaceholderMinQA")}
+            className="w-full rounded-md border px-3 py-2"
+          />
+
+          <label className="mb-2 block">
+            {t("Unit")}
+          </label>
+
+          <select
+          value={unitId}
+          onChange={(e) => setUnitId(Number(e.target.value))}
+          className="select-auto">
+            <option value={model.unitId} selected>{t("IngredientPlaceholderSelect")}</option>
+            {
+              units.map((unit) => (
+                <option value={unit.id}>
+                {unit.name}
+                </option>
+              ))
+            }
+          </select>
         </div>
 
         <DialogFooter>

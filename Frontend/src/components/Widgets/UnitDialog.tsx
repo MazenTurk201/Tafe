@@ -58,7 +58,7 @@ export function AddUnitDialog({ onSuccess }: AddUnitDialogProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Unit")}
+            {t("Units")}
           </DialogTitle>
 
           <DialogDescription>
@@ -141,7 +141,7 @@ export function UpdateUnitDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Unit")}
+            {t("Units")}
           </DialogTitle>
 
           <DialogDescription>

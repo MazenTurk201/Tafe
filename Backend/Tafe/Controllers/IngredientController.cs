@@ -82,15 +82,18 @@ namespace Tafe.Controllers
         [HttpPatch]
         public async Task<IActionResult> PatchIngredient(IngredientDTO ingredientDTO)
         {
-            var Ingredient = repo.Get<Ingredient>(ingredientDTO.Id);
-            if (Ingredient == null)
+            Ingredient Ingredient = new Ingredient
+            {
+                Id = ingredientDTO.Id,
+                Name = ingredientDTO.Name,
+                MinQuantityAlert = ingredientDTO.MinQuantityAlert,
+                UnitId = ingredientDTO.UnitId
+            };
+            if (repo.Get<Ingredient>(ingredientDTO.Id) == null)
             {
                 return NotFound();
             }
-
-            Ingredient.Name = ingredientDTO.Name;
-            Ingredient.MinQuantityAlert = ingredientDTO.MinQuantityAlert;
-            Ingredient.UnitId = ingredientDTO.UnitId;
+            
             await repo.Update(Ingredient);
             await repo.Save();
 

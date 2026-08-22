@@ -58,7 +58,7 @@ export function AddCategoryDialog({ onSuccess }: AddCategoryDialogProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Category")}
+            {t("Categories")}
           </DialogTitle>
 
           <DialogDescription>
@@ -141,7 +141,7 @@ export function UpdateCategoryDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Category")}
+            {t("Categories")}
           </DialogTitle>
 
           <DialogDescription>
