@@ -1,13 +1,11 @@
+import type { Category } from "./category";
+import type { IngredientProduct } from "./ingredient";
+
 export interface MenuProduct {
   id: number;
   name: string;
   price: number;
-  ingredients: Array<{
-    ingredientId: number;
-    name: string;
-    quantity: number;
-    unit: string;
-  }>;
+  ingredients: IngredientProduct[];
 }
 
 export interface MenuCategory {
@@ -20,14 +18,6 @@ export interface MenuItem {
   id: number;
   name: string;
   price: number;
-  category: {
-    id: number;
-    name: string;
-  };
-  ingredients: Array<{
-    id: number;
-    name: string;
-    unit: string;
-    quantity: number;
-  }>;
+  category: Category;
+  ingredients: IngredientProduct[];
 }

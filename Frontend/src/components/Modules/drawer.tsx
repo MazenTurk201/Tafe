@@ -38,8 +38,7 @@ const SidebarDrawer = () => {
     );
   }
 
-  const { isAuthenticated, logout, } = useAuth();
-
+  const { isAuthenticated, logout, hasRole } = useAuth();
 
   return (
     <div className="relative">
@@ -60,16 +59,17 @@ const SidebarDrawer = () => {
         <div className="p-4 pt-20 h-full flex flex-col text-gray-900 dark:text-gray-100">
           <h2 className="text-3xl font-bold relative -top-15 -left-10">{t("welcome")}</h2>
           <ul className="-mt-10">
-            {ItemDrawer("/", t("main") || "Main")}
+            {ItemDrawer("/", t("Main") || "Main")}
             {ItemDrawer("/menu", t("menu") || "Menu")}
-            {ItemDrawer("/orders", t("orders") || "Orders")}
-            {ItemDrawer("/units", t("units") || "Units")}
-            {ItemDrawer("/categories", t("categories") || "Categories")}
-            {ItemDrawer("/ingredients", t("ingredients") || "Ingredients")}
+            {ItemDrawer("/orders", t("Orders") || "Orders")}
             {ItemDrawer("/profile", t("profile") || "Profile")}
-            {isAuthenticated && (
+            {ItemDrawer("/units", t("Units") || "Units")}
+            {ItemDrawer("/categories", t("Categories") || "Categories")}
+            {ItemDrawer("/ingredients", t("Ingredients") || "Ingredients")}
+            {ItemDrawer("/products", t("Products") || "Products")}
+            {isAuthenticated && hasRole("Admin") && (
               <>
-                {ItemDrawer("/employees", t("employees") || "Employees")}
+                {ItemDrawer("/employees", t("Employees") || "Employees")}
               </>
             )}
           </ul>

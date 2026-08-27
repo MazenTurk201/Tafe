@@ -25,6 +25,15 @@ const resources = {
       IngredientUpdateDes: "Add Ingredient Name to Update.",
       IngredientPlaceholderName: "Ex. Coffee, Milk..",
       IngredientPlaceholderSelect: "Please Chooze Unit",
+      Product: "Product",
+      Products: "Products",
+      ProductCreate: "New Product +",
+      ProductSubTitle: "Manage Tafe Products",
+      ProductAddDes: "Add Product Name to Create.",
+      ProductUpdateDes: "Add Product Name to Update.",
+      ProductPlaceholderName: "Ex. Coffe, Cappuccino..",
+      ProductPlaceholderSelect: "Please Chooze Category",
+      ProductIngredientDes: "Edit Product's Ingredients",
       quantity: "Quantity",
       minQuantityAlert: "Min Quantity Alert",
       openDelted: "Open Deleted",
@@ -45,8 +54,6 @@ const resources = {
       footerBranches: "Branches:",
       footerBranche: "First Sheikhdom, Aswan, Aswan Governorate 1231020.",
       footerQute: "Be whatever you want, for you are dead.",
-
-      // Menu
       menu: "Our Menu",
       menuSubtitle: "Discover our delicious dishes made with fresh ingredients",
       allCategories: "All",
@@ -55,8 +62,6 @@ const resources = {
       noItemsInCategory: "No items in this category",
       noItemsDescription: "Check back later or try another category",
       retry: "Retry",
-
-      // Profile
       profile: "Profile",
       profileSubtitle: "Manage your account settings and preferences",
       profileInfo: "Profile Info",
@@ -88,8 +93,6 @@ const resources = {
       revokeAllSessions: "Revoke All Other Sessions",
       logout: "Logout",
       unknown: "Unknown",
-
-      // Employee Management
       employeeManagement: "Employee Management",
       employeeManagementDesc: "Manage restaurant staff accounts and profiles",
       addEmployee: "Add Employee",
@@ -106,6 +109,10 @@ const resources = {
       role: "Role",
       active: "Active",
       inactive: "Inactive",
+      Main: "Dashboard",
+      Orders: "Orders",
+      Employees: "Employees",
+      price: "Price",
     }
   },
   ar: {
@@ -133,8 +140,17 @@ const resources = {
       IngredientAddDes: "اكتب اسم المكون للإنشاء.",
       IngredientUpdateDes: "اكتب اسم المكون للتعديل.",
       IngredientPlaceholderName: "مثال: بن، لبن..",
-      IngredientPlaceholderSelect: "الرجاء أختيار وحدة",
+      IngredientPlaceholderSelect: "الرجاء إختيار وحدة",
+      Product: "المنتج",
+      Products: "المنتجات",
       quantity: "الكمية",
+      ProductCreate: "إنشاء منتج +",
+      ProductSubTitle: "إدارة منتجات تافيه",
+      ProductAddDes: "اكتب اسم المنتج للإنشاء.",
+      ProductUpdateDes: "اكتب اسم المنتج للتعديل.",
+      ProductPlaceholderName: "مثال: قهوة، لاتيه..",
+      ProductPlaceholderSelect: "الرحاء إختيار قسم",
+      ProductIngredientDes: "تعديل مكونات المنتج",
       minQuantityAlert: "تحذير اقل كمية",
       openDelted: "عرض المحذوفات",
       delete: "حذف",
@@ -154,8 +170,6 @@ const resources = {
       footerBranches: "الفروع:",
       footerBranche: "شياخة أولى، أسوان، محافظة أسوان 1231020.",
       footerQute: "كن كما شئت فأنت ميت.",
-
-      // Menu
       menu: "قائمتنا",
       menuSubtitle: "اكتشف أطباقنا الشهية المعدة بمكونات طازجة",
       allCategories: "الكل",
@@ -164,8 +178,6 @@ const resources = {
       noItemsInCategory: "لا توجد أصناف في هذا القسم",
       noItemsDescription: "تحقق لاحقاً أو جرب قسماً آخر",
       retry: "إعادة المحاولة",
-
-      // Profile
       profile: "الملف الشخصي",
       profileSubtitle: "إدارة إعدادات حسابك وتفضيلاتك",
       profileInfo: "معلومات الملف الشخصي",
@@ -197,8 +209,6 @@ const resources = {
       revokeAllSessions: "إلغاء جميع الجلسات الأخرى",
       logout: "تسجيل الخروج",
       unknown: "غير معروف",
-
-      // Employee Management
       employeeManagement: "إدارة الموظفين",
       employeeManagementDesc: "إدارة حسابات وملفات موظفي المطعم",
       addEmployee: "إضافة موظف",
@@ -215,6 +225,10 @@ const resources = {
       role: "الدور",
       active: "نشط",
       inactive: "غير نشط",
+      Main: "الرئيسية",
+      Orders: "الطلبات",
+      Employees: "الموظفين",
+      price: "السعر",
     }
   }
 };

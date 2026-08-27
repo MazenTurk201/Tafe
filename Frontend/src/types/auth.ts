@@ -5,13 +5,16 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  address?: string;
+  user: {
+    firstName: string,
+    lastName: string,
+    userName: string,
+    email: string,
+    password: string,
+    confirmPassword: string,
+    address?: string;
+  };
+  birthDate: string;
 }
 
 export interface AuthResponse {

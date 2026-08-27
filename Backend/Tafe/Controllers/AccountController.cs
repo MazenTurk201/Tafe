@@ -63,8 +63,8 @@ namespace Tafe.Controllers
                             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                             new Claim(ClaimTypes.NameIdentifier, userFromDB.Id),
                             new Claim(ClaimTypes.Name, userFromDB.UserName!),
-                            new Claim(ClaimTypes.GivenName, userFromDB.FullName),
-                            new Claim(ClaimTypes.StreetAddress, userFromDB.Address),
+                            new Claim(ClaimTypes.GivenName, userFromDB.FullName ?? ""),
+                            new Claim(ClaimTypes.StreetAddress, userFromDB.Address ?? ""),
                         ];
                         var userRole = await userManager.GetRolesAsync(userFromDB);
                         foreach (var role in userRole)
@@ -120,7 +120,9 @@ namespace Tafe.Controllers
                 user.UserName,
                 user.Email,
                 user.FullName,
-                Roles = roles
+                user.Address,
+                Roles = roles,
+                user.CreatedAt,
             };
             return Ok(userInfo);
         }

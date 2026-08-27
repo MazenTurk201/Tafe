@@ -9,7 +9,6 @@ using Tafe.Repository;
 
 namespace Tafe.Controllers
 {
-    [Authorize(Roles = "Admin, Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerProfileController : ControllerBase
@@ -126,6 +125,7 @@ namespace Tafe.Controllers
                     Email = CustomerCreateDTO.User.Email,
                     FirstName = CustomerCreateDTO.User.FirstName,
                     LastName = CustomerCreateDTO.User.LastName,
+                    Address = CustomerCreateDTO.User.Address,
                     CreatedAt = DateTime.UtcNow
                 };
                 var result = await userManager.CreateAsync(appUser, CustomerCreateDTO.User.Password);
@@ -145,24 +145,20 @@ namespace Tafe.Controllers
             return BadRequest(ModelState);
         }
         [HttpPatch]
-        public async Task<IActionResult> UpdateCustomerProfile(CustomerProfileUpdateDTO CustomerProfileUpdateDTO)
-        {
-            CustomerProfile? profile = repo.GetP<CustomerProfile>(CustomerProfileUpdateDTO.UserId);
-            if (profile != null)
-            {
-                profile.Points = CustomerProfileUpdateDTO.Points;
-                profile.TotalSpent = CustomerProfileUpdateDTO.TotalSpent;
-                profile.Vip = CustomerProfileUpdateDTO.Vip;
-                profile.BirthDate = CustomerProfileUpdateDTO.BirthDate;
-                await repo.Update(profile);
-                await repo.Save();
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+public async Task<IActionResult> UpdateCustomerProfile(
+    CustomerProfileUpdateDTO dto)
+{
+    var profile = repo.GetP<CustomerProfile>(dto.UserId);
+
+    if (profile == null)
+        return NotFound();
+
+    await repo.UpdateP(profile, dto);
+
+    await repo.Save();
+
+    return Ok();
+}
         [HttpGet("Deleted")]
         public IActionResult GetDeletedCustomerProfiles()
         {

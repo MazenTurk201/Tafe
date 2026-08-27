@@ -34,6 +34,26 @@ namespace Tafe.Repository
 
         }
 
+        public async Task UpdateP(
+            CustomerProfile profile,
+            CustomerProfileUpdateDTO dto)
+        {
+            if (dto.Points.HasValue)
+                profile.Points = dto.Points.Value;
+
+            if (dto.TotalSpent.HasValue)
+                profile.TotalSpent = dto.TotalSpent.Value;
+
+            if (dto.Vip.HasValue)
+                profile.Vip = dto.Vip.Value;
+
+            if (dto.BirthDate.HasValue)
+                profile.BirthDate = dto.BirthDate.Value;
+
+            if (dto.Address != null)
+                profile.User.Address = dto.Address;
+        }
+
         public async Task Delete<T>(int id) where T : class, IEntityTemplate => await db.Set<T>().Where(obj => obj.Id == id).ExecuteDeleteAsync();
         public void Delete<T>(T obj) where T : class => db.Remove(obj);
         public async Task SoftDelete<T>(int id) where T : class, IEntityTemplate => await db.Set<T>().Where(obj => obj.Id == id).ExecuteUpdateAsync(set => set.SetProperty(e => e.IsDeleted, true));

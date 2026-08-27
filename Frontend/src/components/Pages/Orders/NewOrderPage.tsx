@@ -5,7 +5,7 @@ import type {
   OrderCreate,
   PaymentMethod,
 } from "@/types/order";
-import type { ProductSearchResult } from "@/types/product";
+import type { Product } from "@/types/product";
 import type { CustomerProfile } from "@/types/customer";
 import { ordersApi } from "@/api/ordersApi";
 import { tablesApi } from "@/api/tablesApi";
@@ -15,7 +15,7 @@ import { ShiftApi } from "@/api/shiftsApi";
 import AddItemDialog from "@/components/Widgets/AddItemDialog";
 
 interface DraftItem {
-  product: ProductSearchResult;
+  product: Product;
   quantity: number;
   notes?: string;
 }
@@ -129,7 +129,7 @@ export default function NewOrderPage() {
   );
 
   const addItem = async (
-    product: ProductSearchResult,
+    product: Product,
     notes: string
   ) => {
     setItems((prev) => {

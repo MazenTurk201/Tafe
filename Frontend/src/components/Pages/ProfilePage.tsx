@@ -8,6 +8,8 @@ interface UserProfile {
   userName: string;
   email: string;
   fullName: string;
+  address: string;
+  createdAt: string;
   roles: string[];
 }
 
@@ -43,31 +45,26 @@ export default function ProfilePage() {
     document.body.dir = i18n.language.startsWith("ar") ? "rtl" : "ltr";
   }, [i18n.language]);
 
-  const applyProfile = (data: {
-    id: string;
-    userName: string;
-    email: string;
-    fullName?: string;
-    roles?: string[];
-  }) => {
-    setProfile({
-      id: data.id,
-      userName: data.userName,
-      email: data.email,
-      fullName: data.fullName ?? "",
-      roles: data.roles || [],
-    });
+  const applyProfile = (data: UserProfile) => {
+  setProfile({
+    id: data.id,
+    userName: data.userName,
+    email: data.email,
+    fullName: data.fullName ?? "",
+    address: data.address ?? "",
+    createdAt: data.createdAt,
+    roles: data.roles ?? [],
+  });
 
-    // Initialize form data
-    const names = data.fullName?.split(" ") || ["", ""];
-    setFormData({
-      firstName: names[0] || "",
-      lastName: names.slice(1).join(" ") || "",
-      email: data.email || "",
-      address: "", // Will need separate endpoint or include in response
-    });
-  };
+  const names = data.fullName?.split(" ") || ["", ""];
 
+  setFormData({
+    firstName: names[0] || "",
+    lastName: names.slice(1).join(" ") || "",
+    email: data.email || "",
+    address: data.address ?? "",
+  });
+};
   const fetchProfile = async () => {
     if (!token) return;
 
@@ -116,17 +113,22 @@ export default function ProfilePage() {
   }, [token]);
 
   const handleSaveProfile = async () => {
-    if (!token) return;
+    if (!token || !profile) return;
 
     try {
       setSaving(true);
       setSaveError("");
       setSaveSuccess("");
 
+      await api.patch("/CustomerProfile", {
+      userId: profile.id,
+      address: formData.address,
+    });
+
       // Note: The backend doesn't have an update profile endpoint yet
       // This would need to be implemented in the backend
       // For now, we'll just show a success message
-      setSaveSuccess("Profile updated successfully (frontend only - backend endpoint needed)");
+      setSaveSuccess("Profile updated successfully");
 
       // Update local state
       setProfile((prev) => prev ? {
@@ -216,7 +218,7 @@ export default function ProfilePage() {
         {/* Profile Card & Tabs */}
         <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-gray-100 dark:border-zinc-800 overflow-hidden">
           {/* Profile Header */}
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-8 md:px-10 md:py-12">
+          <div className="bg-linear-to-r from-purple-600 to-blue-600 px-6 py-8 md:px-10 md:py-12">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex items-center gap-4">
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/20 flex items-center justify-center ring-4 ring-white/30">
@@ -361,7 +363,11 @@ export default function ProfilePage() {
                     </label>
                     <input
                       type="text"
-                      value={t("unknown") || "Unknown"} // Would need createdAt from backend
+                      value={
+                        profile.createdAt
+                          ? new Date(profile.createdAt).toLocaleDateString()
+                          : "Unknown"
+                      }
                       disabled
                       className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-gray-50 dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white"
                     />

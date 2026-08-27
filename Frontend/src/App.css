@@ -129,6 +129,9 @@
   --accent-foreground: var(--background-dark);
 }
 
+*::selection{
+  color: var(--main-hover);
+}
 
 .card{
   background-color: var(--card);
@@ -227,6 +230,17 @@ input:focus{
 
   .dark &{
     color: gold;
+  }
+}
+
+.ingredient-btn{
+  color: purple;
+  border-radius: 25px;
+  background-color: rgba(110, 40, 195, 0.25);
+  margin: 2px 5px;
+
+  .dark &{
+    color: rgb(231, 77, 231);
   }
 }
 

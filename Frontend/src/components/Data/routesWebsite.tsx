@@ -9,6 +9,7 @@ import IngredientsPage from '../Pages/Ingredients/IngredientsPage';
 import MenuPage from '../Pages/MenuPage';
 import ProfilePage from '../Pages/ProfilePage';
 import EmployeeManagementPage from '../Pages/EmployeeManagementPage';
+import ProductsPage from '../Pages/ProductPage';
 
 export const routes = [
   { path: '/', element: <Main /> },
@@ -21,5 +22,6 @@ export const routes = [
   { path: "/menu", element: <MenuPage />, },
   { path: "/profile", element: <ProfilePage />, },
   { path: "/employees", element: <EmployeeManagementPage />, },
+  { path: "/products", element: <ProductsPage />, },
   { path: '*', element: <NotFound /> }
 ];

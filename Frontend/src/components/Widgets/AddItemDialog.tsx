@@ -10,11 +10,11 @@ import {
 } from "@/components/animate-ui/components/radix/dialog";
 
 import { ProductsApi } from "@/api/productsApi";
-import type { ProductSearchResult } from "@/types/product";
+import type { Product } from "@/types/product";
 
 interface AddItemDialogProps {
   onConfirm: (
-    product: ProductSearchResult,
+    product: Product,
     notes: string
   ) => Promise<void>;
 }
@@ -24,9 +24,9 @@ export default function AddItemDialog({
 }: AddItemDialogProps) {
   const [search, setSearch] = useState("");
   const [comment, setComment] = useState("");
-  const [products, setProducts] = useState<ProductSearchResult[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] =
-    useState<ProductSearchResult | null>(null);
+    useState<Product | null>(null);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

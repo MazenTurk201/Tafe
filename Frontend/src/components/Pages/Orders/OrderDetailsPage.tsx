@@ -14,7 +14,7 @@ import type {
 import { ordersApi } from "@/api/ordersApi";
 import StatusBadge from "@/components/Sections/Orders/StatusBadge";
 import AddItemDialog from "@/components/Widgets/AddItemDialog";
-import type { ProductSearchResult } from "@/types/product";
+import type { Product } from "@/types/product";
 
 const statuses: OrderStatus[] = [
   "Pending",
@@ -160,7 +160,7 @@ export default function OrderDetailsPage() {
   };
 
   const handleAddItem = async (
-  product: ProductSearchResult,
+  product: Product,
   notes: string
 ) => {
   await ordersApi.addItem(order.id, {

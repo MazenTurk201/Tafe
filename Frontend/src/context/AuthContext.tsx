@@ -15,6 +15,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
 
+  hasRole: (role: string) => boolean;
+
   login: (
     username: string,
     password: string,
@@ -34,6 +36,44 @@ const AuthContext = createContext<AuthContextType | undefined>(
 
 interface AuthProviderProps {
   children: ReactNode;
+}
+
+/**
+ * Get roles from JWT token
+ */
+function getRolesFromToken(token: string | null): string[] {
+  if (!token) {
+    return [];
+  }
+
+  try {
+    const payload = JSON.parse(
+      atob(token.split(".")[1])
+    );
+
+    // ASP.NET Core Identity role claim
+    const aspNetRoleClaim =
+      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
+    const roles =
+      payload[aspNetRoleClaim] ??
+      payload.role ??
+      payload.roles;
+
+    // If roles is an array
+    if (Array.isArray(roles)) {
+      return roles;
+    }
+
+    // If there is only one role
+    if (typeof roles === "string") {
+      return [roles];
+    }
+
+    return [];
+  } catch {
+    return [];
+  }
 }
 
 function getInitialToken(): string | null {
@@ -57,8 +97,23 @@ function getInitialToken(): string | null {
 export function AuthProvider({
   children,
 }: AuthProviderProps) {
-  const [token, setToken] = useState<string | null>(getInitialToken);
+  const [token, setToken] = useState<string | null>(
+    getInitialToken
+  );
+
   const loading = false;
+
+  /**
+   * Check if the logged-in user has a specific role
+   */
+  const hasRole = (role: string): boolean => {
+    const roles = getRolesFromToken(token);
+
+    return roles.some(
+      (userRole) =>
+        userRole.toLowerCase() === role.toLowerCase()
+    );
+  };
 
   const login = async (
     username: string,
@@ -96,6 +151,7 @@ export function AuthProvider({
         token,
         isAuthenticated: !!token,
         loading,
+        hasRole,
         login,
         register,
         logout,

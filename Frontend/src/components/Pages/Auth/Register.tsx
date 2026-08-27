@@ -15,6 +15,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("");
+  const [birthDat, setBirthDat] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -29,13 +30,16 @@ export default function Register() {
 
     try {
       await register({
-        firstName,
-        lastName,
-        userName,
-        email,
-        password,
-        confirmPassword,
-        address,
+        user: {
+          firstName,
+          lastName,
+          userName,
+          email,
+          password,
+          confirmPassword,
+          address,
+        },
+        birthDate: birthDat,
       });
 
       navigate("/login", {
@@ -45,6 +49,7 @@ export default function Register() {
       setError(
         getApiError(error, "Registration failed")
       );
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -139,6 +144,17 @@ export default function Register() {
           value={confirmPassword}
           onChange={(e) =>
             setConfirmPassword(e.target.value)
+          }
+          required
+          className="w-full rounded-lg border p-3 dark:bg-zinc-800"
+        />
+
+        <input
+          type="date"
+          placeholder="set Birthdate"
+          value={birthDat}
+          onChange={(e) =>
+            setBirthDat(e.target.value)
           }
           required
           className="w-full rounded-lg border p-3 dark:bg-zinc-800"

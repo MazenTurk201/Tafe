@@ -98,18 +98,20 @@ namespace Tafe.Controllers
         [HttpGet("Deleted")]
         public async Task<IActionResult> GetDeletedProducts()
         {
-            return Ok(await repo.GetAll<Product>()
-                .Select(c => new {
-                    c.Id,
-                    c.Name,
-                    c.Price,
-                    Category = new
+            return Ok(
+            await repo.GetAllDeleted<Product>()
+                    .Select(c => new { 
+                        c.Id,
+                        c.Name,
+                        c.Price,
+                        Category = new
                         {
                             Id = c.CategoryId,
                             c.Category.Name
                         },
-                    c.Ingredients
-                    }).ToListAsync());
+                        Ingredients = c.Ingredients.Select(i => new { i.Ingredient.Id, i.Ingredient.Name, Unit = i.Ingredient.Unit.Name, i.Quantity })
+                }
+            ).ToListAsync());
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpPatch("Restore")]

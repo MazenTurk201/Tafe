@@ -258,10 +258,9 @@ export function UpdateIngredientDialog({
           value={unitId}
           onChange={(e) => setUnitId(Number(e.target.value))}
           className="select-auto">
-            <option value={model.unitId} selected>{t("IngredientPlaceholderSelect")}</option>
             {
               units.map((unit) => (
-                <option value={unit.id}>
+                <option key={unit.id} value={unit.id}>
                 {unit.name}
                 </option>
               ))

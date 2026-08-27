@@ -10,5 +10,5 @@ export const authApi = {
     post<AuthResponse>("/Account/Login", data),
 
   register: (data: RegisterRequest) =>
-    post<void>("/Account/Register", data),
+    post<void>("/CustomerProfile", data),
 };

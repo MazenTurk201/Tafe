@@ -28,3 +28,10 @@ export interface IngredientWarning {
   minQuantityAlert: number;
   unit: string;
 }
+
+export interface IngredientProduct {
+  id: number;
+  name: string;
+  unit: string;
+  quantity: number;
+}
