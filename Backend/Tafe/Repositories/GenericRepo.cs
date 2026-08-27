@@ -65,7 +65,7 @@ namespace Tafe.Repository
         public  IQueryable<T> GetAll<T>() where T : class => Query<T>();
         public  IQueryable<T> GetAllDeleted<T>() where T : class, IEntityTemplate => Query<T>().IgnoreQueryFilters().Where(obj => obj.IsDeleted);
         public  IQueryable<T> Search<T>(string Name) where T : class, IEntityTemplate => Query<T>().Where(obj => obj.Name.Contains(Name));
-        public async Task<decimal> GetStockQuantity(int ingredientId) { return await db.StockTransactions.Where(x => x.IngredientId == ingredientId).SumAsync(x => x.Quantity); }
+        public async Task<double> GetStockQuantity(int ingredientId) { return await db.StockTransactions.Where(x => x.IngredientId == ingredientId).SumAsync(x => (double)x.Quantity); }
 
         private IQueryable<T> Query<T>() where T : class
         {

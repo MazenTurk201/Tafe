@@ -49,16 +49,16 @@ namespace Tafe.Controllers
                 }
 
                 var SystemQuantity = await repo.GetStockQuantity(inventoryCount.IngredientId);
-                var difference = inventoryCount.Quantity - SystemQuantity;
+                double difference = inventoryCount.Quantity - SystemQuantity;
 
                 repo.Add(new InventoryCount { 
                     Name = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff"), 
                     IngredientId = inventoryCount.IngredientId, 
-                    ActualQuantity = inventoryCount.Quantity,
+                    ActualQuantity = (decimal)inventoryCount.Quantity,
                     UserId = cashier.Id,
                     Notes = inventoryCount.Notes, 
-                    SystemQuantity = SystemQuantity,
-                    Difference = difference,
+                    SystemQuantity = (decimal)SystemQuantity,
+                    Difference = (decimal)difference,
                 });
 
                 if (difference != 0)
@@ -67,7 +67,7 @@ namespace Tafe.Controllers
                     {
                         IngredientId = inventoryCount.IngredientId,
                         Type = StockTransactionType.Adjustment,
-                        Quantity = difference,
+                        Quantity = (decimal)difference,
                         UserId = cashier.Id,
                         Notes = inventoryCount.Notes
                     };

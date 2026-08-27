@@ -3,6 +3,7 @@ import { get, post, del, patch } from "../lib/request";
 
 export const IngredientsApi = {
   GetIngredients: () => get<Ingredient[]>("/Ingredients"),
+  SearchIngredients: (name: string) => get<Ingredient[]>("/Ingredients/Search", { Name: name }),
   GetDeletedIngredients: () => get<Ingredient[]>("/Ingredients/Deleted"),
   GetIngredientsWarning: () => get<IngredientWarning>("/Ingredients/Warning"),
   GetIngredientsWarningCount: () => get<number>("/Ingredients/Warning/Count"),

@@ -65,19 +65,22 @@ namespace Tafe.Controllers
         [HttpPatch]
         public async Task<IActionResult> PatchProducts(ProductDTO product)
         {
-            var Product = repo.Get<Product>(product.Id);
-            if (Product == null)
+            if (repo.Get<Product>(product.Id) == null)
             {
                 return NotFound();
             }
-
-            Product.Name = product.Name;
-            Product.Price = product.Price;
-            Product.CategoryId = product.CategoryId;
-            await repo.Update(Product);
+            await repo.Update(
+                new Product
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    CategoryId = product.CategoryId
+                }
+            );
             await repo.Save();
 
-            return Ok(Product);
+            return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpDelete]

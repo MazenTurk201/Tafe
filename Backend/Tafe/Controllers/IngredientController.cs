@@ -33,6 +33,34 @@ namespace Tafe.Controllers
                 ).ToListAsync()
             );
         }
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearchIngredients(string Name)
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return Ok(
+                    await repo.GetAll<Ingredient>()
+                        .Select(i => new
+                        {
+                            i.Id,
+                            i.Name,
+                            unit = i.Unit.Name
+                        })
+                        .ToListAsync()
+                );
+            }
+
+            return Ok(
+                await repo.Search<Ingredient>(Name)
+                    .Select(i => new
+                    {
+                        i.Id,
+                        i.Name,
+                        unit = i.Unit.Name
+                    })
+                    .ToListAsync()
+            );
+        }
         [HttpGet("Warning")]
         public async Task<IActionResult> MinQuantityAlert()
         {

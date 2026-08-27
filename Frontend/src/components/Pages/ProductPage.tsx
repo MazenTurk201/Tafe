@@ -11,13 +11,14 @@ export default function ProductsPage() {
   const [delProducts, setDelProduct] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingD, setLoadingD] = useState(true);
+  const [search, setSearch] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
   const { t } = useTranslation();
 
   const loadProducts = async () => {
     try {
       const data = await ProductsApi.GetProducts();
       setProduct(data);
-      console.log(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -72,6 +73,29 @@ export default function ProductsPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      if (!search.trim()) {
+        loadProducts();
+        return;
+      }
+
+      try {
+        setSearchLoading(true);
+
+        const data = await ProductsApi.Search(search.trim());
+
+        setProduct(data);
+      } catch (error) {
+        console.error("Failed to search products:", error);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
+
   const handleDelete = async (id: number) => {
     try{
       await ProductsApi.DeleteProduct(id);
@@ -91,6 +115,27 @@ export default function ProductsPage() {
       alert("Failed to restore product");
     }
   }
+
+  const handleSearch = async (value: string) => {
+    setSearch(value);
+
+    if (!value.trim()) {
+      await loadProducts();
+      return;
+    }
+
+    try {
+      setSearchLoading(true);
+
+      const data = await ProductsApi.Search(value.trim());
+
+      setProduct(data);
+    } catch (error) {
+      console.error("Failed to search products:", error);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
 
   return (
     <main className="w-full h-full px-5 py-8">
@@ -113,6 +158,19 @@ export default function ProductsPage() {
         </div>
       </div>
 
+      <input
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder={t("ProductSearch")}
+          className="
+            ml-auto w-full rounded-xl border
+            border-zinc-200 bg-white px-4 py-2
+            outline-none focus:border-black
+            md:max-w-xs
+            dark:border-zinc-800 dark:bg-zinc-900
+          "
+        />
+
       {/* Content */}
 
       {loading ? (
@@ -134,34 +192,69 @@ export default function ProductsPage() {
 
         </div>
       ) : (
-        <div className="tableCover">
-          <table>
-            <thead>
-            <tr>
-              <th>{t("name")}</th>
-              <th>{t("id")}</th>
-              <th>{t("price")}</th>
-              <th>{t("Category")}</th>
-              <th>{t("funcs")}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.name}</td>
-                <td>{product.id}</td>
-                <td>{product.price} $</td>
-                <td>{product.category.name}</td>
-                <td>
-                  <UpdateProductDialog onSuccess={Refresh} model={ { id: product.id, name:  product.name, price: product.price, CategoryId: product.category.id } }  />
-                  <IngredientProductDialog onSuccess={Refresh} model={ { id: product.id, name:  product.name, price: product.price, CategoryId: product.category.id } }  />
-                  <button className="delete-btn" onClick={() => {handleDelete(product.id)}}>{t("delete")}</button>
-                </td>
-              </tr>
-            ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+        
+        {searchLoading ? (
+  <div className="py-5 text-center animate-pulse">
+    {t("loading")}
+  </div>
+) : (
+  <div className="tableCover">
+    <table>
+      <thead>
+        <tr>
+          <th>{t("name")}</th>
+          <th>{t("id")}</th>
+          <th>{t("price")}</th>
+          <th>{t("Category")}</th>
+          <th>{t("funcs")}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {products.map((product) => (
+          <tr key={product.id}>
+            <td>{product.name}</td>
+            <td>{product.id}</td>
+            <td>{product.price} $</td>
+            <td>{product.category.name}</td>
+
+            <td>
+              <UpdateProductDialog
+                onSuccess={Refresh}
+                model={{
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  CategoryId: product.category.id,
+                }}
+              />
+
+              <IngredientProductDialog
+                onSuccess={Refresh}
+                model={{
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  CategoryId: product.category.id,
+                  Ingredients: product.ingredients,
+                }}
+              />
+
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(product.id)}
+              >
+                {t("delete")}
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+        </>
       )}
 
       {loadingD ? (

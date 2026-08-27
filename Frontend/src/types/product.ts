@@ -15,9 +15,17 @@ export interface ProductCreate{
   CategoryId: number | "";
 }
 
-export interface ProductEdit{
+export interface ProductIngredient {
+  id: number;
+  name: string;
+  unit: string;
+  quantity: number;
+}
+
+export interface ProductEdit {
   id: number;
   name: string;
   price: number;
-  CategoryId: number | "";
+  CategoryId: number;
+  Ingredients?: ProductIngredient[];
 }
