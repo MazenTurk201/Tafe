@@ -11,8 +11,8 @@ using Tafe.DB;
 namespace Tafe.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20260818051714_addresses")]
-    partial class addresses
+    [Migration("20260829045448_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

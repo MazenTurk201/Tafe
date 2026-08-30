@@ -148,7 +148,7 @@ export default function UnitsPage() {
                 <td>{unit.name}</td>
                 <td>{unit.id}</td>
                 <td>
-                  <UpdateUnitDialog id={unit.id} onSuccess={Refresh} />
+                  <UpdateUnitDialog onSuccess={Refresh} model={unit} />
                   <button className="delete-btn" onClick={() => {handleDelete(unit.id)}}>{t("delete")}</button>
                 </td>
               </tr>

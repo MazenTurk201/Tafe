@@ -10,6 +10,7 @@ import {
 } from "@/components/animate-ui/components/radix/dialog";
 import { useTranslation } from "react-i18next";
 import { UnitsApi } from "@/api/unitsApi";
+import type { Unit } from "@/types/unit";
 
 interface AddUnitDialogProps {
   onSuccess: () => void;
@@ -98,15 +99,15 @@ export function AddUnitDialog({ onSuccess }: AddUnitDialogProps) {
 
 
 interface UpdateUnitDialogProps {
-  id: number;
+  model: Unit;
   onSuccess: () => void;
 }
 
 export function UpdateUnitDialog({
-  id,
+  model,
   onSuccess,
 }: UpdateUnitDialogProps) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(model.name);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
@@ -119,7 +120,7 @@ export function UpdateUnitDialog({
 
     try {
       setLoading(true);
-      await UnitsApi.EditUnit(id, name);
+      await UnitsApi.EditUnit(model.id, name);
       onSuccess();
       setName("");
       setOpen(false);

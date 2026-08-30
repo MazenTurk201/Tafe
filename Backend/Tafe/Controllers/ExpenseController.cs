@@ -27,8 +27,16 @@ namespace Tafe.Controllers
         [HttpGet("Total")]
         public IActionResult GetTotalExpenses()
         {
-            var totalExpenses = repo.GetAll<Expense>().Sum(e => e.Amount);
-            return Ok(new { TotalExpenses = totalExpenses });
+            return Ok(repo.GetAll<Expense>().Sum(e => (double)e.Amount));
+        }
+        [HttpGet("{startDate}/{endDate}")]
+        public IActionResult GetExpensesByDate(DateTime startDate, DateTime endDate)
+        {
+            if (startDate > endDate)
+            {
+                (endDate, startDate) = (startDate, endDate);
+            }
+            return Ok(repo.GetAll<Expense>().Where(e => e.ExpenseDate >= startDate && e.ExpenseDate <= endDate));
         }
         [HttpGet("Total/{startDate}/{endDate}")]
         public IActionResult GetTotalExpenses(DateTime startDate, DateTime endDate)
@@ -40,7 +48,7 @@ namespace Tafe.Controllers
             var totalExpenses = repo.GetAll<Expense>().Where(e => e.ExpenseDate >= startDate && e.ExpenseDate <= endDate).Sum(e => e.Amount);
             return Ok(new { TotalExpenses = totalExpenses });
         }
-        [Authorize(Roles = "Admin, Manager, Cashier")]
+        [Authorize(Roles = "Admin,Manager,Cashier")]
         [HttpPost]
         public async Task<IActionResult> AddExpenses(ExpenseDTO expenseCreateDTO) 
         {

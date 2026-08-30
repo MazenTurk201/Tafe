@@ -35,7 +35,7 @@ export default function MenuPage() {
           name: category.name,
         },
         ingredients: product.ingredients.map((ingredient) => ({
-          id: ingredient.ingredientId,
+          id: ingredient.id,
           name: ingredient.name,
           unit: ingredient.unit,
           quantity: ingredient.quantity,
@@ -185,6 +185,7 @@ export default function MenuPage() {
                         {item.ingredients.slice(0, 5).map((ing) => (
                           <li
                             key={ing.id}
+                            title={`${ing.quantity} ${ing.unit}`}
                             className="text-sm text-gray-600 dark:text-zinc-400 bg-gray-50 dark:bg-zinc-800 px-2.5 py-1 rounded"
                           >
                             {ing.name}
@@ -200,12 +201,12 @@ export default function MenuPage() {
                   )}
 
                   {/* Order Button */}
-                  <button
+                  {/* <button
                     className="w-full py-2.5 bg-linear-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 transition-all disabled:opacity-50"
                     disabled
                   >
                     {t("addToOrder") || "Add to Order"}
-                  </button>
+                  </button> */}
                 </div>
               </article>
             ))}

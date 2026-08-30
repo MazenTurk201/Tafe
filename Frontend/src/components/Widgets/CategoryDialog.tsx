@@ -10,6 +10,7 @@ import {
 } from "@/components/animate-ui/components/radix/dialog";
 import { useTranslation } from "react-i18next";
 import { CategoriesApi } from "@/api/categoriesApi";
+import type { Category } from "@/types/category";
 
 interface AddCategoryDialogProps {
   onSuccess: () => void;
@@ -98,15 +99,15 @@ export function AddCategoryDialog({ onSuccess }: AddCategoryDialogProps) {
 
 
 interface UpdateCategoryDialogProps {
-  id: number;
+  model: Category;
   onSuccess: () => void;
 }
 
 export function UpdateCategoryDialog({
-  id,
+  model,
   onSuccess,
 }: UpdateCategoryDialogProps) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(model.name);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
@@ -119,7 +120,7 @@ export function UpdateCategoryDialog({
 
     try {
       setLoading(true);
-      await CategoriesApi.EditCategory(id, name);
+      await CategoriesApi.EditCategory(model.id, name);
       onSuccess();
       setName("");
       setOpen(false);

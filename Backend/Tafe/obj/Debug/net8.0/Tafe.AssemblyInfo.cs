@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Tafe")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+560eadbf826774613f30caf330f82b4f971c04b9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68999584616d63cbd0fb6d4ec39dabf1dbfd26f1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Tafe")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Tafe")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

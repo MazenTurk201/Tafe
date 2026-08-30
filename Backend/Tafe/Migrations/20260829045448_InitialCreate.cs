@@ -260,8 +260,7 @@ namespace Tafe.Migrations
                     Points = table.Column<int>(type: "INTEGER", nullable: false),
                     TotalSpent = table.Column<decimal>(type: "TEXT", nullable: false),
                     Vip = table.Column<bool>(type: "INTEGER", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: true)
+                    BirthDate = table.Column<DateOnly>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

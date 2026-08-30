@@ -10,11 +10,11 @@
         "projectUniqueName": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/Tafe.csproj",
         "projectName": "Tafe",
         "projectPath": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/Tafe.csproj",
-        "packagesPath": "/root/.nuget/packages/",
+        "packagesPath": "/home/t/.nuget/packages/",
         "outputPath": "/home/t/Projects/Fullstack/Tafe/Backend/Tafe/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "/home/t/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -40,7 +40,7 @@
           "dependencies": {
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[8.0.29, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
@@ -61,12 +61,6 @@
               "version": "[8.0.29, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
-              "target": "Package",
-              "version": "[8.0.29, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.29, )"
             },

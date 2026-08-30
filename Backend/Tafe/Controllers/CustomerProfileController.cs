@@ -153,7 +153,7 @@ public async Task<IActionResult> UpdateCustomerProfile(
     if (profile == null)
         return NotFound();
 
-    await repo.UpdateP(profile, dto);
+    repo.UpdateP(profile, dto);
 
     await repo.Save();
 

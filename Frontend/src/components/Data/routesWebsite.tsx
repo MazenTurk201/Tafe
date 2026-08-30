@@ -10,6 +10,7 @@ import MenuPage from '../Pages/MenuPage';
 import ProfilePage from '../Pages/ProfilePage';
 import EmployeeManagementPage from '../Pages/EmployeeManagementPage';
 import ProductsPage from '../Pages/ProductPage';
+import ExpensesPage from '../Pages/ExpensePage';
 
 export const routes = [
   { path: '/', element: <Main /> },
@@ -23,5 +24,6 @@ export const routes = [
   { path: "/profile", element: <ProfilePage />, },
   { path: "/employees", element: <EmployeeManagementPage />, },
   { path: "/products", element: <ProductsPage />, },
+  { path: "/expenses", element: <ExpensesPage />, },
   { path: '*', element: <NotFound /> }
 ];

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -9,35 +9,35 @@ import {
   DialogFooter,
 } from "@/components/animate-ui/components/radix/dialog";
 import { useTranslation } from "react-i18next";
-import { IngredientsApi } from "@/api/ingredientsApi";
-import { UnitsApi } from "@/api/unitsApi";
-import type { Unit } from "@/types/unit";
-import type { IngredientUpdate } from "@/types/ingredient";
+import { ExpensesApi } from "@/api/expensesApi";
+import type { Expense, ExpenseType } from "@/types/expense";
 
-interface AddIngredientDialogProps {
+
+const typeExpenseT: ExpenseType[] = [
+  "Rent",
+  "Electricity",
+  "Water",
+  "Gas",
+  "Internet",
+  "Salary",
+  "Maintenance",
+  "Purchases",
+  "Other",
+];
+
+interface AddExpenseDialogProps {
   onSuccess: () => void;
 }
 
-export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
+export function AddExpenseDialog({ onSuccess }: AddExpenseDialogProps) {
   const [name, setName] = useState("");
-  const [minQuantityAlert, setMinQuantityAlert] = useState(0);
-  const [unitId, setUnitId] = useState<number | "">("");
+  const [amount, setAmount] = useState(0);
+  const [typeExpense, setTypeExpense] =
+    useState<ExpenseType>("Purchases");
+  const [notes, setNotes] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const [units, setUnits] = useState<Unit[]>([]);
-
-  useEffect(() => {
-    const fetchUnits = async () => {
-      try {
-        const data = await UnitsApi.GetUnits();
-        setUnits(data);
-      } catch (error) {
-        console.error("Failed to load units:", error);
-      }
-    };
-    fetchUnits();
-    }, []);
 
   const handleSubmit = async () => {
 
@@ -47,13 +47,18 @@ export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
 
     try {
       setLoading(true);
-      await IngredientsApi.CreateIngredient({
-        name, minQuantityAlert, unitId
+      await ExpensesApi.CreateExpense(
+        {
+          name,
+          expenseDate: new Date( Date.now() - new Date().getTimezoneOffset() * 60000 ).toISOString().slice(0, -1),
+          amount,
+          type: typeExpense,
+          notes,
       });
       onSuccess();
       setName("");
-      setMinQuantityAlert(0);
-      setUnitId("");
+      setAmount(0);
+      setNotes("");
       setOpen(false);
     } catch (error) {
       console.error(error);
@@ -73,63 +78,59 @@ export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
             dark:bg-white dark:text-black cursor-pointer
           "
         >
-          {t("IngredientCreate")}
+          {t("ExpenseCreate")}
         </div>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Ingredient")}
+            {t("Expenses")}
           </DialogTitle>
 
           <DialogDescription>
-            {t("IngredientAddDes")}
+            {t("ExpenseAddDes")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
           <label className="mb-2 block">
-            {t("name")}
+            {t("Expense")}
           </label>
 
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder={t("IngredientPlaceholderName")}
+            placeholder={t("ExpensePlaceholder")}
             className="w-full rounded-md border px-3 py-2"
           />
-
-          <label className="mb-2 block">
-            {t("minQuantityAlert")}
-          </label>
 
           <input
             type="number"
-            value={minQuantityAlert}
-            onChange={(e) => setMinQuantityAlert(Number(e.target.value))}
-            placeholder={t("IngredientPlaceholderMinQA")}
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            placeholder={t("ExpensePlaceholder")}
             className="w-full rounded-md border px-3 py-2"
           />
 
-          <label className="mb-2 block">
-            {t("Unit")}
-          </label>
-
           <select
-          value={unitId}
-          onChange={(e) => setUnitId(Number(e.target.value))}
-          className="select-auto" required>
-            <option selected>{t("IngredientPlaceholderSelect")}</option>
+          value={typeExpense}
+          onChange={() => setTypeExpense(typeExpense)}
+          className="select-auto">
+            <option selected>{t("ExpensePlaceholderSelect")}</option>
             {
-              units.map((unit) => (
-                <option value={unit.id}>
-                {unit.name}
+              typeExpenseT.map((typeE) => (
+                <option value={typeE} key={typeE}>
+                {t(typeE)}
                 </option>
               ))
             }
           </select>
+
+          <textarea value={notes} onChange={(e) => {setNotes(e.target.value)}} placeholder="Any Notes?">
+
+          </textarea>
         </div>
 
         <DialogFooter>
@@ -149,34 +150,23 @@ export function AddIngredientDialog({ onSuccess }: AddIngredientDialogProps) {
 }
 
 
-interface UpdateIngredientDialogProps {
-  model: IngredientUpdate;
+interface UpdateExpenseDialogProps {
+  model: Expense;
   onSuccess: () => void;
 }
 
-export function UpdateIngredientDialog({
+export function UpdateExpenseDialog({
   model,
   onSuccess,
-}: UpdateIngredientDialogProps) {
+}: UpdateExpenseDialogProps) {
   const [name, setName] = useState(model.name);
-  const [minQuantityAlert, setMinQuantityAlert] = useState(model.minQuantityAlert);
+  const [amount, setAmount] = useState(model.amount);
+  const [notes, setNotes] = useState(model.notes);
+  const [typeExpense, setTypeExpense] =
+    useState<ExpenseType>(model.type);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const [unitId, setUnitId] = useState<number | "">(model.unitId);
-  const [units, setUnits] = useState<Unit[]>([]);
-
-  useEffect(() => {
-    const fetchUnits = async () => {
-      try {
-        const data = await UnitsApi.GetUnits();
-        setUnits(data);
-      } catch (error) {
-        console.error("Failed to load units:", error);
-      }
-    };
-    fetchUnits();
-    }, []);
 
   const handleSubmit = async () => {
 
@@ -186,16 +176,18 @@ export function UpdateIngredientDialog({
 
     try {
       setLoading(true);
-      await IngredientsApi.EditIngredient({
+      await ExpensesApi.EditExpense({
         id: model.id,
         name,
-        minQuantityAlert,
-        unitId
+        type: typeExpense,
+        amount,
+        notes,
+        expenseDate: model.expenseDate
       });
       onSuccess();
       setName("");
-      setMinQuantityAlert(0);
-      setUnitId("");
+      setAmount(0);
+      setNotes("");
       setOpen(false);
     } catch (error) {
       console.error(error);
@@ -215,55 +207,50 @@ export function UpdateIngredientDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Ingredient")}
+            {t("Expenses")}
           </DialogTitle>
 
           <DialogDescription>
-            {t("IngredientUpdateDes")}
+            {t("ExpenseUpdateDes")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
           <label className="mb-2 block">
-            {t("Ingredient")}
+            {t("Expense")}
           </label>
 
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder={t("IngredientPlaceholderName")}
+            placeholder={t("ExpensePlaceholder")}
             className="w-full rounded-md border px-3 py-2"
           />
-
-          <label className="mb-2 block">
-            {t("minQuantityAlert")}
-          </label>
 
           <input
             type="number"
-            value={minQuantityAlert}
-            onChange={(e) => setMinQuantityAlert(Number(e.target.value))}
-            placeholder={t("IngredientPlaceholderMinQA")}
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            placeholder={t("ExpensePlaceholder")}
             className="w-full rounded-md border px-3 py-2"
           />
 
-          <label className="mb-2 block">
-            {t("Unit")}
-          </label>
-
           <select
-          value={unitId}
-          onChange={(e) => setUnitId(Number(e.target.value))}
+          value={typeExpense}
+          onChange={() => setTypeExpense(typeExpense)}
           className="select-auto">
+            <option selected>{t("ExpensePlaceholderSelect")}</option>
             {
-              units.map((unit) => (
-                <option key={unit.id} value={unit.id}>
-                {unit.name}
+              typeExpenseT.map((typeE) => (
+                <option value={typeE} key={typeE}>
+                {t(typeE)}
                 </option>
               ))
             }
           </select>
+
+          <textarea value={notes} onChange={(e) => {setNotes(e.target.value)}} placeholder="Any Notes?"></textarea>
         </div>
 
         <DialogFooter>

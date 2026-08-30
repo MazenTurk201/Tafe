@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ProductsApi } from "@/api/productsApi";
-import type { Product } from "@/types/product";
+import { ExpensesApi } from "@/api/expensesApi";
+import type { Expense } from "@/types/expense";
 import { useTranslation } from "react-i18next";
-import { AddProductDialog, IngredientProductDialog, UpdateProductDialog} from "@/components/Widgets/ProductDialog";
+import { AddExpenseDialog, UpdateExpenseDialog} from "@/components/Widgets/ExpenseDialog";
 
-export default function ProductsPage() {
+export default function ExpensesPage() {
   const navigate = useNavigate();
-  const [products, setProduct] = useState<Product[]>([]);
-  const [delProducts, setDelProduct] = useState<Product[]>([]);
+  const [expenses, setExpense] = useState<Expense[]>([]);
+  const [delExpenses, setDelExpense] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingD, setLoadingD] = useState(true);
   const [search, setSearch] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const { t } = useTranslation();
 
-  const loadProducts = async () => {
+  const loadExpenses = async () => {
     try {
-      const data = await ProductsApi.GetProducts();
-      setProduct(data);
+      const data = await ExpensesApi.GetExpenses();
+      setExpense(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -26,10 +26,10 @@ export default function ProductsPage() {
     }
   };
 
-  const loadDeletedProducts = async () => {
+  const loadDeletedExpenses = async () => {
     try {
-      const data = await ProductsApi.GetDeletedProducts();
-      setDelProduct(data);
+      const data = await ExpensesApi.GetDeletedExpenses();
+      setDelExpense(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -39,8 +39,8 @@ export default function ProductsPage() {
 
   const Refresh = async () => {
     await Promise.all([
-      loadProducts(),
-      loadDeletedProducts(),
+      loadExpenses(),
+      loadDeletedExpenses(),
     ]);
   };
 
@@ -50,13 +50,13 @@ export default function ProductsPage() {
     (async () => {
       try {
         const [data, deletedData] = await Promise.all([
-          ProductsApi.GetProducts(),
-          ProductsApi.GetDeletedProducts(),
+          ExpensesApi.GetExpenses(),
+          ExpensesApi.GetDeletedExpenses(),
         ]);
 
         if (!ignore) {
-          setProduct(data);
-          setDelProduct(deletedData);
+          setExpense(data);
+          setDelExpense(deletedData);
         }
       } catch (error) {
         console.error(error);
@@ -76,18 +76,18 @@ export default function ProductsPage() {
   useEffect(() => {
     const timeout = setTimeout(async () => {
       if (!search.trim()) {
-        loadProducts();
+        loadExpenses();
         return;
       }
 
       try {
         setSearchLoading(true);
 
-        const data = await ProductsApi.Search(search.trim());
+        const data = await ExpensesApi.GetExpensesbyDate(Date.UTC(2006,1,1).toString(),Date.now().toString());
 
-        setProduct(data);
+        setExpense(data);
       } catch (error) {
-        console.error("Failed to search products:", error);
+        console.error("Failed to search expenses:", error);
       } finally {
         setSearchLoading(false);
       }
@@ -98,21 +98,21 @@ export default function ProductsPage() {
 
   const handleDelete = async (id: number) => {
     try{
-      await ProductsApi.DeleteProduct(id);
+      await ExpensesApi.DeleteExpense(id);
       Refresh();
     } catch (error){
       console.error(error);
-      alert("Failed to delete product");
+      alert("Failed to delete expense");
     }
   }
 
   const handleRestore = async (id: number) => {
     try{
-      await ProductsApi.RestoreProduct(id);
+      await ExpensesApi.RestoreExpense(id);
       await Refresh();
     } catch (error){
       console.error(error);
-      alert("Failed to restore product");
+      alert("Failed to restore expense");
     }
   }
 
@@ -120,18 +120,18 @@ export default function ProductsPage() {
     setSearch(value);
 
     if (!value.trim()) {
-      await loadProducts();
+      await loadExpenses();
       return;
     }
 
     try {
       setSearchLoading(true);
 
-      const data = await ProductsApi.Search(value.trim());
+      const data = await ExpensesApi.GetExpensesbyDate(Date.UTC(2006,1,1).toString(),Date.now().toString());
 
-      setProduct(data);
+      setExpense(data);
     } catch (error) {
-      console.error("Failed to search products:", error);
+      console.error("Failed to search expenses:", error);
     } finally {
       setSearchLoading(false);
     }
@@ -144,26 +144,31 @@ export default function ProductsPage() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold">
-            {t("Product")}
+            {t("Expense")}
           </h1>
 
           <p className="mt-1 text-zinc-500">
-            {t("ProductSubTitle")}
+            {t("ExpenseSubTitle")}
           </p>
         </div>
 
         <div className="flex gap-5">
-          <AddProductDialog onSuccess={Refresh}/>
+          <AddExpenseDialog onSuccess={Refresh}/>
           <button className="Back" title="Back" onClick={()=>{navigate(-1)}}>{">"}</button>
         </div>
       </div>
 
+      <div className="flex flex-col md:flex-row gap-x-5">
+
+      <label>{t("from")}</label>
+
       <input
+          type="date"
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
-          placeholder={t("ProductSearch")}
+          placeholder={t("from")}
           className="
-            ml-auto w-full rounded-xl border
+            w-full rounded-xl border
             border-zinc-200 bg-white px-4 py-2
             outline-none focus:border-black
             md:max-w-xs
@@ -171,13 +176,31 @@ export default function ProductsPage() {
           "
         />
 
+        <label>{t("to")}</label>
+
+        <input
+          type="date"
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder={t("ExpenseSearch")}
+          className="
+            w-full rounded-xl border
+            border-zinc-200 bg-white px-4 py-2
+            outline-none focus:border-black
+            md:max-w-xs
+            dark:border-zinc-800 dark:bg-zinc-900
+          "
+        />
+
+        </div>
+
       {/* Content */}
 
       {loading ? (
         <div className="py-20 text-center animate-pulse">
           {t("loading")}
         </div>
-      ) : products.length === 0 ? (
+      ) : expenses.length === 0 ? (
         <div
           className="
             rounded-2xl border border-dashed
@@ -205,45 +228,40 @@ export default function ProductsPage() {
         <tr>
           <th>{t("name")}</th>
           <th>{t("id")}</th>
-          <th>{t("price")}</th>
-          <th>{t("Category")}</th>
+          <th>{t("amount")}</th>
+          <th>{t("ExpenseDate")}</th>
+          <th>{t("type")}</th>
+          <th>{t("notes")}</th>
           <th>{t("funcs")}</th>
         </tr>
       </thead>
 
       <tbody>
-        {products.map((product) => (
-          <tr key={product.id}>
-            <td>{product.name}</td>
-            <td>{product.id}</td>
-            <td>{product.price} $</td>
-            <td>{product.category.name}</td>
+        {expenses.map((expense) => (
+          <tr key={expense.id}>
+            <td>{expense.name}</td>
+            <td>{expense.id}</td>
+            <td>{expense.amount}</td>
+            <td>{new Date(expense.expenseDate).toISOString().split("T")[0].replaceAll("-", "/")}</td>
+            <td>{t(expense.type)}</td>
+            <td>{expense.notes}</td>
 
             <td>
-              <UpdateProductDialog
+              <UpdateExpenseDialog
                 onSuccess={Refresh}
                 model={{
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  CategoryId: product.category.id,
-                }}
-              />
-
-              <IngredientProductDialog
-                onSuccess={Refresh}
-                model={{
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  CategoryId: product.category.id,
-                  Ingredients: product.ingredients,
+                    id: expense.id,
+                    name: expense.name,
+                    amount: expense.amount,
+                    expenseDate: expense.expenseDate,
+                    type: expense.type,
+                    notes: expense.notes
                 }}
               />
 
               <button
                 className="delete-btn"
-                onClick={() => handleDelete(product.id)}
+                onClick={() => handleDelete(expense.id)}
               >
                 {t("delete")}
               </button>
@@ -259,7 +277,7 @@ export default function ProductsPage() {
 
       {loadingD ? (
         <></>
-      ) : delProducts.length === 0 ? (
+      ) : delExpenses.length === 0 ? (
         <></>
       ) : (
         <details>
@@ -268,22 +286,25 @@ export default function ProductsPage() {
           <table>
             <thead>
             <tr>
-              <th>{t("name")}</th>
-              <th>{t("id")}</th>
-              <th>{t("price")}</th>
-              <th>{t("Category")}</th>
-              <th>{t("func")}</th>
+                <th>{t("name")}</th>
+                <th>{t("id")}</th>
+                <th>{t("amount")}</th>
+                <th>{t("ExpenseDate")}</th>
+                <th>{t("type")}</th>
+                <th>{t("notes")}</th>
             </tr>
             </thead>
             <tbody>
-            {delProducts.map((product) => (
-              <tr key={product.id}>
-                <td>{product.name}</td>
-                <td>{product.id}</td>
-                <td>{product.price} $</td>
-                <td>{product.category.name}</td>
+            {delExpenses.map((expense) => (
+              <tr key={expense.id}>
+                <td>{expense.name}</td>
+                <td>{expense.id}</td>
+                <td>{expense.amount}</td>
+                <td>{expense.expenseDate}</td>
+                <td>{t(expense.type)}</td>
+                <td>{expense.notes}</td>
                 <td>
-                  <button className="restore-btn" onClick={() => {handleRestore(product.id)}}>{t("restore")}</button>
+                  <button className="restore-btn" onClick={() => {handleRestore(expense.id)}}>{t("restore")}</button>
                 </td>
               </tr>
             ))}

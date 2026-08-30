@@ -95,7 +95,7 @@ namespace Tafe.Controllers
             await repo.SoftDelete<Product>(id);
             await repo.Save();
 
-            return Ok(Product);
+            return Ok();
         }
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("Deleted")]

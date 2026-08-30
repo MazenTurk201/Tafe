@@ -34,7 +34,7 @@ namespace Tafe.Repository
 
         }
 
-        public async Task UpdateP(
+        public void UpdateP(
             CustomerProfile profile,
             CustomerProfileUpdateDTO dto)
         {

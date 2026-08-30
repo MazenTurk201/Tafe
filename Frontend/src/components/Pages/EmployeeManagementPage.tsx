@@ -240,7 +240,7 @@ export default function EmployeeManagementPage() {
               resetForm();
               setShowCreateDialog(true);
             }}
-            className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all"
+            className="px-5 py-2.5 bg-linear-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all"
           >
             {t("addEmployee") || "Add Employee"}
           </button>

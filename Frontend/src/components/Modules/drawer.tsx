@@ -67,6 +67,7 @@ const SidebarDrawer = () => {
             {ItemDrawer("/categories", t("Categories") || "Categories")}
             {ItemDrawer("/ingredients", t("Ingredients") || "Ingredients")}
             {ItemDrawer("/products", t("Products") || "Products")}
+            {ItemDrawer("/expenses", t("Expenses") || "Expenses")}
             {isAuthenticated && hasRole("Admin") && (
               <>
                 {ItemDrawer("/employees", t("Employees") || "Employees")}

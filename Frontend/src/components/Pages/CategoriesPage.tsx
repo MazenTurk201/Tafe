@@ -149,7 +149,7 @@ export default function CategoriesPage() {
                 <td>{category.name}</td>
                 <td>{category.id}</td>
                 <td>
-                  <UpdateCategoryDialog id={category.id} onSuccess={Refresh} />
+                  <UpdateCategoryDialog onSuccess={Refresh} model={category} />
                   <button className="delete-btn" onClick={() => {handleDelete(category.id)}}>{t("delete")}</button>
                 </td>
               </tr>

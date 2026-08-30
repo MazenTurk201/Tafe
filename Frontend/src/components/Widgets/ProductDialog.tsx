@@ -127,7 +127,7 @@ export function AddProductDialog({ onSuccess }: AddProductDialogProps) {
             <option selected>{t("ProductPlaceholderSelect")}</option>
             {
               categories.map((category) => (
-                <option value={category.id}>
+                <option value={category.id} key={category.id}>
                 {category.name}
                 </option>
               ))

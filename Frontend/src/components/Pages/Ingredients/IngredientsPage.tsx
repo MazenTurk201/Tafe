@@ -154,7 +154,7 @@ export default function IngredientsPage() {
                 <td>{ingredient.quantity}</td>
                 <td>{ingredient.minQuantityAlert}</td>
                 <td>
-                  <UpdateIngredientDialog id={ingredient.id} onSuccess={Refresh} model={{minQuantityAlert: ingredient.minQuantityAlert, name: ingredient.name, unitId: ingredient.unit.id}}/>
+                  <UpdateIngredientDialog onSuccess={Refresh} model={{id: ingredient.id, minQuantityAlert: ingredient.minQuantityAlert, name: ingredient.name, unitId: ingredient.unit.id}}/>
                   <button className="delete-btn" onClick={() => {handleDelete(ingredient.id)}}>{t("delete")}</button>
                 </td>
               </tr>
