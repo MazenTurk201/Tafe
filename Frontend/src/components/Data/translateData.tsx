@@ -136,6 +136,11 @@ const resources = {
       price: "Price",
       from: "From",
       to: "To",
+      fullscreen: "Fullscreen",
+      changeMode: "Change Mode",
+      accountSettings: "Account Settings",
+      about: "About",
+      signOut: "Sign Out",
     }
   },
   ar: {
@@ -275,6 +280,11 @@ const resources = {
       price: "السعر",
       from: "من",
       to: "إلى",
+      fullscreen: "ملء الشاشة",
+      changeMode: "تغيير الوضع",
+      accountSettings: "إعدادات الحساب",
+      about: "عنا",
+      signOut: "تسجيل الخروج",
     }
   }
 };

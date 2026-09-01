@@ -64,6 +64,8 @@ namespace Tafe.Controllers
                             new Claim(ClaimTypes.NameIdentifier, userFromDB.Id),
                             new Claim(ClaimTypes.Name, userFromDB.UserName!),
                             new Claim(ClaimTypes.GivenName, userFromDB.FullName ?? ""),
+                            new Claim(ClaimTypes.Email, userFromDB.Email ?? ""),
+                            new Claim(ClaimTypes.MobilePhone, userFromDB.PhoneNumber ?? ""),
                             new Claim(ClaimTypes.StreetAddress, userFromDB.Address ?? ""),
                         ];
                         var userRole = await userManager.GetRolesAsync(userFromDB);
