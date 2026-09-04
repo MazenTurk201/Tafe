@@ -5,12 +5,13 @@ import OrderDetailsPage from '@/components/Pages/Orders/OrderDetailsPage';
 import NewOrderPage from '@/components/Pages/Orders/NewOrderPage';
 import UnitsPage from '@/components/Pages/UnitsPage';
 import CategoriesPage from '@/components/Pages/CategoriesPage';
-import IngredientsPage from '../Pages/Ingredients/IngredientsPage';
-import MenuPage from '../Pages/MenuPage';
-import ProfilePage from '../Pages/ProfilePage';
-import EmployeeManagementPage from '../Pages/EmployeeManagementPage';
-import ProductsPage from '../Pages/ProductPage';
-import ExpensesPage from '../Pages/ExpensePage';
+import IngredientsPage from '@/components/Pages/IngredientsPage';
+import MenuPage from '@/components/Pages/MenuPage';
+import ProfilePage from '@/components/Pages/ProfilePage';
+import EmployeeManagementPage from '@/components/Pages/EmployeeManagementPage';
+import ProductsPage from '@/components/Pages/ProductPage';
+import ExpensesPage from '@/components/Pages/ExpensePage';
+import SuppliersPage from '@/components/Pages/SuppliersPage';
 
 export const routes = [
   { path: '/', element: <Main /> },
@@ -25,5 +26,7 @@ export const routes = [
   { path: "/employees", element: <EmployeeManagementPage />, },
   { path: "/products", element: <ProductsPage />, },
   { path: "/expenses", element: <ExpensesPage />, },
+  { path: "/suppliers", element: <SuppliersPage />, },
+  { path: "/suppliers", element: <SuppliersPage />, },
   { path: '*', element: <NotFound /> }
 ];

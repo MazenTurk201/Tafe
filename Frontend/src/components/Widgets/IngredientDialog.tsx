@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { IngredientsApi } from "@/api/ingredientsApi";
 import { UnitsApi } from "@/api/unitsApi";
 import type { Unit } from "@/types/unit";
-import type { IngredientUpdate } from "@/types/ingredient";
+import type { IngredientUpdate, IngredientWarning } from "@/types/ingredient";
 
 interface AddIngredientDialogProps {
   onSuccess: () => void;
@@ -275,6 +275,71 @@ export function UpdateIngredientDialog({
             {loading
               ? t("loading")
               : t("update")}
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+interface IngredientWarrningDialogProps {
+  warrningCount: number;
+}
+
+export function IngredientWarrningDialog({warrningCount} : IngredientWarrningDialogProps) {
+  const [warrningAlert, setWarrningAlert] = useState<IngredientWarning[]>([]);
+  const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      try {
+        const data = await IngredientsApi.GetIngredientsWarning();
+        setWarrningAlert(data);
+      } catch (error) {
+        console.error("Failed to load units:", error);
+      }
+    };
+    fetchIngredients();
+    }, []);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <div className="Warrning"><span>{warrningCount}</span></div>
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {t("IngredientsWarrning")}
+          </DialogTitle>
+
+          <DialogDescription>
+            {t("IngredientsWarrningDes")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="py-4">
+          <label className="mb-2 block">
+            {t("Ingredients")}:
+          </label>
+
+            {
+              warrningAlert.map((wA) => (
+                <p>
+                {wA.name} ({t("id")}: {wA.id}) / {t("quantity")}: {wA.quantity + " " + wA.unit}
+                </p>
+              ))
+            }
+        </div>
+
+        <DialogFooter>
+          <button
+            type="button"
+            onClick={()=>{setOpen(false)}}
+          >
+            {t("ok")}
           </button>
         </DialogFooter>
       </DialogContent>

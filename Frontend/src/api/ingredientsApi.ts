@@ -5,7 +5,7 @@ export const IngredientsApi = {
   GetIngredients: () => get<Ingredient[]>("/Ingredients"),
   SearchIngredients: (name: string) => get<Ingredient[]>("/Ingredients/Search", { Name: name }),
   GetDeletedIngredients: () => get<Ingredient[]>("/Ingredients/Deleted"),
-  GetIngredientsWarning: () => get<IngredientWarning>("/Ingredients/Warning"),
+  GetIngredientsWarning: () => get<IngredientWarning[]>("/Ingredients/Warning"),
   GetIngredientsWarningCount: () => get<number>("/Ingredients/Warning/Count"),
   CreateIngredient: (data: IngredientCreate) => post<void>("/Ingredients", data),
   DeleteIngredient: (id: number) => del<void>("/Ingredients?id=" + id),

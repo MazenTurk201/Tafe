@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route, Outlet, Link } from 'react-router-dom';
 import { routes } from "./components/Data/routesWebsite";
 import NavBar from './components/Modules/navBar';
 import Footer from './components/Modules/footerWedgit';
@@ -144,19 +144,16 @@ function MainLayout() {
           <div className="my-1 border-t border-gray-200" />
 
           {/* Account Settings */}
-          <button
-            type="button"
-            className="contextMenuButton"
-            onClick={() => {
-              console.log("Account settings");
+          <Link to="/profile" className="contextMenuButton" onClick={() => 
+            {
               setContextMenu(null);
-            }}
-          >
+            }
+            }>
             {t('accountSettings')}
-          </button>
+          </Link>
 
           {/* About */}
-          <button
+          {/* <button
             type="button"
             className="contextMenuButton"
             onClick={() => {
@@ -165,7 +162,7 @@ function MainLayout() {
             }}
           >
             {t('about')}
-          </button>
+          </button> */}
 
           <button onClick={() => { toggleLanguage(); setContextMenu(null); }} className="contextMenuButton">
             {idArabic ? 'تغيير اللغة' : 'Change Language'}

@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { IngredientsApi } from "@/api/ingredientsApi";
-import type { Ingredient } from "@/types/ingredient";
+import { Link, useNavigate } from "react-router-dom";
+import { SuppliersApi } from "@/api/suppliersApi";
+import type { Supplier } from "@/types/supplier";
 import { useTranslation } from "react-i18next";
-import { AddIngredientDialog, UpdateIngredientDialog} from "@/components/Widgets/IngredientDialog";
+import { AddSupplierDialog, UpdateSupplierDialog} from "@/components/Widgets/SupplierDialog";
 
-export default function IngredientsPage() {
+export default function SuppliersPage() {
   const navigate = useNavigate();
-  const [ingredients, setIngredient] = useState<Ingredient[]>([]);
-  const [delIngredients, setDelIngredient] = useState<Ingredient[]>([]);
+  const [suppliers, setSupplier] = useState<Supplier[]>([]);
+  const [delSuppliers, setDelSupplier] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingD, setLoadingD] = useState(true);
   const { t } = useTranslation();
 
-  const loadIngredients = async () => {
+  const loadSuppliers = async () => {
     try {
-      const data = await IngredientsApi.GetIngredients();
-      setIngredient(data);
+      const data = await SuppliersApi.GetSuppliers();
+      setSupplier(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -24,10 +24,10 @@ export default function IngredientsPage() {
     }
   };
 
-  const loadDeletedIngredients = async () => {
+  const loadDeletedSuppliers = async () => {
     try {
-      const data = await IngredientsApi.GetDeletedIngredients();
-      setDelIngredient(data);
+      const data = await SuppliersApi.GetDeletedSuppliers();
+      setDelSupplier(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -37,8 +37,8 @@ export default function IngredientsPage() {
 
   const Refresh = async () => {
     await Promise.all([
-      loadIngredients(),
-      loadDeletedIngredients(),
+      loadSuppliers(),
+      loadDeletedSuppliers(),
     ]);
   };
 
@@ -48,13 +48,13 @@ export default function IngredientsPage() {
     (async () => {
       try {
         const [data, deletedData] = await Promise.all([
-          IngredientsApi.GetIngredients(),
-          IngredientsApi.GetDeletedIngredients(),
+          SuppliersApi.GetSuppliers(),
+          SuppliersApi.GetDeletedSuppliers(),
         ]);
 
         if (!ignore) {
-          setIngredient(data);
-          setDelIngredient(deletedData);
+          setSupplier(data);
+          setDelSupplier(deletedData);
         }
       } catch (error) {
         console.error(error);
@@ -73,21 +73,21 @@ export default function IngredientsPage() {
 
   const handleDelete = async (id: number) => {
     try{
-      await IngredientsApi.DeleteIngredient(id);
+      await SuppliersApi.DeleteSupplier(id);
       await Refresh();
     } catch (error){
       console.error(error);
-      alert("Failed to delete ingredient");
+      alert("Failed to delete supplier");
     }
   }
 
   const handleRestore = async (id: number) => {
     try{
-      await IngredientsApi.RestoreIngredient(id);
+      await SuppliersApi.RestoreSupplier(id);
       await Refresh();
     } catch (error){
       console.error(error);
-      alert("Failed to restore ingredient");
+      alert("Failed to restore supplier");
     }
   }
 
@@ -98,16 +98,16 @@ export default function IngredientsPage() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold">
-            {t("Ingredient")}
+            {t("Supplier")}
           </h1>
 
           <p className="mt-1 text-zinc-500">
-            {t("IngredientSubTitle")}
+            {t("SupplierSubTitle")}
           </p>
         </div>
 
         <div className="flex gap-5">
-          <AddIngredientDialog onSuccess={Refresh}/>
+          <AddSupplierDialog onSuccess={Refresh}/>
           <button className="Back" title="Back" onClick={()=>{navigate(-1)}}>{">"}</button>
         </div>
       </div>
@@ -118,7 +118,7 @@ export default function IngredientsPage() {
         <div className="py-20 text-center animate-pulse">
           {t("loading")}
         </div>
-      ) : ingredients.length === 0 ? (
+      ) : suppliers.length === 0 ? (
         <div
           className="
             rounded-2xl border border-dashed
@@ -138,24 +138,23 @@ export default function IngredientsPage() {
             <thead>
             <tr>
               <th>{t("name")}</th>
-              <th>{t("id")}</th>
-              <th>{t("Unit")}</th>
-              <th>{t("quantity")}</th>
-              <th>{t("minQuantityAlert")}</th>
+              <th>{t("phone")}</th>
+              <th>{t("email")}</th>
+              <th>{t("address")}</th>
               <th>{t("funcs")}</th>
             </tr>
             </thead>
             <tbody>
-            {ingredients.map((ingredient) => (
-              <tr key={ingredient.id}>
-                <td>{ingredient.name}</td>
-                <td>{ingredient.id}</td>
-                <td>{ingredient.unit.name} Id: ({ingredient.unit.id})</td>
-                <td>{ingredient.quantity}</td>
-                <td>{ingredient.minQuantityAlert}</td>
+            {suppliers.map((supplier) => (
+              <tr key={supplier.id}>
+                <td>{supplier.name}</td>
+                <td><a href={`http://wa.me/${supplier.phone}`} target="_blank" rel="noopener noreferrer">{supplier.phone}</a></td>
+                <td><a href={`mailto:${supplier.email}`} target="_blank" rel="noopener noreferrer">{supplier.email}</a></td>
+                <td>{supplier.address}</td>
                 <td>
-                  <UpdateIngredientDialog onSuccess={Refresh} model={{id: ingredient.id, minQuantityAlert: ingredient.minQuantityAlert, name: ingredient.name, unitId: ingredient.unit.id}}/>
-                  <button className="delete-btn" onClick={() => {handleDelete(ingredient.id)}}>{t("delete")}</button>
+                  <Link to={`/suppliers/${supplier.id}`} className="ingredient-btn">{t("transactions")}</Link>
+                  <UpdateSupplierDialog onSuccess={Refresh} model={supplier} />
+                  <button className="delete-btn" onClick={() => {handleDelete(supplier.id)}}>{t("delete")}</button>
                 </td>
               </tr>
             ))}
@@ -166,7 +165,7 @@ export default function IngredientsPage() {
 
       {loadingD ? (
         <></>
-      ) : delIngredients.length === 0 ? (
+      ) : delSuppliers.length === 0 ? (
         <></>
       ) : (
         <details>
@@ -176,17 +175,21 @@ export default function IngredientsPage() {
             <thead>
             <tr>
               <th>{t("name")}</th>
-              <th>{t("id")}</th>
+              <th>{t("phone")}</th>
+              <th>{t("email")}</th>
+              <th>{t("address")}</th>
               <th>{t("func")}</th>
             </tr>
             </thead>
             <tbody>
-            {delIngredients.map((ingredient) => (
-              <tr key={ingredient.id}>
-                <td>{ingredient.name}</td>
-                <td>{ingredient.id}</td>
+            {delSuppliers.map((supplier) => (
+              <tr key={supplier.id}>
+                <td>{supplier.name}</td>
+                <td>{supplier.phone}</td>
+                <td>{supplier.email}</td>
+                <td>{supplier.address}</td>
                 <td>
-                  <button className="restore-btn" onClick={() => {handleRestore(ingredient.id)}}>{t("restore")}</button>
+                  <button className="restore-btn" onClick={() => {handleRestore(supplier.id)}}>{t("restore")}</button>
                 </td>
               </tr>
             ))}
