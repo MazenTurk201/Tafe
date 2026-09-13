@@ -1,25 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SuppliersApi } from "@/api/suppliersApi";
-import type { PurchaseInvoices } from "@/types/supplier";
+import type { Supplier } from "@/types/supplier";
 import { useTranslation } from "react-i18next";
-import { AddSupplierDialog} from "@/components/Widgets/SupplierDialog";
+import { AddSupplierDialog, UpdateSupplierDialog} from "@/components/Widgets/SupplierDialog";
 
-interface InvoicesBySuppliersPageProps {
-  id: number;
-}
-
-export default function InvoicesBySuppliersPage({id} : InvoicesBySuppliersPageProps) {
+export default function SuppliersPage() {
   const navigate = useNavigate();
-  const [invoices, setInvoices] = useState<PurchaseInvoices[]>([]);
+  const [suppliers, setSupplier] = useState<Supplier[]>([]);
+  const [delSuppliers, setDelSupplier] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
-//   const [loadingD, setLoadingD] = useState(true);
+  const [loadingD, setLoadingD] = useState(true);
   const { t } = useTranslation();
 
   const loadSuppliers = async () => {
     try {
-      const data = await SuppliersApi.GetPurchaseInvoicesBySupplier(id);
-      setInvoices(data);
+      const data = await SuppliersApi.GetSuppliers();
+      setSupplier(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -27,61 +24,56 @@ export default function InvoicesBySuppliersPage({id} : InvoicesBySuppliersPagePr
     }
   };
 
-//   const loadDeletedSuppliers = async () => {
-//     try {
-//       const data = await SuppliersApi.();
-//       setDelSupplier(data);
-//     } catch (error) {
-//       console.error(error);
-//     } finally {
-//       setLoadingD(false);
-//     }
-//   };
+  const loadDeletedSuppliers = async () => {
+    try {
+      const data = await SuppliersApi.GetDeletedSuppliers();
+      setDelSupplier(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingD(false);
+    }
+  };
 
   const Refresh = async () => {
     await Promise.all([
       loadSuppliers(),
-    //   loadDeletedSuppliers(),
+      loadDeletedSuppliers(),
     ]);
   };
 
-//   useEffect(() => {
-//     let ignore = false;
+  useEffect(() => {
+    let ignore = false;
 
-//     (async () => {
-//       try {
-//         // const [data, deletedData] = await Promise.all([
-//         const [data] = await Promise.all([
-//           SuppliersApi.GetSuppliers(),
-//         //   SuppliersApi.GetDeletedSuppliers(),
-//         ]);
+    (async () => {
+      try {
+        const [data, deletedData] = await Promise.all([
+          SuppliersApi.GetSuppliers(),
+          SuppliersApi.GetDeletedSuppliers(),
+        ]);
 
-//         if (!ignore) {
-//           setSupplier(data);
-//         //   setDelSupplier(deletedData);
-//         }
-//       } catch (error) {
-//         console.error(error);
-//       } finally {
-//         if (!ignore) {
-//           setLoading(false);
-//           setLoadingD(false);
-//         }
-//       }
-//     })();
+        if (!ignore) {
+          setSupplier(data);
+          setDelSupplier(deletedData);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+          setLoadingD(false);
+        }
+      }
+    })();
 
-//     return () => {
-//       ignore = true;
-//     };
-//   }, []);
-
-  useEffect(()=>{
-    Refresh();
-  },[]);
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const handleDelete = async (id: number) => {
     try{
-      await SuppliersApi.DeletePurchaseInvoices(id);
+      await SuppliersApi.DeleteSupplier(id);
       await Refresh();
     } catch (error){
       console.error(error);
@@ -89,15 +81,15 @@ export default function InvoicesBySuppliersPage({id} : InvoicesBySuppliersPagePr
     }
   }
 
-//   const handleRestore = async (id: number) => {
-//     try{
-//       await SuppliersApi.RestoreSupplier(id);
-//       await Refresh();
-//     } catch (error){
-//       console.error(error);
-//       alert("Failed to restore supplier");
-//     }
-//   }
+  const handleRestore = async (id: number) => {
+    try{
+      await SuppliersApi.RestoreSupplier(id);
+      await Refresh();
+    } catch (error){
+      console.error(error);
+      alert("Failed to restore supplier");
+    }
+  }
 
   return (
     <main className="w-full h-full px-5 py-8">
@@ -126,7 +118,7 @@ export default function InvoicesBySuppliersPage({id} : InvoicesBySuppliersPagePr
         <div className="py-20 text-center animate-pulse">
           {t("loading")}
         </div>
-      ) : invoices.length === 0 ? (
+      ) : suppliers.length === 0 ? (
         <div
           className="
             rounded-2xl border border-dashed
@@ -145,27 +137,24 @@ export default function InvoicesBySuppliersPage({id} : InvoicesBySuppliersPagePr
           <table>
             <thead>
             <tr>
-              <th>{t("id")}</th>
-              <th>{t("invoiceNumber")}</th>
-              <th>{t("supplierId")}</th>
-              <th>{t("supplierName")}</th>
-              <th>{t("total")}</th>
-              <th>{t("createdAt")}</th>
+              <th>{t("name")}</th>
+              <th>{t("phone")}</th>
+              <th>{t("email")}</th>
+              <th>{t("address")}</th>
               <th>{t("funcs")}</th>
             </tr>
             </thead>
             <tbody>
-            {invoices.map((invoice) => (
-              <tr key={invoice.id}>
-                <td>{invoice.id}</td>
-                <td>{invoice.invoiceNumber}</td>
-                <td>{invoice.supplierId}</td>
-                <td>{invoice.supplierName}</td>
-                <td>{invoice.total}</td>
-                <td>{invoice.createdAt}</td>
-                <td>
-                  <Link to={`/invoices/${invoice.id}`} className="ingredient-btn">{t("transactions")}</Link>
-                  <button className="delete-btn" onClick={() => {handleDelete(invoice.id)}}>{t("delete")}</button>
+            {suppliers.map((supplier) => (
+              <tr key={supplier.id}>
+                <td>{supplier.name}</td>
+                <td><a title={t("sendWhatsapp")} href={`http://wa.me/${supplier.phone}`} target="_blank" rel="noopener noreferrer">{supplier.phone}</a></td>
+                <td><a title={t("sendMail")} href={`mailto:${supplier.email}`} target="_blank" rel="noopener noreferrer">{supplier.email}</a></td>
+                <td>{supplier.address}</td>
+                <td className="funcRow">
+                  <Link to={`/suppliers/${supplier.id}`} className="ingredient-btn py-2 px-3 my-2">{t("transactions")}</Link>
+                  <UpdateSupplierDialog onSuccess={Refresh} model={supplier} />
+                  <button className="delete-btn" onClick={() => {handleDelete(supplier.id)}}>{t("delete")}</button>
                 </td>
               </tr>
             ))}
@@ -174,7 +163,7 @@ export default function InvoicesBySuppliersPage({id} : InvoicesBySuppliersPagePr
         </div>
       )}
 
-      {/* {loadingD ? (
+      {loadingD ? (
         <></>
       ) : delSuppliers.length === 0 ? (
         <></>
@@ -208,7 +197,7 @@ export default function InvoicesBySuppliersPage({id} : InvoicesBySuppliersPagePr
           </table>
         </div>
         </details>
-      )} */}
+      )}
     </main>
   );
 }

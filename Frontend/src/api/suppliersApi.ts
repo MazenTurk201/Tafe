@@ -1,4 +1,4 @@
-import type { PurchaseInvoices, Supplier, SupplierCreate } from "@/types/supplier";
+import type { PurchaseInvoices, PurchaseInvoicesBySupplier, Supplier, SupplierCreate } from "@/types/supplier";
 import { get, post, del, patch } from "../lib/request";
 
 export const SuppliersApi = {
@@ -10,6 +10,6 @@ export const SuppliersApi = {
   RestoreSupplier: (id: number) => patch<void>("/Suppliers/Restore?id=" + id),
   GetPurchaseInvoices: () => get<PurchaseInvoices[]>("/Suppliers/PurchaseInvoices"),
   // GetDeletedPurchaseInvoices: () => get<PurchaseInvoices[]>("/Suppliers/PurchaseInvoices/Deleted"),
-  GetPurchaseInvoicesBySupplier: (id: number) => get<PurchaseInvoices[]>("/Suppliers/" + id + "/PurchaseInvoices"),
+  GetPurchaseInvoicesBySupplier: (id: number) => get<PurchaseInvoicesBySupplier[]>("/Suppliers/" + id + "/PurchaseInvoices"),
   DeletePurchaseInvoices: (id: number) => del<void>("/Suppliers/PurchaseInvoices/" + id),
 };

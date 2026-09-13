@@ -156,6 +156,11 @@ const resources = {
       about: "About",
       signOut: "Sign Out",
       transactions: "Transactions",
+      sendMail: "Send Mail",
+      sendWhatsapp: "Send Whatsapp",
+      details : "Details",
+      itemsCount: "Items Count",
+      total: "Total",
     }
   },
   ar: {
@@ -314,6 +319,11 @@ const resources = {
       about: "عنا",
       signOut: "تسجيل الخروج",
       transactions: "الفواتير",
+      sendMail: "إرسال بريد  إلكتروني",
+      sendWhatsapp: "إرسال رسالة  واتساب",
+      details : "التفاصيل",
+      itemsCount: "عدد الأصناف",
+      total: "الإجمالي",
     }
   }
 };

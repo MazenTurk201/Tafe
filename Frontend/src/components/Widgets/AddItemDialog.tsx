@@ -157,7 +157,7 @@ export default function AddItemDialog({
                 </div>
 
                 <div className="text-sm text-gray-500">
-                  {product.Category}
+                  {product.category.name}
                 </div>
               </button>
             ))}

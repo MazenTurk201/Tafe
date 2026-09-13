@@ -365,7 +365,7 @@ export default function ProfilePage() {
                       type="text"
                       value={
                         profile.createdAt
-                          ? new Date(profile.createdAt).toLocaleDateString()
+                          ? new Date(profile.createdAt).toLocaleDateString('zh-CN')
                           : "Unknown"
                       }
                       disabled

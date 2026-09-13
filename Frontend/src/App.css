@@ -133,6 +133,31 @@
   color: var(--main-hover);
 }
 
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--main) transparent;
+}
+
+/* Chrome / Edge / Chromium */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--main);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--main-hover);
+}
+
 .card{
   background-color: var(--card);
   border-radius: var(--radius);
@@ -296,9 +321,14 @@ th{
 
 td{
   padding-inline: 24px;
-  padding-block: 16px;
+  padding-block: 12px;
   gap: 5px;
   width: fit-content;
+}
+
+.funcRow{
+  display: flex;
+  flex-wrap: wrap;
 }
 
 tr{

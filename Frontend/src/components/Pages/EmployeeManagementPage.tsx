@@ -208,7 +208,7 @@ export default function EmployeeManagementPage() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString();
+    return new Date(dateStr).toLocaleDateString('zh-CN');
   };
 
   if (loading) {

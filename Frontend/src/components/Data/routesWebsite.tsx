@@ -11,7 +11,8 @@ import ProfilePage from '@/components/Pages/ProfilePage';
 import EmployeeManagementPage from '@/components/Pages/EmployeeManagementPage';
 import ProductsPage from '@/components/Pages/ProductPage';
 import ExpensesPage from '@/components/Pages/ExpensePage';
-import SuppliersPage from '@/components/Pages/SuppliersPage';
+import SuppliersPage from '@/components/Pages/Suppliers/SuppliersPage';
+import SuppliersPageEnvoice from '@/components/Pages/Suppliers/SuppliersPageEnvoice';
 
 export const routes = [
   { path: '/', element: <Main /> },
@@ -27,6 +28,7 @@ export const routes = [
   { path: "/products", element: <ProductsPage />, },
   { path: "/expenses", element: <ExpensesPage />, },
   { path: "/suppliers", element: <SuppliersPage />, },
-  { path: "/suppliers", element: <SuppliersPage />, },
+  { path: "/suppliers/:id", element: <SuppliersPageEnvoice />, },
+  // { path: "/suppliers/:supplierId/:id/Details", element: <SuppliersPageEnvoiceDetails />, },
   { path: '*', element: <NotFound /> }
 ];

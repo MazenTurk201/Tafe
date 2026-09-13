@@ -106,6 +106,8 @@ namespace Tafe.Controllers
                 pi.InvoiceNumber,
                 pi.Total,
                 pi.CreatedAt,
+                pi.SupplierId,
+                SupplierName = pi.Supplier.Name,
                 Items = pi.Items.Select(item => new
                 {
                     item.Id,
