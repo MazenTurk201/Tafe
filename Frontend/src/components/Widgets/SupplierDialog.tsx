@@ -432,8 +432,8 @@ export function IngredientSupplierEnvoiceDialog({
       return;
     }
 
-    setSupplierEnvoiceIngredients(model.items[0]. ?? []);
-    
+    // setSupplierEnvoiceIngredients(model.items[0] || []);
+
     setSearch("");
     setSelectedIngredientId("");
     setQuantity(1);
@@ -505,15 +505,15 @@ export function IngredientSupplierEnvoiceDialog({
         return;
       }
 
-      setSupplierEnvoiceIngredients((current) => [
-        ...current,
-        {
-          id: selectedIngredient.id,
-          name: selectedIngredient.name,
-          unit: selectedIngredient.unit.name,
-          quantity,
-        },
-      ]);
+      // setSupplierEnvoiceIngredients((current) => [
+      //   ...current,
+      //   {
+      //     id: selectedIngredient.id,
+      //     name: selectedIngredient.name,
+      //     unit: selectedIngredient.unit.name,
+      //     quantity,
+      //   },
+      // ]);
 
       setSelectedIngredientId("");
       setQuantity(1);
@@ -562,9 +562,9 @@ export function IngredientSupplierEnvoiceDialog({
 
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>
+          {/* <DialogTitle>
             {t("Ingredients")} - {model.name}
-          </DialogTitle>
+          </DialogTitle> */}
 
           <DialogDescription>
             {t("SupplierEnvoiceIngredientDes")}
@@ -756,7 +756,7 @@ export function IngredientSupplierEnvoiceDialog({
                           dark:border-zinc-800
                         "
                       >
-                        <td className="px-4 py-3">
+                        {/* <td className="px-4 py-3">
                           {ingredient.name}
                         </td>
 
@@ -766,7 +766,7 @@ export function IngredientSupplierEnvoiceDialog({
 
                         <td className="px-4 py-3">
                           {ingredient.unit}
-                        </td>
+                        </td> */}
 
                         <td className="px-4 py-3 text-right">
                           <button
