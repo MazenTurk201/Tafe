@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
 import { getApiError } from "../../../lib/api-error";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
+  
+  const { t } = useTranslation();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -64,7 +67,7 @@ export default function Register() {
       >
 
         <h1 className="text-center text-3xl font-bold">
-          Register
+          {t("register")}
         </h1>
 
         {error && (
@@ -76,7 +79,7 @@ export default function Register() {
         <div className="grid grid-cols-2 gap-4">
           <input
             type="text"
-            placeholder="First Name"
+            placeholder={t("firstName")}
             value={firstName}
             onChange={(e) =>
               setFirstName(e.target.value)
@@ -86,7 +89,7 @@ export default function Register() {
           />
           <input
             type="text"
-            placeholder="Last Name"
+            placeholder={t("lastName")}
             value={lastName}
             onChange={(e) =>
               setLastName(e.target.value)
@@ -97,7 +100,7 @@ export default function Register() {
 
         <input
           type="text"
-          placeholder="Username"
+          placeholder={t("username")}
           value={userName}
           onChange={(e) =>
             setUserName(e.target.value)
@@ -108,7 +111,7 @@ export default function Register() {
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder={t("email")}
           value={email}
           onChange={(e) =>
             setEmail(e.target.value)
@@ -119,7 +122,7 @@ export default function Register() {
 
         <input
           type="text"
-          placeholder="Address (optional)"
+          placeholder={t("address")}
           value={address}
           onChange={(e) =>
             setAddress(e.target.value)
@@ -129,7 +132,7 @@ export default function Register() {
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t("password")}
           value={password}
           onChange={(e) =>
             setPassword(e.target.value)
@@ -140,7 +143,7 @@ export default function Register() {
 
         <input
           type="password"
-          placeholder="Confirm Password"
+          placeholder={t("confirmPassword")}
           value={confirmPassword}
           onChange={(e) =>
             setConfirmPassword(e.target.value)
@@ -151,7 +154,7 @@ export default function Register() {
 
         <input
           type="date"
-          placeholder="set Birthdate"
+          placeholder={t("birthdate")}
           value={birthDat}
           onChange={(e) =>
             setBirthDat(e.target.value)
@@ -166,19 +169,19 @@ export default function Register() {
           className="w-full rounded-lg bg-black p-3 text-white disabled:opacity-50"
         >
           {loading
-            ? "Creating account..."
-            : "Register"}
+            ? t("creatingAccount")
+            : t("register")}
         </button>
 
         <p className="text-center text-sm">
-          Already have an account?{" "}
+          {t("alreadyHaveAccount")}
 
           <button
             type="button"
             onClick={() => navigate("/login")}
             className="font-bold underline"
           >
-            Login
+            {t("login")}
           </button>
         </p>
 

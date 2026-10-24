@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { SuppliersApi } from "@/api/suppliersApi";
 import type { PurchaseInvoicesBySupplier } from "@/types/supplier";
 import { useTranslation } from "react-i18next";
-import { AddSupplierDialog } from "@/components/Widgets/SupplierDialog";
+import { AddEnvoiceDialog } from "@/components/Widgets/SupplierDialog";
 // import { AddSupplierDialog, UpdateSupplierDialog} from "@/components/Widgets/SupplierDialog";
 
 export default function SuppliersPage() {
@@ -65,16 +65,16 @@ export default function SuppliersPage() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold">
-            {t("Supplier")}
+            {t("SupplierEnvoiceTitle")}
           </h1>
 
           <p className="mt-1 text-zinc-500">
-            {t("SupplierSubTitle")}
+            {t("SupplierEnvoiceSubTitle")}
           </p>
         </div>
 
         <div className="flex gap-5">
-          <AddSupplierDialog onSuccess={loadSuppliers}/>
+          <AddEnvoiceDialog onSuccess={loadSuppliers}/>
           <button className="Back" title="Back" onClick={()=>{navigate(-1)}}>{">"}</button>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
 import { getApiError } from "../../../lib/api-error";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememmberMe, setrememmberMe] = useState(false);
+
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,15 +45,15 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center px-4 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
+    <div className="flex min-h-screen w-full items-center justify-center px-4 bg-linear-to-br from-purple-600 via-blue-600 to-indigo-700 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
 
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white drop-shadow-lg">
-            Tafe
+            {t("appName")}
           </h1>
-          <p className="text-purple-100 mt-2">Restaurant Management System</p>
+          <p className="text-purple-100 mt-2">{t("appDescription")}</p>
         </div>
 
         <form
@@ -59,28 +62,28 @@ export default function Login() {
         >
 
           <h1 className="text-center text-3xl font-bold text-gray-900 dark:text-white">
-            Welcome Back
+            {t("welcome")}
           </h1>
           <p className="text-center text-gray-500 dark:text-zinc-400">
-            Sign in to your account
+            {t("signInToYourAccount")}
           </p>
 
-          {error && (
+          {error === "Request failed with status code 400" && (
             <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400 border border-red-200 dark:border-red-800">
-              {error}
+              {t("errUsernameOrPassword")}
             </div>
           )}
 
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                Username
+                {t("username")}
               </label>
               <div className="relative">
                 <input
                   type="text"
                   id="username"
-                  placeholder="Enter your username"
+                  placeholder={t("enterUsername")}
                   value={username}
                   onChange={(e) =>
                     setUsername(e.target.value)
@@ -94,13 +97,13 @@ export default function Login() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                Password
+                {t("password")}
               </label>
               <div className="relative">
                 <input
                   type="password"
                   id="password"
-                  placeholder="Enter your password"
+                  placeholder={t("enterPassword")}
                   value={password}
                   onChange={(e) =>
                     setPassword(e.target.value)
@@ -124,14 +127,14 @@ export default function Login() {
                   }
                   className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-700"
                 />
-                <span className="text-sm text-gray-700 dark:text-zinc-300">Remember me</span>
+                <span className="text-sm text-gray-700 dark:text-zinc-300">{t("rememberMe")}</span>
               </label>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 py-3 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 transition-all"
+              className="w-full rounded-lg bg-linear-to-r from-purple-600 to-blue-600 py-3 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 transition-all"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -142,19 +145,19 @@ export default function Login() {
                   Logging in...
                 </span>
               ) : (
-                "Login"
+                t("login")
               )}
             </button>
           </div>
 
-          <p className="text-center text-sm text-gray-600 dark:text-zinc-400">
-            Don't have an account?{" "}
+          <p className="text-center text-sm text-gray-600 dark:text-zinc-400 flex gap-2 items-center justify-center">
+            {t("dontHaveAccount")}
             <button
               type="button"
               onClick={() => navigate("/register")}
-              className="font-bold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 underline transition-colors"
+              className="rounded-lg bg-linear-to-r from-purple-600 to-blue-600 py-3 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 transition-all"
             >
-              Register
+              {t("register")}
             </button>
           </p>
 
@@ -162,7 +165,7 @@ export default function Login() {
 
         {/* Footer note */}
         <p className="text-center text-xs text-purple-200 mt-6 dark:text-zinc-500">
-          © 2024 Tafe Restaurant Management. All rights reserved.
+          &copy; {new Date().getFullYear()} {t("appName")}. {t("allRightsReserved")}
         </p>
       </div>
     </div>

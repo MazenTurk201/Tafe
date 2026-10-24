@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -10,7 +10,9 @@ import {
 } from "@/components/animate-ui/components/radix/dialog";
 import { useTranslation } from "react-i18next";
 import { SuppliersApi } from "@/api/suppliersApi";
-import type { Supplier } from "@/types/supplier";
+import type { PurchaseInvoices, PurchaseInvoicesBySupplier, Supplier } from "@/types/supplier";
+import { IngredientsApi } from "@/api/ingredientsApi";
+import type { Ingredient } from "@/types/ingredient";
 
 interface AddSupplierDialogProps {
   onSuccess: () => void;
@@ -255,6 +257,559 @@ export function UpdateSupplierDialog({
               : t("update")}
           </button>
         </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+interface AddEnvoiceDialogProps {
+  onSuccess: () => void;
+}
+
+export function AddEnvoiceDialog({ onSuccess }: AddEnvoiceDialogProps) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
+
+  const handleSubmit = async () => {
+
+    if (!name.trim()) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await SuppliersApi.CreateSupplier({ name, phone, email, address });
+      onSuccess();
+      setName("");
+      setPhone("");
+      setEmail("");
+      setAddress("");
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <div
+          className="
+            rounded-xl bg-black px-5 py-3
+            text-sm font-semibold text-white
+            hover:bg-zinc-500
+            dark:bg-white dark:text-black cursor-pointer
+          "
+        >
+          {t("SupplierEnvoiceCreate")}
+        </div>
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {t("Suppliers")}
+          </DialogTitle>
+
+          <DialogDescription>
+            {t("SupplierAddDes")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="py-4">
+          <label className="mb-2 block">
+            {t("SupplierName")}
+          </label>
+
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={t("SupplierPlaceholderName")}
+            className="w-full rounded-md border px-3 py-2"
+          />
+
+          <label className="mb-2 block mt-3">
+            {t("phone")}
+          </label>
+
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder={t("SupplierPlaceholderPhone")}
+            className="w-full rounded-md border px-3 py-2"
+          />
+
+          <label className="mb-2 block mt-3">
+            {t("email")}
+          </label>
+
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("SupplierPlaceholderEmail")}
+            className="w-full rounded-md border px-3 py-2"
+          />
+
+          <label className="mb-2 block mt-3">
+            {t("address")}
+          </label>
+
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder={t("SupplierPlaceholderAddress")}
+            className="w-full rounded-md border px-3 py-2"
+          />
+        </div>
+
+        <DialogFooter>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading || !name}
+          >
+            {loading
+              ? t("loading")
+              : t("create")}
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
+
+interface IngredientSupplierEnvoiceDialogProps {
+  model: PurchaseInvoices;
+  onSuccess: () => void;
+}
+
+export function IngredientSupplierEnvoiceDialog({
+  model,
+  onSuccess,
+}: IngredientSupplierEnvoiceDialogProps) {
+  const { t } = useTranslation();
+
+  const [open, setOpen] = useState(false);
+
+  // Search
+  const [search, setSearch] = useState("");
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+
+  // Selected ingredient
+  const [selectedIngredientId, setSelectedIngredientId] = useState<
+    number | ""
+  >("");
+
+  // Quantity
+  const [quantity, setQuantity] = useState<number>(1);
+
+  // Current product ingredients
+  const [productIngredients, setSupplierEnvoiceIngredients] = useState<
+    PurchaseInvoicesBySupplier[]
+  >([]);
+
+  const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  /**
+   * Load current product ingredients
+   */
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    setSupplierEnvoiceIngredients(model.items[0]. ?? []);
+    
+    setSearch("");
+    setSelectedIngredientId("");
+    setQuantity(1);
+  }, [open, model]);
+
+  /**
+   * Search ingredients
+   */
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const timeout = setTimeout(async () => {
+      try {
+        setSearchLoading(true);
+
+        const data = await IngredientsApi.SearchIngredients(search);
+
+        setIngredients(data);
+      } catch (error) {
+        console.error("Failed to search ingredients:", error);
+        setIngredients([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [search, open]);
+
+  /**
+   * Add ingredient
+   */
+  const handleAddIngredient = async () => {
+    if (selectedIngredientId === "") {
+      return;
+    }
+
+    if (quantity <= 0) {
+      return;
+    }
+
+    const ingredientId = Number(selectedIngredientId);
+
+    // Prevent duplicate ingredient
+    const alreadyExists = productIngredients.some(
+      (ingredient) => ingredient.id === ingredientId,
+    );
+
+    if (alreadyExists) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // await SupplierEnvoicesApi.AddIngredient(
+      //   model.id,
+      //   ingredientId,
+      //   quantity,
+      // );
+
+      const selectedIngredient = ingredients.find(
+        (ingredient) => ingredient.id === ingredientId,
+      );
+
+      if (!selectedIngredient) {
+        return;
+      }
+
+      setSupplierEnvoiceIngredients((current) => [
+        ...current,
+        {
+          id: selectedIngredient.id,
+          name: selectedIngredient.name,
+          unit: selectedIngredient.unit.name,
+          quantity,
+        },
+      ]);
+
+      setSelectedIngredientId("");
+      setQuantity(1);
+
+      onSuccess();
+    } catch (error) {
+      console.error("Failed to add ingredient:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Remove ingredient
+   */
+  const handleRemoveIngredient = async (ingredientId: number) => {
+    try {
+      setLoading(true);
+
+      // await SupplierEnvoicesApi.RemoveIngredient(
+      //   model.id,
+      //   ingredientId,
+      // );
+
+      setSupplierEnvoiceIngredients((current) =>
+        current.filter(
+          (ingredient) => ingredient.id !== ingredientId,
+        ),
+      );
+
+      onSuccess();
+    } catch (error) {
+      console.error("Failed to remove ingredient:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button className="ingredient-btn">
+          {t("Ingredients")}
+        </button>
+      </DialogTrigger>
+
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>
+            {t("Ingredients")} - {model.name}
+          </DialogTitle>
+
+          <DialogDescription>
+            {t("SupplierEnvoiceIngredientDes")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-6 py-4">
+
+          {/* ========================= */}
+          {/* Search Ingredients */}
+          {/* ========================= */}
+
+          <div>
+            <label className="mb-2 block font-medium">
+              {t("Search")}
+            </label>
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search ingredients..."
+              className="
+                w-full rounded-xl border
+                border-zinc-200 bg-white
+                px-4 py-2
+                outline-none
+                focus:border-black
+                dark:border-zinc-800
+                dark:bg-zinc-900
+              "
+            />
+          </div>
+
+          {/* ========================= */}
+          {/* Search Results */}
+          {/* ========================= */}
+
+          <div>
+            <label className="mb-2 block font-medium">
+              {t("Ingredient")}
+            </label>
+
+            <select
+              value={selectedIngredientId}
+              onChange={(e) =>
+                setSelectedIngredientId(
+                  e.target.value === ""
+                    ? ""
+                    : Number(e.target.value),
+                )
+              }
+              className="select-auto w-full"
+            >
+              <option value="">
+                {searchLoading
+                  ? "Searching..."
+                  : "Select ingredient"}
+              </option>
+
+              {ingredients.map((ingredient) => {
+                const alreadyAdded = productIngredients.some(
+                  (item) => item.id === ingredient.id,
+                );
+
+                return (
+                  <option
+                    key={ingredient.id}
+                    value={ingredient.id}
+                    disabled={alreadyAdded}
+                  >
+                    {ingredient.name}
+                    {ingredient.unit?.name
+                      ? ` (${ingredient.unit.name})`
+                      : ""}
+                    {alreadyAdded ? " - Added" : ""}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* ========================= */}
+          {/* Quantity + Add */}
+          {/* ========================= */}
+
+          <div className="flex flex-col gap-3 md:flex-row md:items-end">
+
+            <div className="flex-1">
+              <label className="mb-2 block font-medium">
+                {t("Quantity")}
+              </label>
+
+              <input
+                type="number"
+                min="0.01"
+                step="0.01"
+                value={quantity}
+                onChange={(e) =>
+                  setQuantity(Number(e.target.value))
+                }
+                className="
+                  w-full rounded-xl border
+                  border-zinc-200 bg-white
+                  px-4 py-2
+                  outline-none
+                  focus:border-black
+                  dark:border-zinc-800
+                  dark:bg-zinc-900
+                "
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddIngredient}
+              disabled={
+                loading ||
+                selectedIngredientId === "" ||
+                quantity <= 0
+              }
+              className="
+                rounded-xl
+                px-5 py-2
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+              "
+            >
+              {loading ? t("loading") : t("Add")}
+            </button>
+
+          </div>
+
+          {/* ========================= */}
+          {/* Current Ingredients */}
+          {/* ========================= */}
+
+          <div>
+            <h3 className="mb-3 text-lg font-semibold">
+              {t("Ingredients")}
+            </h3>
+
+            {productIngredients.length === 0 ? (
+              <div
+                className="
+                  rounded-xl border
+                  border-dashed
+                  border-zinc-300
+                  p-6 text-center
+                  text-zinc-500
+                  dark:border-zinc-700
+                "
+              >
+                No ingredients added.
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800">
+
+                <table className="w-full">
+
+                  <thead>
+                    <tr className="border-b border-zinc-200 dark:border-zinc-800">
+                      <th className="px-4 py-3 text-left">
+                        {t("Ingredient")}
+                      </th>
+
+                      <th className="px-4 py-3 text-left">
+                        {t("Quantity")}
+                      </th>
+
+                      <th className="px-4 py-3 text-left">
+                        {t("Unit")}
+                      </th>
+
+                      <th className="px-4 py-3 text-right">
+                        {t("Delete")}
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {productIngredients.map((ingredient) => (
+                      <tr
+                        key={ingredient.id}
+                        className="
+                          border-b
+                          border-zinc-100
+                          last:border-b-0
+                          dark:border-zinc-800
+                        "
+                      >
+                        <td className="px-4 py-3">
+                          {ingredient.name}
+                        </td>
+
+                        <td className="px-4 py-3">
+                          {ingredient.quantity}
+                        </td>
+
+                        <td className="px-4 py-3">
+                          {ingredient.unit}
+                        </td>
+
+                        <td className="px-4 py-3 text-right">
+                          <button
+                            type="button"
+                            disabled={loading}
+                            onClick={() =>
+                              handleRemoveIngredient(
+                                ingredient.id,
+                              )
+                            }
+                            className="
+                              rounded-lg
+                              px-3 py-1
+                              text-red-600
+                              hover:bg-red-50
+                              disabled:opacity-50
+                              dark:hover:bg-red-950
+                            "
+                          >
+                            {t("Delete")}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+
+                </table>
+
+              </div>
+            )}
+          </div>
+
+        </div>
+
+        <DialogFooter>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+          >
+            {t("Close")}
+          </button>
+        </DialogFooter>
+
       </DialogContent>
     </Dialog>
   );
