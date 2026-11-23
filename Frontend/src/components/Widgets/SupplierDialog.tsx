@@ -393,12 +393,12 @@ export function AddEnvoiceDialog({ onSuccess }: AddEnvoiceDialogProps) {
 
 interface IngredientSupplierEnvoiceDialogProps {
   model: PurchaseInvoices;
-  onSuccess: () => void;
+  // onSuccess: () => void;
 }
 
 export function IngredientSupplierEnvoiceDialog({
   model,
-  onSuccess,
+  // onSuccess,
 }: IngredientSupplierEnvoiceDialogProps) {
   const { t } = useTranslation();
 
@@ -518,7 +518,7 @@ export function IngredientSupplierEnvoiceDialog({
       setSelectedIngredientId("");
       setQuantity(1);
 
-      onSuccess();
+      // onSuccess();
     } catch (error) {
       console.error("Failed to add ingredient:", error);
     } finally {
@@ -544,7 +544,7 @@ export function IngredientSupplierEnvoiceDialog({
         ),
       );
 
-      onSuccess();
+      // onSuccess();
     } catch (error) {
       console.error("Failed to remove ingredient:", error);
     } finally {

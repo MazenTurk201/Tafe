@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { SuppliersApi } from "@/api/suppliersApi";
 import type { PurchaseInvoicesBySupplier } from "@/types/supplier";
 import { useTranslation } from "react-i18next";
-import { AddSupplierDialog } from "@/components/Widgets/SupplierDialog";
-// import { AddSupplierDialog, UpdateSupplierDialog} from "@/components/Widgets/SupplierDialog";
 
 export default function SuppliersPageEnvoiceDetails() {
   const { id } = useParams();
+  const { itemId } = useParams();
   const navigate = useNavigate();
   const [suppliers, setSupplier] = useState<PurchaseInvoicesBySupplier[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,8 +14,8 @@ export default function SuppliersPageEnvoiceDetails() {
 
   const loadSuppliers = async () => {
     try {
-      const data = await SuppliersApi.GetPurchaseInvoicesBySupplier(id ? parseInt(id) : 0);
-      setSupplier(data);
+      const data = await SuppliersApi.GetPurchaseInvoicesBySupplierItems(id ? parseInt(id) : 0, itemId ? parseInt(itemId) : 0);
+      // setSupplier(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -29,10 +28,10 @@ export default function SuppliersPageEnvoiceDetails() {
 
     (async () => {
       try {
-        const data = await SuppliersApi.GetPurchaseInvoicesBySupplier(id ? parseInt(id) : 0);
+        const data = await SuppliersApi.GetPurchaseInvoicesBySupplierItems(id ? parseInt(id) : 0, itemId ? parseInt(itemId) : 0);
 
         if (!ignore) {
-          setSupplier(data);
+          // setSupplier(data);
         }
       } catch (error) {
         console.error(error);
@@ -74,7 +73,6 @@ export default function SuppliersPageEnvoiceDetails() {
         </div>
 
         <div className="flex gap-5">
-          <AddSupplierDialog onSuccess={loadSuppliers}/>
           <button className="Back" title="Back" onClick={()=>{navigate(-1)}}>{">"}</button>
         </div>
       </div>
@@ -106,21 +104,23 @@ export default function SuppliersPageEnvoiceDetails() {
             <tr>
               <th>{t("name")}</th>
               <th>{t("from")}</th>
-              <th>{t("total")}</th>
               <th>{t("itemsCount")}</th>
+              <th>{t("total")}</th>
+              <th>{t("total")}</th>
+              <th>{t("total")}</th>
               <th>{t("funcs")}</th>
             </tr>
             </thead>
             <tbody>
             {suppliers.map((supplier) => (
               <tr key={supplier.id}>
-                <td>{supplier.invoiceNumber}</td>
+                <td>{supplier.supplierName}</td>
                 <td>{new Date(supplier.createdAt).toLocaleDateString('zh-CN')}</td>
                 <td>{supplier.total}</td>
                 <td>{supplier.items.length}</td>
+                <td>{supplier.items.length}</td>
+                <td>{supplier.items.length}</td>
                 <td className="funcRow">
-                  <Link to={`/suppliers/${supplier.supplierId}/${supplier.id}/Details`} className="ingredient-btn py-2 px-3 my-2">{t("details")}</Link>
-                  {/* <UpdateSupplierDialog onSuccess={Refresh} model={supplier} /> */}
                   <button className="delete-btn" onClick={() => {handleDelete(supplier.id)}}>{t("delete")}</button>
                 </td>
               </tr>

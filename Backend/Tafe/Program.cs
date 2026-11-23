@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using Tafe.DB;
 using Tafe.Models;
 using Tafe.Repository;
+using CafeReceiptGenerator.Models;
+using CafeReceiptGenerator.Services;
 
 namespace Tafe
 {
@@ -89,8 +91,8 @@ namespace Tafe
                 };
             });
 
-            string conString = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
-            ? $"Data Source={builder.Configuration["DBServerIP"]};Initial Catalog=Tafe;Integrated Security=True;Encrypt=False;Trust Server Certificate=True" 
+            string conString = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            ? $"Data Source={builder.Configuration["DBServerIP"]};Initial Catalog=Tafe;Integrated Security=True;Encrypt=False;Trust Server Certificate=True"
             : "Server=localhost,1433;Database=Tafe;User Id=sa;Password=Db_201201;TrustServerCertificate=True;Encrypt=True";
 
             builder.Services.AddDbContext<DBContext>(options =>
@@ -102,6 +104,8 @@ namespace Tafe
             });
 
             builder.Services.AddScoped<GenericRepo>();
+
+            builder.Services.AddSingleton<CafeReceiptPdfGenerator>();
 
             builder.Services.AddCors(
                 option => option.AddPolicy("AllowedFrontend", policy =>
@@ -417,7 +421,7 @@ namespace Tafe
 
             app.MapFallbackToFile("index.html");
 
-            
+
             var frontendPath = Path.GetFullPath(
                 Path.Combine(
                     builder.Configuration["FrontPath"]!

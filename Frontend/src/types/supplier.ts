@@ -51,6 +51,20 @@ export interface PurchaseInvoicesBySupplier {
   ]
 }
 
+export interface PurchaseInvoicesBySupplierItems {
+  items: [
+    {
+      id: number,
+      ingredientId: number,
+      ingredientName: string,
+      quantity: number,
+      unitPrice: number,
+      total: number
+    }
+  ]
+}
+
+
 export interface PurchaseInvoicesCreate {
   supplierId: number,
   items: [

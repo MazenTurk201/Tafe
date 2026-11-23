@@ -23,6 +23,8 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.29" />
 
+    <PackageReference Include="Microsoft.Playwright" Version="1.65.1" />
+
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

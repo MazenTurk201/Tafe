@@ -1,173 +1,197 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ArrowRight, Eye, EyeOff, Lock, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { useAuth } from "../../../context/AuthContext";
 import { getApiError } from "../../../lib/api-error";
-import { useTranslation } from "react-i18next";
+import { AuthLayout, Spinner, inputBase } from "./AuthLayout";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+  const { t } = useTranslation();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rememmberMe, setrememmberMe] = useState(false);
-
-  const { t } = useTranslation();
-
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const from = (location.state as { from?: string } | null)?.from ?? "/";
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
 
     setError("");
     setLoading(true);
 
     try {
-      await login(username, password, rememmberMe);
+      await login(username.trim(), password, rememberMe);
+      navigate(from, { replace: true });
+    } catch (err) {
+      const status = (err as { response?: { status?: number } })?.response
+        ?.status;
 
-      navigate("/", {
-        replace: true,
-      });
-    } catch (error) {
-      setError(
-        getApiError(
-          error,
-          "Username or password is incorrect"
-        )
-      );
+      if (status === 400 || status === 401) {
+        // الـ backend بيرجّع 400/401 لما اليوزر أو الباسورد غلط
+        setError(t("errUsernameOrPassword"));
+      } else {
+        const fallback = t("somethingWentWrong", "حصلت مشكلة، جرّب تاني");
+        const msg = getApiError(err, fallback);
+        // ما نعرضش رسالة axios الخام للمستخدم
+        setError(msg.startsWith("Request failed with status code") ? fallback : msg);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center px-4 bg-linear-to-br from-purple-600 via-blue-600 to-indigo-700 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
-
-      <div className="w-full max-w-md">
-        {/* Logo/Brand */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg">
-            {t("appName")}
-          </h1>
-          <p className="text-purple-100 mt-2">{t("appDescription")}</p>
-        </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6 rounded-2xl bg-white/95 p-8 shadow-2xl backdrop-blur-sm dark:bg-zinc-900/95 dark:border dark:border-zinc-700"
-        >
-
-          <h1 className="text-center text-3xl font-bold text-gray-900 dark:text-white">
-            {t("welcome")}
-          </h1>
-          <p className="text-center text-gray-500 dark:text-zinc-400">
-            {t("signInToYourAccount")}
-          </p>
-
-          {error === "Request failed with status code 400" && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400 border border-red-200 dark:border-red-800">
-              {t("errUsernameOrPassword")}
-            </div>
-          )}
-
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                {t("username")}
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  id="username"
-                  placeholder={t("enterUsername")}
-                  value={username}
-                  onChange={(e) =>
-                    setUsername(e.target.value)
-                  }
-                  required
-                  autoComplete="username"
-                  className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                {t("password")}
-              </label>
-              <div className="relative">
-                <input
-                  type="password"
-                  id="password"
-                  placeholder={t("enterPassword")}
-                  value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
-                  }
-                  required
-                  autoComplete="current-password"
-                  className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="rememmberMe"
-                  id="rememmberMe"
-                  checked={rememmberMe}
-                  onChange={(e) =>
-                    setrememmberMe(e.target.checked)
-                  }
-                  className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-700"
-                />
-                <span className="text-sm text-gray-700 dark:text-zinc-300">{t("rememberMe")}</span>
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-linear-to-r from-purple-600 to-blue-600 py-3 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 transition-all"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Logging in...
-                </span>
-              ) : (
-                t("login")
-              )}
-            </button>
-          </div>
-
-          <p className="text-center text-sm text-gray-600 dark:text-zinc-400 flex gap-2 items-center justify-center">
-            {t("dontHaveAccount")}
-            <button
-              type="button"
-              onClick={() => navigate("/register")}
-              className="rounded-lg bg-linear-to-r from-purple-600 to-blue-600 py-3 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 transition-all"
-            >
-              {t("register")}
-            </button>
-          </p>
-
-        </form>
-
-        {/* Footer note */}
-        <p className="text-center text-xs text-purple-200 mt-6 dark:text-zinc-500">
-          &copy; {new Date().getFullYear()} {t("appName")}. {t("allRightsReserved")}
+    <AuthLayout>
+    <form
+      onSubmit={handleSubmit}
+      aria-busy={loading}
+      className="space-y-6 rounded-3xl border border-[#EBDDC9] bg-white/80 p-8 shadow-[0_30px_80px_-30px_rgba(43,27,20,0.35)] backdrop-blur sm:p-10 dark:border-[#33231A] dark:bg-[#1B120D]/90"
+    >
+      <div className="space-y-2">
+        <h2 className="font-display text-3xl font-medium text-[#2B1B14] dark:text-[#F6EFE4]">
+          {t("welcome")}
+        </h2>
+        <p className="text-sm text-[#8A7560] dark:text-[#A8967F]">
+          {t("signInToYourAccount")}
         </p>
       </div>
-    </div>
+
+      {error && (
+        <div
+          role="alert"
+          className="rounded-xl border border-[#B5573A]/30 bg-[#B5573A]/10 px-4 py-3 text-sm text-[#8F3F27] dark:border-[#B5573A]/40 dark:bg-[#B5573A]/15 dark:text-[#E89A80]"
+        >
+          {error}
+        </div>
+      )}
+
+      <div className="space-y-5">
+        <div>
+          <label
+            htmlFor="username"
+            className="mb-1.5 block text-sm font-medium text-[#4A2F22] dark:text-[#D9C7B0]"
+          >
+            {t("username")}
+          </label>
+          <div className="relative">
+            <User
+              size={18}
+              className="pointer-events-none absolute inset-y-0 inset-s-4 my-auto text-[#A8967F]"
+            />
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder={t("enterUsername")}
+              required
+              autoFocus
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
+              disabled={loading}
+              aria-invalid={!!error}
+              className={inputBase}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            htmlFor="password"
+            className="mb-1.5 block text-sm font-medium text-[#4A2F22] dark:text-[#D9C7B0]"
+          >
+            {t("password")}
+          </label>
+          <div className="relative">
+            <Lock
+              size={18}
+              className="pointer-events-none absolute inset-y-0 inset-s-4 my-auto text-[#A8967F]"
+            />
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t("enterPassword")}
+              required
+              autoComplete="current-password"
+              disabled={loading}
+              aria-invalid={!!error}
+              className={`${inputBase} pe-12`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+              className="absolute inset-y-0 inset-e-3 my-auto grid h-9 w-9 place-items-center rounded-lg text-[#A8967F] transition hover:bg-[#C58B4E]/10 hover:text-[#8A5A2B] dark:hover:text-[#E3B27A] nobg"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+        </div>
+
+        <label className="flex cursor-pointer select-none items-center gap-2.5">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            disabled={loading}
+            className="h-4 w-4 rounded border-[#D5C3AB] accent-[#B5573A] focus:ring-2 focus:ring-[#C58B4E]/40"
+          />
+          <span className="text-sm text-[#4A2F22] dark:text-[#D9C7B0]">
+            {t("rememberMe")}
+          </span>
+        </label>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-[#2B1B14] py-3.5 font-medium text-[#F6EFE4] shadow-lg shadow-[#2B1B14]/20 transition hover:bg-[#3C261B] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#C58B4E]/40 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#C58B4E] dark:text-[#2B1B14] dark:shadow-[#C58B4E]/10 dark:hover:bg-[#D39A5E]"
+        >
+          {loading ? (
+            <>
+              <Spinner />
+              {t("loggingIn")}
+            </>
+          ) : (
+            <>
+              {t("login")}
+              <ArrowRight
+                size={18}
+                className="transition group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
+              />
+            </>
+          )}
+        </button>
+      </div>
+
+      <div className="flex items-center gap-4 text-xs text-[#A8967F]">
+        <span className="h-px flex-1 bg-[#EBDDC9] dark:bg-[#33231A]" />
+        ☕
+        <span className="h-px flex-1 bg-[#EBDDC9] dark:bg-[#33231A]" />
+      </div>
+
+      <p className="text-center text-sm text-[#8A7560] dark:text-[#A8967F]">
+        {t("dontHaveAccount")}{" "}
+        <Link
+          to="/register"
+          className="font-semibold text-[#B5573A] underline-offset-4 hover:underline dark:text-[#E3B27A]"
+        >
+          {t("register")}
+        </Link>
+      </p>
+    </form>
+    </AuthLayout>
   );
 }
