@@ -178,6 +178,8 @@ const resources = {
       alreadyHaveAccount: "Already have an account?",
       confirmPassword: "Confirm Password",
       birthdate: "Birthdate",
+      DownloadPDF: "Download PDF",
+      unitPrice: "Unit Price",
     }
   },
   ar: {
@@ -358,6 +360,8 @@ const resources = {
       alreadyHaveAccount: "هل لديك حساب بالفعل؟",
       confirmPassword: "تأكيد كلمة المرور",
       birthdate: "تاريخ الميلاد",
+      DownloadPDF: "تحميل PDF",
+      unitPrice: "سعر الوحدة",
     }
   }
 };

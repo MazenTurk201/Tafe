@@ -193,7 +193,7 @@ public class CafeReceiptPdfGenerator : IAsyncDisposable
         """);
         }
 
-        var logoBase64 = GetLogoBase64(r.LogoPath);
+        var logoBase64 = GetLogoBase64("/images/logo.png");
 
         if (!string.IsNullOrWhiteSpace(logoBase64))
         {
@@ -241,6 +241,7 @@ public class CafeReceiptPdfGenerator : IAsyncDisposable
                     background: white;
                     color: #111;
                     font-family:
+                        Calibri,
                         "Noto Sans Arabic",
                         "DejaVu Sans",
                         Arial,
@@ -254,9 +255,12 @@ public class CafeReceiptPdfGenerator : IAsyncDisposable
                 }
 
                 .logo {
-                    max-width: 25mm;
-                    max-height: 18mm;
                     object-fit: contain;
+                    font-family: 
+                        "Noto Sans Arabic",
+                        "DejaVu Sans",
+                        Arial,
+                        sans-serif;
                 }
 
                 .brand {
@@ -352,10 +356,10 @@ public class CafeReceiptPdfGenerator : IAsyncDisposable
 
             <header class="header">
 
-                <img src="{{logoBase64}}" class="logo" />
+                <img src={{logoBase64}} class="logo" width="150" />
 
                 <div class="brand">
-                    {{E(r.BusinessName)}}
+                    Tafé
                 </div>
 
                 <div class="title">
@@ -381,7 +385,7 @@ public class CafeReceiptPdfGenerator : IAsyncDisposable
 
             <div style="margin-top: 8px">
 
-                {{TotalRow("Subtotal", "الإجمالي", subtotal, r.Currency)}}
+                {{TotalRow("Subtotal", "الإجمالي", subtotal, "EGP")}}
 
                 {{discountRow}}
 
@@ -389,7 +393,7 @@ public class CafeReceiptPdfGenerator : IAsyncDisposable
 
                 <div class="total-row grand-total">
                     <span>TOTAL / الإجمالي</span>
-                    <strong>{{Money(total)}} {{E(r.Currency)}}</strong>
+                    <strong>{{Money(total)}} EGP</strong>
                 </div>
 
             </div>
@@ -399,11 +403,11 @@ public class CafeReceiptPdfGenerator : IAsyncDisposable
             <footer class="footer">
 
                 <div>
-                    {{E(r.FooterMessage)}}
+                    {{E(RandomQutes.GetRandomQute(RandomQutes.enFooter))}}
                 </div>
 
                 <div class="ar">
-                    {{E(r.ArabicFooterMessage)}}
+                    {{E(RandomQutes.GetRandomQute(RandomQutes.arFooter))}}
                 </div>
 
             </footer>

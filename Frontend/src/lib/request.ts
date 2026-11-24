@@ -1,10 +1,15 @@
+import type { AxiosRequestConfig } from "axios";
 import api from "./api";
 
 export const get = <T>(url: string, params?: object): Promise<T> =>
   api.get<T>(url, { params }).then((res) => res.data);
 
-export const post = <T>(url: string, data?: unknown): Promise<T> =>
-  api.post<T>(url, data).then((res) => res.data);
+export const post = <T>(
+  url: string,
+  data?: unknown,
+  config?: AxiosRequestConfig
+): Promise<T> =>
+  api.post<T>(url, data, config).then((res) => res.data);
 
 export const put = <T>(url: string, data?: unknown): Promise<T> =>
   api.put<T>(url, data).then((res) => res.data);

@@ -11,6 +11,6 @@ export const SuppliersApi = {
   GetPurchaseInvoices: () => get<PurchaseInvoices[]>("/Suppliers/PurchaseInvoices"),
   // GetDeletedPurchaseInvoices: () => get<PurchaseInvoices[]>("/Suppliers/PurchaseInvoices/Deleted"),
   GetPurchaseInvoicesBySupplier: (id: number) => get<PurchaseInvoicesBySupplier[]>("/Suppliers/" + id + "/PurchaseInvoices"),
-  GetPurchaseInvoicesBySupplierItems: (id: number, itemId: number) => get<PurchaseInvoicesBySupplierItems[]>("/Suppliers/" + id + itemId + "/PurchaseInvoices"),
+  GetPurchaseInvoicesBySupplierItems: (id: number, itemId: number) => get<PurchaseInvoicesBySupplierItems[]>("/Suppliers/" + id + "/" + itemId + "/PurchaseInvoices"),
   DeletePurchaseInvoices: (id: number) => del<void>("/Suppliers/PurchaseInvoices/" + id),
 };

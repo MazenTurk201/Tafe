@@ -1,27 +1,30 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { SuppliersApi } from "@/api/suppliersApi";
-import type { PurchaseInvoicesBySupplier } from "@/types/supplier";
 import { useTranslation } from "react-i18next";
+import type { PurchaseInvoicesBySupplierItems } from "@/types/supplier";
+import { ReceiptApi } from "@/api/receiptApi";
+import { getUsernameFromToken } from "@/components/Utilties/UserNameFromToken";
+import type { ReceiptData } from "@/types/receipt";
 
 export default function SuppliersPageEnvoiceDetails() {
   const { id } = useParams();
   const { itemId } = useParams();
   const navigate = useNavigate();
-  const [suppliers, setSupplier] = useState<PurchaseInvoicesBySupplier[]>([]);
+  const [suppliers, setSupplier] = useState<PurchaseInvoicesBySupplierItems[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
-  const loadSuppliers = async () => {
-    try {
-      const data = await SuppliersApi.GetPurchaseInvoicesBySupplierItems(id ? parseInt(id) : 0, itemId ? parseInt(itemId) : 0);
-      // setSupplier(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const loadSuppliers = async () => {
+  //   try {
+  //     const data = await SuppliersApi.GetPurchaseInvoicesBySupplierItems(id ? parseInt(id) : 0, itemId ? parseInt(itemId) : 0);
+  //     setSupplier(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     let ignore = false;
@@ -31,7 +34,7 @@ export default function SuppliersPageEnvoiceDetails() {
         const data = await SuppliersApi.GetPurchaseInvoicesBySupplierItems(id ? parseInt(id) : 0, itemId ? parseInt(itemId) : 0);
 
         if (!ignore) {
-          // setSupplier(data);
+          setSupplier(data);
         }
       } catch (error) {
         console.error(error);
@@ -47,15 +50,52 @@ export default function SuppliersPageEnvoiceDetails() {
     };
   }, []);
 
-  const handleDelete = async (id: number) => {
-    try{
-      await SuppliersApi.DeleteSupplier(id);
-      await loadSuppliers();
-    } catch (error){
-      console.error(error);
-      alert("Failed to delete supplier");
-    }
+  const receiptData = {
+  cashierName: getUsernameFromToken()?.toString() ?? "Unknown",
+  customerName: "Walk-in Customer",
+  discount: 0,
+  invoiceNumber: "INV-001",
+  issuedAt: new Date().toISOString(),
+  orderType: "Dine-in",
+  paymentMethod: "Cash",
+  tableNumber: "5",
+  taxRate: 10,
+  items: suppliers.map((supplier) => ({
+    name: supplier.ingredientName,
+    quantity: supplier.quantity,
+    unitPrice: supplier.unitPrice
+  }))
+};
+
+const downloadReceipt = async (data: ReceiptData) => {
+  try {
+    const pdfBlob = await ReceiptApi.GetReceipt(data);
+
+    const url = window.URL.createObjectURL(pdfBlob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${data.invoiceNumber}.pdf`;
+
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Receipt download failed:", error);
   }
+};
+
+  // const handleDelete = async (id: number) => {
+  //   try{
+  //     await SuppliersApi.DeleteSupplier(id);
+  //     await loadSuppliers();
+  //   } catch (error){
+  //     console.error(error);
+  //     alert("Failed to delete supplier");
+  //   }
+  // }
 
   return (
     <main className="w-full h-full px-5 py-8">
@@ -73,6 +113,9 @@ export default function SuppliersPageEnvoiceDetails() {
         </div>
 
         <div className="flex gap-5">
+          <button onClick={() => downloadReceipt(receiptData)}>
+            {t("DownloadPDF")}
+          </button>
           <button className="Back" title="Back" onClick={()=>{navigate(-1)}}>{">"}</button>
         </div>
       </div>
@@ -99,30 +142,41 @@ export default function SuppliersPageEnvoiceDetails() {
         </div>
       ) : (
         <div className="tableCover">
+  
+
+  {/*
+  <button onClick={async () => {
+    try {
+      await ReceiptApi.PrintReceipt(receiptData);
+      console.log("Print job submitted successfully");
+    } catch (error) {
+      console.error("Printing failed:", error);
+    }
+  }}>
+    Print Receipt
+  </button> */}
           <table>
             <thead>
             <tr>
+              <th>{t("id")}</th>
               <th>{t("name")}</th>
-              <th>{t("from")}</th>
-              <th>{t("itemsCount")}</th>
+              <th>{t("quantity")}</th>
+              <th>{t("unitPrice")}</th>
               <th>{t("total")}</th>
-              <th>{t("total")}</th>
-              <th>{t("total")}</th>
-              <th>{t("funcs")}</th>
+              {/* <th>{t("funcs")}</th> */}
             </tr>
             </thead>
             <tbody>
             {suppliers.map((supplier) => (
               <tr key={supplier.id}>
-                <td>{supplier.supplierName}</td>
-                <td>{new Date(supplier.createdAt).toLocaleDateString('zh-CN')}</td>
+                <td>{supplier.ingredientId}</td>
+                <td>{supplier.ingredientName}</td>
+                <td>{supplier.quantity}</td>
+                <td>{supplier.unitPrice}</td>
                 <td>{supplier.total}</td>
-                <td>{supplier.items.length}</td>
-                <td>{supplier.items.length}</td>
-                <td>{supplier.items.length}</td>
-                <td className="funcRow">
+                {/* <td className="funcRow">
                   <button className="delete-btn" onClick={() => {handleDelete(supplier.id)}}>{t("delete")}</button>
-                </td>
+                </td> */}
               </tr>
             ))}
             </tbody>

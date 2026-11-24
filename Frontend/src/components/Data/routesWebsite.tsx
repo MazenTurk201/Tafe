@@ -30,6 +30,6 @@ export const routes = [
   { path: "/expenses", element: <ExpensesPage />, },
   { path: "/suppliers", element: <SuppliersPage />, },
   { path: "/suppliers/:id", element: <SuppliersPageEnvoice />, },
-  { path: "/suppliers/:supplierId/:id/Details", element: <SuppliersPageEnvoiceDetails />, },
+  { path: "/suppliers/:id/:itemId/Details", element: <SuppliersPageEnvoiceDetails />, },
   { path: '*', element: <NotFound /> }
 ];
