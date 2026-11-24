@@ -4,6 +4,7 @@ import { ShiftApi } from "@/api/shiftsApi";
 import type { Order } from "@/types/order";
 import { ordersApi } from "@/api/ordersApi";
 import OrderCard from "@/components/Widgets/OrderCard";
+import { useTranslation } from "react-i18next";
 
 type Filter =
   | "all"
@@ -17,6 +18,7 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [hasActiveShift, setHasActiveShift] = useState(false);
+  const { t } = useTranslation();
 
   // Shifts
 
@@ -116,11 +118,11 @@ export default function OrdersPage() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold">
-            Orders
+            {t("orders")}
           </h1>
 
           <p className="mt-1 text-zinc-500">
-            Manage cafe orders
+            {t("orderDes")}
           </p>
         </div>
 
@@ -133,7 +135,7 @@ export default function OrdersPage() {
             dark:bg-white dark:text-black
           "
         >
-          + New Order
+          {t("newOrder")}
         </Link>
       </div>
 
@@ -161,7 +163,7 @@ export default function OrdersPage() {
                 }
               `}
             >
-              {label}
+              {t(label.toLocaleLowerCase())}
             </button>
           ))}
         </div>
@@ -171,7 +173,7 @@ export default function OrdersPage() {
           onChange={(e) =>
             setSearch(e.target.value)
           }
-          placeholder="Search orders..."
+          placeholder={t("searchOrder")}
           className="
             ml-auto w-full rounded-xl border
             border-zinc-200 bg-white px-4 py-2
@@ -186,7 +188,7 @@ export default function OrdersPage() {
 
       {loading ? (
         <div className="py-20 text-center">
-          Loading orders...
+          {t("orderLoading")}
         </div>
       ) : filteredOrders.length === 0 ? (
         <div
@@ -197,11 +199,11 @@ export default function OrdersPage() {
           "
         >
           <p className="text-lg font-semibold">
-            No orders found
+            {t("noOrderFound")}
           </p>
 
           <p className="mt-1 text-sm text-zinc-500">
-            There are no orders matching your filter.
+            {t("noOrderFoundDes")}
           </p>
         </div>
       ) : (
@@ -215,7 +217,7 @@ export default function OrdersPage() {
         </div>
       )}
     </>
-    : <div className="h-dvh flex justify-center items-center text-center text-2xl font-bold pb-30 animate-pulse">Open Shift Plz..</div> }
+    : <div className="h-dvh flex justify-center items-center text-center text-2xl font-bold pb-30 animate-pulse">{t("openShift")}</div> }
       
     </main>
   );

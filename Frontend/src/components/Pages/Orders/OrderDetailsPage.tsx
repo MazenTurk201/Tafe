@@ -145,7 +145,7 @@ export default function OrderDetailsPage() {
   if (loading) {
     return (
       <div className="py-20 text-center">
-        Loading...
+        {t("loading")}
       </div>
     );
   }
@@ -153,7 +153,7 @@ export default function OrderDetailsPage() {
   if (!order) {
     return (
       <div className="py-20 text-center">
-        Order not found
+        {t("orderNotFound")}
       </div>
     );
   }
@@ -219,7 +219,7 @@ export default function OrderDetailsPage() {
             to="/orders"
             className="text-sm text-zinc-500 hover:text-black"
           >
-            ← Orders
+            {"<-"}
           </Link>
 
           <div className="mt-3 flex items-center gap-3">
@@ -239,7 +239,7 @@ export default function OrderDetailsPage() {
             hover:bg-red-600
           "
         >
-          Delete Order
+          {t("deleteOrder")}
         </button>
       </div>
 
@@ -406,8 +406,8 @@ export default function OrderDetailsPage() {
           "
         >
           {addingPayment
-            ? "Adding payment..."
-            : "Add Payment"}
+            ? t("addingPayment")
+            : t("addPayment")}
         </button>
       </section>
 
@@ -422,7 +422,7 @@ export default function OrderDetailsPage() {
       >
         <div className="flex items-center justify-between border-b border-zinc-200 p-5 dark:border-zinc-800">
           <h2 className="font-bold">
-            Order Items
+            {t("orderItems")}
           </h2>
           {/* <button className="" onClick={() =>
                   addItem(3007, {productId:2, discount:0, quantity: 1, notes: "Added Item"})}>Add Item</button> */}
@@ -450,7 +450,7 @@ export default function OrderDetailsPage() {
 
               <div className="text-center">
                 <p className="text-xs text-zinc-500">
-                  Qty
+                  {t("qty")}
                 </p>
 
                 <p className="font-semibold">
@@ -460,7 +460,7 @@ export default function OrderDetailsPage() {
 
               <div className="text-right">
                 <p className="text-xs text-zinc-500">
-                  Total
+                  {t("total")}
                 </p>
 
                 <p className="font-bold">
@@ -478,7 +478,7 @@ export default function OrderDetailsPage() {
                   dark:hover:bg-red-500/10
                 "
               >
-                Delete
+                {t("delete")}
               </button>
             </div>
           ))}
@@ -509,7 +509,7 @@ export default function OrderDetailsPage() {
             />
 
             <div className="mt-3 flex justify-between border-t pt-3 text-lg font-bold dark:border-zinc-700">
-              <span>Total</span>
+              <span>{t("total")}</span>
 
               <span>
                 {order.total.toFixed(2)}
@@ -529,6 +529,7 @@ function Info({
   title: string;
   value: string;
 }) {
+  const { t } = useTranslation();
   return (
     <div
       className="
@@ -538,11 +539,11 @@ function Info({
       "
     >
       <p className="text-xs text-zinc-500">
-        {title}
+        {t(title.toLowerCase())}
       </p>
 
       <p className="mt-1 font-semibold">
-        {value}
+        {title === "Type" ? t(value.toLowerCase()) : value}
       </p>
     </div>
   );
@@ -555,10 +556,11 @@ function Total({
   title: string;
   value: number;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="flex justify-between text-sm">
       <span className="text-zinc-500">
-        {title}
+        {t(title.toLowerCase())}
       </span>
 
       <span>

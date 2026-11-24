@@ -11,6 +11,7 @@ import {
 
 import { ProductsApi } from "@/api/productsApi";
 import type { Product } from "@/types/product";
+import { useTranslation } from "react-i18next";
 
 interface AddItemDialogProps {
   onConfirm: (
@@ -25,6 +26,7 @@ export default function AddItemDialog({
   const [search, setSearch] = useState("");
   const [comment, setComment] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
+  const { t } = useTranslation();
   const [selectedProduct, setSelectedProduct] =
     useState<Product | null>(null);
 
@@ -93,7 +95,7 @@ export default function AddItemDialog({
     >
       <DialogTrigger asChild>
         <button>
-          Add Item
+          {t("addItem")}
         </button>
       </DialogTrigger>
 
