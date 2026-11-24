@@ -15,6 +15,7 @@ import { ordersApi } from "@/api/ordersApi";
 import StatusBadge from "@/components/Sections/Orders/StatusBadge";
 import AddItemDialog from "@/components/Widgets/AddItemDialog";
 import type { Product } from "@/types/product";
+import { useTranslation } from "react-i18next";
 
 const statuses: OrderStatus[] = [
   "Pending",
@@ -35,9 +36,12 @@ const paymentMethods: PaymentMethod[] = [
   "GiftCard",
 ];
 
+
+
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [order, setOrder] = useState<Order | null>(
     null
@@ -277,7 +281,7 @@ export default function OrderDetailsPage() {
         "
       >
         <h2 className="mb-4 font-bold">
-          Change Status
+          {t("changeStatus")}
         </h2>
 
         <div className="flex flex-wrap gap-2">
@@ -297,7 +301,7 @@ export default function OrderDetailsPage() {
                 }
               `}
             >
-              {status}
+              {t(status)}
             </button>
           ))}
         </div>
@@ -313,7 +317,7 @@ export default function OrderDetailsPage() {
         "
       >
         <h2 className="mb-4 font-bold">
-          Add Payment
+          {t("addPayment")}
         </h2>
 
         <div className="flex flex-wrap gap-2">
@@ -332,7 +336,7 @@ export default function OrderDetailsPage() {
                 }
               `}
             >
-              {method}
+              {t(method)}
             </button>
           ))}
         </div>
@@ -340,7 +344,7 @@ export default function OrderDetailsPage() {
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <label className="block">
             <span className="mb-1 block text-sm text-zinc-500">
-              Amount
+              {t("amount")}
             </span>
 
             <input

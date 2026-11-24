@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { OrderStatus } from "../../../types/order";
 
 interface Props {
@@ -25,6 +26,8 @@ export default function StatusBadge({ status }: Props) {
       "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400",
   };
 
+  const { t } = useTranslation();
+
   return (
     <span
       className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -32,7 +35,7 @@ export default function StatusBadge({ status }: Props) {
         "bg-zinc-100 text-zinc-600"
       }`}
     >
-      {status}
+      {t(status)}
     </span>
   );
 }
