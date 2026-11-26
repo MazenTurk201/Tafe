@@ -28,15 +28,28 @@ const SidebarDrawer = () => {
     setIsOpen(false)
   };
 
-  function ItemDrawer(path: string, name: string) {
-    return (
-      <li className="py-2">
-        <Link to={path} className="" onClick={() => setIsOpen(false)}>
-          {name}
-        </Link>
-      </li>
-    );
-  }
+  interface ItemDrawerProps {
+  path: string;
+  icon: string;
+  name: string;
+}
+
+function ItemDrawer({ path, icon, name }: ItemDrawerProps) {
+  return (
+    <li className="py-2">
+      <Link to={path} className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+        <img 
+          src={`/svg/${icon}.svg`} 
+          alt={`${name} icon`} 
+          width={35} 
+          height={35} 
+        />
+        <span>{name}</span>
+      </Link>
+    </li>
+  );
+}
+
 
   const { isAuthenticated, logout, hasRole } = useAuth();
 
@@ -59,34 +72,55 @@ const SidebarDrawer = () => {
         <div className="p-4 pt-20 h-full flex flex-col text-gray-900 dark:text-gray-100">
           <h2 className="text-3xl font-bold relative -top-15 -left-10">{t("welcome")}</h2>
           <ul className="-mt-10">
-            {ItemDrawer("/", t("Main") || "Main")}
-            {ItemDrawer("/menu", t("menu") || "Menu")}
-            {ItemDrawer("/orders", t("Orders") || "Orders")}
-            {ItemDrawer("/profile", t("profile") || "Profile")}
-            {ItemDrawer("/units", t("Units") || "Units")}
-            {ItemDrawer("/categories", t("Categories") || "Categories")}
-            {ItemDrawer("/ingredients", t("Ingredients") || "Ingredients")}
-            {ItemDrawer("/products", t("Products") || "Products")}
-            {ItemDrawer("/expenses", t("Expenses") || "Expenses")}
+            <ItemDrawer path="/" icon="main" name={t("Main")} />
+            <ItemDrawer path="/menu" icon="menu" name={t("menu")} />
+            <ItemDrawer path="/orders" icon="orders" name={t("Orders")} />
+            <ItemDrawer path="/profile" icon="profile" name={t("profile")} />
+            <ItemDrawer path="/units" icon="units" name={t("Units")} />
+            <ItemDrawer path="/categories" icon="category" name={t("Categories")} />
+            <ItemDrawer path="/ingredients" icon="integrity" name={t("Ingredients")} />
+            <ItemDrawer path="/products" icon="products" name={t("Products")} />
+            <ItemDrawer path="/expenses" icon="money_bag" name={t("Expenses")} />
+
+
             {isAuthenticated && (hasRole("Admin") || hasRole("Manager")) && (
               <>
-                {ItemDrawer("/suppliers", t("Suppliers") || "Suppliers")}
+                <ItemDrawer path="/suppliers" icon="suppliers" name={t("Suppliers")} />
               </>
             )}
             {isAuthenticated && hasRole("Admin") && (
               <>
-                {ItemDrawer("/employees", t("Employees") || "Employees")}
+                <ItemDrawer path="/employees" icon="emplyee" name={t("Employees")} />
               </>
             )}
           </ul>
           <div className="flex w-full justify-evenly mt-auto" dir="rtl">
-            <button onClick={toggleLanguage} className="drawericons outlineButton">
+            <img onClick={toggleLanguage} className="drawericons outlineButton"
+              src={'/svg/translate.svg'}
+              alt={"icon"} 
+              width={10} 
+              height={10} 
+            />
+            {/* <button onClick={toggleLanguage} className="drawericons outlineButton">
               {idArabic ? 'En' : 'ع'}
-            </button>
-            <button onClick={() => { toggleTheme(); setIsOpen(false); }} className="drawericons outlineButton">
+            </button> */}
+            <img onClick={() => { toggleTheme(); setIsOpen(false); }} className="drawericons outlineButton"
+              src={
+                theme === 'dark' ? '/svg/light_mode.svg' : `/svg/dark_mode.svg`
+              } 
+              alt={"icon"} 
+              width={10} 
+              height={10} 
+            />
+            {/* <button onClick={() => { toggleTheme(); setIsOpen(false); }} className="drawericons outlineButton">
               {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
-            {isAuthenticated && ( <button onClick={logout} className="rounded-lg bg-red-500 px-4 py-2 text-white" > Logout </button> )}
+            </button> */}
+            {isAuthenticated && ( <img onClick={logout} className="drawericons outlineButton"
+              src={'/svg/logout.svg'}
+              alt={"icon"} 
+              width={10} 
+              height={10} 
+            /> )}
           </div>
         </div>
       </div>
