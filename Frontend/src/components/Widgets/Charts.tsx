@@ -15,7 +15,6 @@ const ApexChart = ({ series, options }: ApexChartProps) => {
           series={series}
           type="area"
           height={350}
-          width={500}
         />
       </div>
     </div>

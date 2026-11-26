@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "../Utilties/changeMode";
 import api from "@/lib/api";
+import { getApiError } from "@/lib/api-error";
 
 interface UserProfile {
   id: string;
@@ -13,17 +15,100 @@ interface UserProfile {
   roles: string[];
 }
 
+type Tab = "profile" | "settings" | "security";
+
+/* ========================= Styles ========================= */
+
+const inputClass =
+  "w-full rounded-xl border border-stone-300 bg-white px-4 py-3 outline-none transition focus:border-[#C58B4E] focus:ring-2 focus:ring-[#C58B4E]/30 disabled:cursor-not-allowed disabled:bg-stone-100 disabled:text-stone-500 dark:border-stone-700 dark:bg-stone-900 dark:disabled:bg-stone-800/60";
+
+const labelClass =
+  "mb-1.5 block text-sm font-medium text-stone-600 dark:text-stone-300";
+
+const primaryBtn =
+  "rounded-xl bg-linear-to-br from-[#C58B4E] to-[#B5573A] px-5 py-2.5 font-medium text-white shadow-sm transition hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-50";
+
+const outlineBtn =
+  "rounded-xl border border-stone-300 px-5 py-2.5 font-medium transition hover:bg-stone-100 disabled:opacity-50 dark:border-stone-700 dark:hover:bg-stone-800";
+
+const roleColors: Record<string, string> = {
+  admin: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
+  manager: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  cashier: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300",
+  waiter: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+  kitchen: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
+  delivery: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300",
+};
+
+const getRoleBadgeColor = (role: string) =>
+  roleColors[role.toLowerCase()] ??
+  "bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300";
+
+/* ========================= Small pieces ========================= */
+
+function Field({
+  label,
+  hint,
+  className = "",
+  children,
+}: {
+  label: string;
+  hint?: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={className}>
+      <label className={labelClass}>{label}</label>
+      {children}
+      {hint && <p className="mt-1 text-xs text-stone-400">{hint}</p>}
+    </div>
+  );
+}
+
+function Toggle({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={onChange}
+      dir="ltr"
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+        checked ? "bg-[#C58B4E]" : "bg-stone-300 dark:bg-stone-600"
+      }`}
+    >
+      <span
+        className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
+          checked ? "translate-x-6" : "translate-x-1"
+        }`}
+      />
+    </button>
+  );
+}
+
+/* ========================= Page ========================= */
+
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
   const { token, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"profile" | "settings" | "security">("profile");
+  const [activeTab, setActiveTab] = useState<Tab>("profile");
   const [editMode, setEditMode] = useState(false);
 
-  // Form states
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -41,76 +126,68 @@ export default function ProfilePage() {
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
 
+  const isArabic = i18n.language.startsWith("ar");
+
   useEffect(() => {
-    document.body.dir = i18n.language.startsWith("ar") ? "rtl" : "ltr";
-  }, [i18n.language]);
+    document.body.dir = isArabic ? "rtl" : "ltr";
+  }, [isArabic]);
+
+  const splitName = (fullName: string) => {
+    const names = fullName.trim().split(/\s+/);
+    return { firstName: names[0] ?? "", lastName: names.slice(1).join(" ") };
+  };
 
   const applyProfile = (data: UserProfile) => {
-  setProfile({
-    id: data.id,
-    userName: data.userName,
-    email: data.email,
-    fullName: data.fullName ?? "",
-    address: data.address ?? "",
-    createdAt: data.createdAt,
-    roles: data.roles ?? [],
-  });
+    const normalized: UserProfile = {
+      id: data.id,
+      userName: data.userName,
+      email: data.email ?? "",
+      fullName: data.fullName ?? "",
+      address: data.address ?? "",
+      createdAt: data.createdAt,
+      roles: data.roles ?? [],
+    };
+    setProfile(normalized);
+    setFormData({
+      ...splitName(normalized.fullName),
+      email: normalized.email,
+      address: normalized.address,
+    });
+  };
 
-  const names = data.fullName?.split(" ") || ["", ""];
-
-  setFormData({
-    firstName: names[0] || "",
-    lastName: names.slice(1).join(" ") || "",
-    email: data.email || "",
-    address: data.address ?? "",
-  });
-};
-  const fetchProfile = async () => {
+  // fetchProfile واحدة بس (كانت متكررة مرتين في الكود الأصلي)
+  const fetchProfile = async (signal?: { ignore: boolean }) => {
     if (!token) return;
-
     try {
       setError(null);
-
+      setLoading(true);
       const { data } = await api.get("/Account/Details");
-
-      applyProfile(data);
+      if (!signal?.ignore) applyProfile(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to load profile");
+      if (!signal?.ignore) setError(getApiError(err));
     } finally {
-      setLoading(false);
+      if (!signal?.ignore) setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!token) return;
-
-    let ignore = false;
-
-    (async () => {
-      try {
-        const { data } = await api.get("/Account/Details");
-
-        if (!ignore) {
-          applyProfile(data);
-        }
-      } catch (err) {
-        console.error(err);
-
-        if (!ignore) {
-          setError("Failed to load profile");
-        }
-      } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
-      }
-    })();
-
+    const signal = { ignore: false };
+    fetchProfile(signal);
     return () => {
-      ignore = true;
+      signal.ignore = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  const resetForm = () => {
+    if (!profile) return;
+    setFormData({
+      ...splitName(profile.fullName),
+      email: profile.email,
+      address: profile.address,
+    });
+  };
 
   const handleSaveProfile = async () => {
     if (!token || !profile) return;
@@ -120,67 +197,69 @@ export default function ProfilePage() {
       setSaveError("");
       setSaveSuccess("");
 
+      // لسه الـ backend بيحفظ العنوان بس
       await api.patch("/CustomerProfile", {
-      userId: profile.id,
-      address: formData.address,
-    });
+        userId: profile.id,
+        address: formData.address,
+      });
 
-      // Note: The backend doesn't have an update profile endpoint yet
-      // This would need to be implemented in the backend
-      // For now, we'll just show a success message
-      setSaveSuccess("Profile updated successfully");
-
-      // Update local state
-      setProfile((prev) => prev ? {
-        ...prev,
+      // الاسم والإيميل بيتحدثوا محلياً بس لحد ما يبقى في endpoint ليهم
+      setProfile({
+        ...profile,
         fullName: `${formData.firstName} ${formData.lastName}`.trim(),
         email: formData.email,
-      } : null);
+        address: formData.address,
+      });
 
+      setSaveSuccess(t("profileUpdated", "Profile updated successfully"));
       setEditMode(false);
     } catch (err) {
       console.error(err);
-      setSaveError("Failed to update profile");
+      setSaveError(getApiError(err));
     } finally {
       setSaving(false);
     }
   };
 
   const handleChangePassword = async () => {
-    // Would need backend endpoint for password change
-    setSaveSuccess("Password change functionality requires backend endpoint");
-  };
+    setSaveError("");
+    setSaveSuccess("");
 
-  const handleLogout = () => {
-    logout();
-  };
-
-  const getRoleBadgeColor = (role: string) => {
-    switch (role.toLowerCase()) {
-      case "admin":
-        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
-      case "manager":
-        return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400";
-      case "cashier":
-        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
-      case "waiter":
-        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-      case "kitchen":
-        return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
-      case "delivery":
-        return "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400";
-      default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
+    if (passwordData.newPassword.length < 6) {
+      setSaveError(t("passwordTooShort", "Password must be at least 6 characters"));
+      return;
     }
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setSaveError(t("passwordMismatch", "Passwords do not match"));
+      return;
+    }
+
+    // TODO: اربطها بـ endpoint تغيير الباسورد لما يتعمل في الـ backend
+    setSaveSuccess(
+      t("passwordNeedsBackend", "Password change functionality requires backend endpoint")
+    );
   };
+
+  const changeTab = (tab: Tab) => {
+    setActiveTab(tab);
+    setSaveError("");
+    setSaveSuccess("");
+  };
+
+  const toggleLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem("i18nextLng", lang);
+  };
+
+  /* ---------- Loading / Error ---------- */
 
   if (loading) {
     return (
-      <main className="w-full min-h-screen py-12 px-4 flex items-center justify-center">
+      <main className="flex min-h-screen w-full items-center justify-center px-4 py-12">
         <div className="animate-pulse text-center">
-          <div className="h-20 w-20 mx-auto mb-4 bg-gray-200 dark:bg-zinc-700 rounded-full" />
-          <div className="h-6 w-48 mx-auto mb-2 bg-gray-200 dark:bg-zinc-700 rounded" />
-          <div className="h-4 w-64 mx-auto bg-gray-200 dark:bg-zinc-700 rounded" />
+          <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-stone-200 dark:bg-stone-800" />
+          <div className="mx-auto mb-2 h-6 w-48 rounded bg-stone-200 dark:bg-stone-800" />
+          <div className="mx-auto h-4 w-64 rounded bg-stone-200 dark:bg-stone-800" />
         </div>
       </main>
     );
@@ -188,54 +267,61 @@ export default function ProfilePage() {
 
   if (error || !profile) {
     return (
-      <main className="w-full min-h-screen py-12 px-4 flex items-center justify-center">
+      <main className="flex min-h-screen w-full items-center justify-center px-4 py-12">
         <div className="text-center">
-          <p className="text-red-500 text-lg mb-4">{error || "Profile not found"}</p>
-          <button
-            onClick={fetchProfile}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            {t("retry") || "Retry"}
+          <p className="mb-4 text-lg text-red-500">
+            {error || t("profileNotFound", "Profile not found")}
+          </p>
+          <button onClick={() => fetchProfile()} className={primaryBtn}>
+            {t("retry", "Retry")}
           </button>
         </div>
       </main>
     );
   }
 
+  const tabs: { id: Tab; label: string; icon: string }[] = [
+    { id: "profile", label: t("profileInfo", "Profile Info"), icon: "👤" },
+    { id: "settings", label: t("settings", "Settings"), icon: "⚙️" },
+    { id: "security", label: t("security", "Security"), icon: "🔒" },
+  ];
+
+  const initial =
+    (profile.fullName || profile.userName || "U").charAt(0).toUpperCase();
+
   return (
-    <main className="w-full min-h-screen py-12 px-4">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen w-full px-4 pt-24 pb-12 text-stone-900 md:pt-32 dark:text-stone-100">
+      <div className="mx-auto max-w-4xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            {t("profile") || "Profile"}
+          <h1 className="mb-2 text-3xl font-bold md:text-4xl">
+            {t("profile", "Profile")}
           </h1>
-          <p className="text-gray-600 dark:text-zinc-400">
-            {t("profileSubtitle") || "Manage your account settings and preferences"}
+          <p className="text-stone-500 dark:text-stone-400">
+            {t("profileSubtitle", "Manage your account settings and preferences")}
           </p>
         </div>
 
-        {/* Profile Card & Tabs */}
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-gray-100 dark:border-zinc-800 overflow-hidden">
-          {/* Profile Header */}
-          <div className="bg-linear-to-r from-purple-600 to-blue-600 px-6 py-8 md:px-10 md:py-12">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg dark:border-stone-800 dark:bg-stone-900">
+          {/* Profile banner */}
+          <div className="bg-linear-to-br from-[#C58B4E] to-[#B5573A] px-6 py-8 md:px-10 md:py-12">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/20 flex items-center justify-center ring-4 ring-white/30">
-                  <span className="text-4xl md:text-5xl font-bold text-white">
-                    {profile.fullName?.charAt(0).toUpperCase() || profile.userName?.charAt(0).toUpperCase() || "U"}
+                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-white/20 ring-4 ring-white/30 md:h-28 md:w-28">
+                  <span className="text-4xl font-bold text-white md:text-5xl">
+                    {initial}
                   </span>
                 </div>
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-white">
+                <div className="min-w-0">
+                  <h2 className="truncate text-2xl font-bold text-white md:text-3xl">
                     {profile.fullName || profile.userName}
                   </h2>
-                  <p className="text-purple-100 mt-1">{profile.email}</p>
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <p className="mt-1 truncate text-white/80">{profile.email}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {profile.roles.map((role) => (
                       <span
                         key={role}
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(role)}`}
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${getRoleBadgeColor(role)}`}
                       >
                         {role}
                       </span>
@@ -243,32 +329,29 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
+
               <button
-                onClick={handleLogout}
-                className="px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white font-medium rounded-lg transition-colors backdrop-blur-sm border border-white/30"
+                onClick={logout}
+                className="rounded-xl border border-white/30 bg-white/20 px-5 py-2.5 font-medium text-white backdrop-blur-sm transition hover:bg-white/30 active:scale-95"
               >
-                {t("logout") || "Logout"}
+                {t("logout", "Logout")}
               </button>
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <div className="border-b border-gray-100 dark:border-zinc-800">
-            <nav className="flex gap-1 px-2 md:px-6" role="tablist">
-              {[
-                { id: "profile", label: t("profileInfo") || "Profile Info", icon: "👤" },
-                { id: "settings", label: t("settings") || "Settings", icon: "⚙️" },
-                { id: "security", label: t("security") || "Security", icon: "🔒" },
-              ].map((tab) => (
+          {/* Tabs */}
+          <div className="border-b border-stone-200 dark:border-stone-800">
+            <nav className="flex gap-1 overflow-x-auto px-2 md:px-6" role="tablist">
+              {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   role="tab"
                   aria-selected={activeTab === tab.id}
-                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                  className={`flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-t-lg transition-all ${
+                  onClick={() => changeTab(tab.id)}
+                  className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-all ${
                     activeTab === tab.id
-                      ? "bg-white dark:bg-zinc-900 text-purple-600 dark:text-purple-400 border-b-2 border-purple-600"
-                      : "text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200"
+                      ? "border-[#B5573A] text-[#B5573A] dark:border-[#C58B4E] dark:text-[#C58B4E]"
+                      : "border-transparent text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200"
                   }`}
                 >
                   <span>{tab.icon}</span>
@@ -278,258 +361,260 @@ export default function ProfilePage() {
             </nav>
           </div>
 
-          {/* Tab Panels */}
+          {/* Panels */}
           <div className="p-6 md:p-8">
             {saveSuccess && (
-              <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-400">
+              <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">
                 {saveSuccess}
               </div>
             )}
             {saveError && (
-              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400">
+              <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
                 {saveError}
               </div>
             )}
 
-            {/* Profile Info Tab */}
+            {/* ===== Profile tab ===== */}
             {activeTab === "profile" && (
               <div className="space-y-6" role="tabpanel">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                      {t("firstName") || "First Name"}
-                    </label>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <Field label={t("firstName", "First Name")}>
                     <input
                       type="text"
                       value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, firstName: e.target.value })
+                      }
                       disabled={!editMode}
-                      className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white disabled:bg-gray-50 dark:disabled:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className={inputClass}
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                      {t("lastName") || "Last Name"}
-                    </label>
+                  </Field>
+
+                  <Field label={t("lastName", "Last Name")}>
                     <input
                       type="text"
                       value={formData.lastName}
-                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, lastName: e.target.value })
+                      }
                       disabled={!editMode}
-                      className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white disabled:bg-gray-50 dark:disabled:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className={inputClass}
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                      {t("username") || "Username"}
-                    </label>
+                  </Field>
+
+                  <Field
+                    label={t("username", "Username")}
+                    hint={t("usernameCannotChange", "Username cannot be changed")}
+                  >
                     <input
                       type="text"
                       value={profile.userName}
                       disabled
-                      className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-gray-50 dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className={inputClass}
                     />
-                    <p className="mt-1 text-xs text-gray-500 dark:text-zinc-500">
-                      {t("usernameCannotChange") || "Username cannot be changed"}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                      {t("email") || "Email"}
-                    </label>
+                  </Field>
+
+                  <Field label={t("email", "Email")}>
                     <input
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       disabled={!editMode}
-                      className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white disabled:bg-gray-50 dark:disabled:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className={inputClass}
                     />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                      {t("address") || "Address"}
-                    </label>
+                  </Field>
+
+                  <Field label={t("address", "Address")} className="md:col-span-2">
                     <input
                       type="text"
                       value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, address: e.target.value })
+                      }
                       disabled={!editMode}
-                      className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white disabled:bg-gray-50 dark:disabled:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className={inputClass}
                     />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                      {t("memberSince") || "Member Since"}
-                    </label>
+                  </Field>
+
+                  <Field label={t("memberSince", "Member Since")} className="md:col-span-2">
                     <input
                       type="text"
                       value={
                         profile.createdAt
-                          ? new Date(profile.createdAt).toLocaleDateString('zh-CN')
-                          : "Unknown"
+                          ? new Date(profile.createdAt).toLocaleDateString(
+                              i18n.language,
+                              { year: "numeric", month: "long", day: "numeric" }
+                            )
+                          : t("unknown", "Unknown")
                       }
                       disabled
-                      className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-gray-50 dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white"
+                      className={inputClass}
                     />
-                  </div>
+                  </Field>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
+                <div className="flex justify-end gap-3 border-t border-stone-200 pt-4 dark:border-stone-800">
                   {editMode ? (
                     <>
                       <button
                         onClick={() => {
                           setEditMode(false);
-                          // Reset form data
-                          const names = profile.fullName?.split(" ") || ["", ""];
-                          setFormData({
-                            firstName: names[0] || "",
-                            lastName: names.slice(1).join(" ") || "",
-                            email: profile.email || "",
-                            address: formData.address,
-                          });
+                          setSaveError("");
+                          resetForm();
                         }}
-                        className="px-5 py-2.5 border border-gray-300 dark:border-zinc-600 text-gray-700 dark:text-zinc-300 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+                        disabled={saving}
+                        className={outlineBtn}
                       >
-                        {t("cancel") || "Cancel"}
+                        {t("cancel", "Cancel")}
                       </button>
                       <button
                         onClick={handleSaveProfile}
                         disabled={saving}
-                        className="px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                        className={primaryBtn}
                       >
-                        {saving ? t("saving") || "Saving..." : t("save") || "Save Changes"}
+                        {saving
+                          ? t("saving", "Saving...")
+                          : t("save", "Save Changes")}
                       </button>
                     </>
                   ) : (
                     <button
-                      onClick={() => setEditMode(true)}
-                      className="px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                      onClick={() => {
+                        setSaveSuccess("");
+                        setEditMode(true);
+                      }}
+                      className={primaryBtn}
                     >
-                      {t("editProfile") || "Edit Profile"}
+                      {t("editProfile", "Edit Profile")}
                     </button>
                   )}
                 </div>
               </div>
             )}
 
-            {/* Settings Tab */}
+            {/* ===== Settings tab ===== */}
             {activeTab === "settings" && (
               <div className="space-y-6" role="tabpanel">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {t("preferences") || "Preferences"}
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{t("darkMode") || "Dark Mode"}</p>
-                        <p className="text-sm text-gray-500 dark:text-zinc-400">
-                          {t("darkModeDesc") || "Enable dark theme for the application"}
-                        </p>
-                      </div>
-                      <button
-                        className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-300 dark:bg-zinc-600 transition-colors"
-                        role="switch"
-                        aria-checked={false}
-                      >
-                        <span className="inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition translate-x-0" />
-                      </button>
+                <h3 className="text-lg font-semibold">
+                  {t("preferences", "Preferences")}
+                </h3>
+
+                <div className="divide-y divide-stone-200 dark:divide-stone-800">
+                  <div className="flex items-center justify-between gap-4 py-4">
+                    <div>
+                      <p className="font-medium">{t("darkMode", "Dark Mode")}</p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400">
+                        {t("darkModeDesc", "Enable dark theme for the application")}
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{t("notifications") || "Notifications"}</p>
-                        <p className="text-sm text-gray-500 dark:text-zinc-400">
-                          {t("notificationsDesc") || "Receive email notifications for updates"}
-                        </p>
-                      </div>
-                      <button
-                        className="relative inline-flex h-6 w-11 items-center rounded-full bg-purple-600 transition-colors"
-                        role="switch"
-                        aria-checked={true}
-                      >
-                        <span className="inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition translate-x-6" />
-                      </button>
+                    <Toggle
+                      checked={theme === "dark"}
+                      onChange={toggleTheme}
+                      label={t("darkMode", "Dark Mode")}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 py-4">
+                    <div>
+                      <p className="font-medium">{t("language", "Language")}</p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400">
+                        {t("languageDesc", "Choose your preferred language")}
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{t("language") || "Language"}</p>
-                        <p className="text-sm text-gray-500 dark:text-zinc-400">
-                          {t("languageDesc") || "Choose your preferred language"}
-                        </p>
-                      </div>
-                      <select
-                        className="rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      >
-                        <option value="en">English</option>
-                        <option value="ar">العربية</option>
-                      </select>
-                    </div>
+                    <select
+                      value={isArabic ? "ar" : "en"}
+                      onChange={(e) => toggleLanguage(e.target.value)}
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-2 outline-none transition focus:border-[#C58B4E] focus:ring-2 focus:ring-[#C58B4E]/30 dark:border-stone-700 dark:bg-stone-900"
+                    >
+                      <option value="en">English</option>
+                      <option value="ar">العربية</option>
+                    </select>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Security Tab */}
+            {/* ===== Security tab ===== */}
             {activeTab === "security" && (
-              <div className="space-y-6" role="tabpanel">
+              <div className="space-y-8" role="tabpanel">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {t("changePassword") || "Change Password"}
+                  <h3 className="mb-4 text-lg font-semibold">
+                    {t("changePassword", "Change Password")}
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                        {t("currentPassword") || "Current Password"}
-                      </label>
+
+                  <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <Field
+                      label={t("currentPassword", "Current Password")}
+                      className="md:col-span-2"
+                    >
                       <input
                         type="password"
+                        autoComplete="current-password"
                         value={passwordData.currentPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                        className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        onChange={(e) =>
+                          setPasswordData({
+                            ...passwordData,
+                            currentPassword: e.target.value,
+                          })
+                        }
+                        className={inputClass}
                       />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                        {t("newPassword") || "New Password"}
-                      </label>
+                    </Field>
+
+                    <Field label={t("newPassword", "New Password")}>
                       <input
                         type="password"
+                        autoComplete="new-password"
                         value={passwordData.newPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                        className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        onChange={(e) =>
+                          setPasswordData({
+                            ...passwordData,
+                            newPassword: e.target.value,
+                          })
+                        }
+                        className={inputClass}
                       />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1.5">
-                        {t("confirmNewPassword") || "Confirm New Password"}
-                      </label>
+                    </Field>
+
+                    <Field label={t("confirmNewPassword", "Confirm New Password")}>
                       <input
                         type="password"
+                        autoComplete="new-password"
                         value={passwordData.confirmPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                        className="w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        onChange={(e) =>
+                          setPasswordData({
+                            ...passwordData,
+                            confirmPassword: e.target.value,
+                          })
+                        }
+                        className={inputClass}
                       />
-                    </div>
+                    </Field>
                   </div>
+
                   <button
                     onClick={handleChangePassword}
                     disabled={saving}
-                    className="px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                    className={primaryBtn}
                   >
-                    {saving ? t("saving") || "Saving..." : t("updatePassword") || "Update Password"}
+                    {saving
+                      ? t("saving", "Saving...")
+                      : t("updatePassword", "Update Password")}
                   </button>
                 </div>
 
-                <div className="pt-6 border-t border-gray-100 dark:border-zinc-800">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    {t("sessions") || "Active Sessions"}
+                <div className="border-t border-stone-200 pt-6 dark:border-stone-800">
+                  <h3 className="mb-2 text-lg font-semibold">
+                    {t("sessions", "Active Sessions")}
                   </h3>
-                  <p className="text-gray-600 dark:text-zinc-400 mb-4">
-                    {t("sessionsDesc") || "Manage your active login sessions"}
+                  <p className="mb-4 text-stone-500 dark:text-stone-400">
+                    {t("sessionsDesc", "Manage your active login sessions")}
                   </p>
-                  <button className="px-5 py-2.5 border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                    {t("revokeAllSessions") || "Revoke All Other Sessions"}
+                  {/* TODO: اربط الزرار ده بـ endpoint لما يتعمل */}
+                  <button className="rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/40">
+                    {t("revokeAllSessions", "Revoke All Other Sessions")}
                   </button>
                 </div>
               </div>
